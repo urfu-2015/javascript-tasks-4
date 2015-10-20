@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "dependencies": {
+    "chai": "^3.3.0",
+    "jscs": "^2.2.1",
+    "mocha": "^2.3.3",
+    "object-assign": "^4.0.1"
+  },
+  "scripts": {
+    "test": "npm run lint && mocha test/*",
+    "lint": "jscs ."
+  }
+}
