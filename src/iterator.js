@@ -13,7 +13,9 @@ const always = () => true;
 const findBy = (filterFn, next) => {
     let result;
     while (result = next().value) {
-        if (filterFn(result)) break;
+        if (filterFn(result)) {
+            break;
+        }
     }
     return result;
 };

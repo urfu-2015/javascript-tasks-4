@@ -1,5 +1,5 @@
 'use strict';
-require("babel/polyfill");
+require('babel/polyfill');
 var assign = require('object-assign');
 var origin = require('../faceBook');
 var iterator = require('../dist/iterator');
@@ -11,7 +11,7 @@ describe('Базовое тестирование итератора', function 
     var faceBook;
 
     function getRecord(name) {
-        return Object.assign({name: name}, faceBook[name])
+        return Object.assign({name: name}, faceBook[name]);
     }
 
     beforeEach(function () {
@@ -93,5 +93,5 @@ describe('Базовое тестирование итератора', function 
 
         // Больше друзей в круге первом нет
         friends.prev('Васян').should.deep.equal(getRecord('Васян'));
-    })
+    });
 });
