@@ -51,4 +51,4 @@ while (dudes.prevMale()) {}
 dudes.next('Пётр');
 
 // И продолжаем набор на мальчишник и свадьбу
-while (dudes.next() || friends.next()) {}
+while (dudes.nextMale() || friends.next()) {}
