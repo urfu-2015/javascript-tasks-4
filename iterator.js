@@ -45,63 +45,62 @@ function GetFriendByIndex(collection, friends, index) {
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    var currentPoint = startPoint;
-    var currentIndex = 0;
+    var index = 0;
     var allFriends = GetAllAvailableFriends(collection, startPoint);
 
     depth = depth || Number.MAX_VALUE;
     return {
         next: function () {
             if (arguments[0] === undefined) {
-                currentIndex++;
-                if (currentIndex >= allFriends.length || allFriends[currentIndex].distance > depth) {
-                    currentIndex--;
+                index++;
+                if (index >= allFriends.length || allFriends[index].distance > depth) {
+                    index--;
                     return null;
                 }
-                return GetFriendByIndex(collection, allFriends, currentIndex);
+                return GetFriendByIndex(collection, allFriends, index);
             } else {
                 if (!arguments[0] in collection) {
                     return null;
                 }
-                currentIndex = GetFriendIndex(allFriends, arguments[0]);
-                if (typeof currentIndex === 'undefined') {
+                index = GetFriendIndex(allFriends, arguments[0]);
+                if (typeof index === 'undefined') {
                     return null;
                 }
-                return GetFriendByIndex(collection, allFriends, currentIndex);
+                return GetFriendByIndex(collection, allFriends, index);
             }
         },
         prev: function () {
-            currentIndex--;
-            if (currentIndex <= 0 || allFriends[currentIndex].distance <= 0) {
-                currentIndex++;
+            index--;
+            if (index <= 0 || allFriends[index].distance <= 0) {
+                index++;
                 return null;
             }
-            return GetFriendByIndex(collection, allFriends, currentIndex);
+            return GetFriendByIndex(collection, allFriends, index);
         },
         nextMale: function () {
-            currentIndex++;
-            for (var i = currentIndex; i < allFriends.length; i++) {
+            index++;
+            for (var i = index; i < allFriends.length; i++) {
                 if (allFriends[i].distance > depth) {
-                    currentIndex--;
+                    index--;
                     return null;
                 }
                 if (collection[allFriends[i].name].gender === 'Мужской') {
-                    currentIndex = i;
-                    return GetFriendByIndex(collection, allFriends, currentIndex);
+                    index = i;
+                    return GetFriendByIndex(collection, allFriends, index);
                 }
             }
             return null;
         },
         prevMale: function () {
-            currentIndex--;
-            if (currentIndex <= 0) {
-                currentIndex++;
+            index--;
+            if (index <= 0) {
+                index++;
                 return null;
             }
-            for (var i = currentIndex; i > 0; i--) {
+            for (var i = index; i > 0; i--) {
                 if (collection[allFriends[i].name].gender === 'Мужской') {
-                    currentIndex = i;
-                    return GetFriendByIndex(collection, allFriends, currentIndex);
+                    index = i;
+                    return GetFriendByIndex(collection, allFriends, index);
                 }
             }
             return null;
