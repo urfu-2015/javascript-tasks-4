@@ -3,7 +3,7 @@
 function GetAllAvailableFriends(collection, startPoint) {
     /*поиском в ширину обходим всех доступных друзей и получаем
     упорядоченный список друзей и расстояние до них*/
-    if (!Object.hasAttribute(startPoint)) {
+    if (!collection.hasOwnProperty(startPoint)) {
         return [{}];
     }
     var distances = [];
@@ -18,7 +18,7 @@ function GetAllAvailableFriends(collection, startPoint) {
         var friends = collection[contact.name].friends.sort();
 
         for (var i = 0; i < friends.length; i++) {
-            if (Object.hasAttribute(visited[friends[i]])) {
+            if (!visited.hasOwnProperty(friends[i])) {
                 var friendlyContact = {name: friends[i], distance: contact.distance + 1};
 
                 distances.push(friendlyContact);
@@ -39,6 +39,11 @@ function GetFriendIndex(allFriends, friendName) {
     return undefined;
 }
 
+function GetFriendByIndex(collection, friends, index) {
+    var friend = friends[index].name;
+    return {name: friend, phone: collection[friend].phone};
+}
+
 module.exports.get = function (collection, startPoint, depth) {
     var currentPoint = startPoint;
     var currentIndex = 0;
@@ -49,13 +54,11 @@ module.exports.get = function (collection, startPoint, depth) {
         next: function () {
             if (arguments[0] === undefined) {
                 currentIndex++;
-                if (allFriends[currentIndex].distance > depth || currentIndex >= allFriends.length) {
+                if (currentIndex >= allFriends.length || allFriends[currentIndex].distance > depth) {
                     currentIndex--;
                     return null;
                 }
-                var currentFriend = allFriends[currentIndex].name;
-
-                return {name: currentFriend, phone: collection[currentFriend].phone};
+                return GetFriendByIndex(collection, allFriends, currentIndex);
             } else {
                 if (!arguments[0] in collection) {
                     return null;
@@ -64,48 +67,44 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (typeof currentIndex === 'undefined') {
                     return null;
                 }
-                var currentFriend = allFriends[currentIndex].name;
-
-                return {name: currentFriend, phone: collection[currentFriend].phone};
+                return GetFriendByIndex(collection, allFriends, currentIndex);
             }
         },
         prev: function () {
             currentIndex--;
-            if (allFriends[currentIndex].distance <= 0) {
+            if (currentIndex <= 0 || allFriends[currentIndex].distance <= 0) {
                 currentIndex++;
                 return null;
             }
-            var currentFriend = allFriends[currentIndex].name;
-
-            return {name: currentFriend, phone: collection[currentFriend].phone};
+            return GetFriendByIndex(collection, allFriends, currentIndex);
         },
         nextMale: function () {
             currentIndex++;
             for (var i = currentIndex; i < allFriends.length; i++) {
                 if (allFriends[i].distance > depth) {
-                    currentInMaleIndex--;
+                    currentIndex--;
                     return null;
                 }
                 if (collection[allFriends[i].name].gender === 'Мужской') {
                     currentIndex = i;
-                    var currentFriend = allFriends[i].name;
-                    return {name: currentFriend, phone: collection[currentFriend].phone};
+                    return GetFriendByIndex(collection, allFriends, currentIndex);
                 }
             }
+            return null;
         },
         prevMale: function () {
             currentIndex--;
-            if (currentIndex < 0) {
+            if (currentIndex <= 0) {
                 currentIndex++;
                 return null;
             }
             for (var i = currentIndex; i > 0; i--) {
                 if (collection[allFriends[i].name].gender === 'Мужской') {
                     currentIndex = i;
-                    var currentFriend = allFriends[i].name;
-                    return {name: currentFriend, phone: collection[currentFriend].phone};
+                    return GetFriendByIndex(collection, allFriends, currentIndex);
                 }
             }
+            return null;
         }
     };
 };
