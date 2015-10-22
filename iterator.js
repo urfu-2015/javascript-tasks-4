@@ -39,16 +39,6 @@ function GetFriendIndex(allFriends, friendName) {
     return undefined;
 }
 
-function GetFriendByIndex(collection, friends, index) {
-    var friend = friends[index].name;
-    return {
-        name: friend,
-        gender:collection[friend].gender,
-        phone: collection[friend].phone,
-        friends: collection[friend].friends
-    };
-}
-
 module.exports.get = function (collection, startPoint, depth) {
     var index = 0;
     var allFriends = GetAllAvailableFriends(collection, startPoint);
@@ -62,7 +52,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     index--;
                     return null;
                 }
-                return GetFriendByIndex(collection, allFriends, index);
+                return collection[allFriends[index].name];
             } else {
                 if (!arguments[0] in collection) {
                     return null;
@@ -71,7 +61,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (typeof index === 'undefined') {
                     return null;
                 }
-                return GetFriendByIndex(collection, allFriends, index);
+                return collection[allFriends[index].name];
             }
         },
         prev: function () {
@@ -80,7 +70,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 index++;
                 return null;
             }
-            return GetFriendByIndex(collection, allFriends, index);
+            return collection[allFriends[index].name];
         },
         nextMale: function () {
             index++;
@@ -91,7 +81,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 if (collection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
-                    return GetFriendByIndex(collection, allFriends, index);
+                    return collection[allFriends[index].name];
                 }
             }
             return null;
@@ -105,7 +95,7 @@ module.exports.get = function (collection, startPoint, depth) {
             for (var i = index; i > 0; i--) {
                 if (collection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
-                    return GetFriendByIndex(collection, allFriends, index);
+                    return collection[allFriends[index].name];
                 }
             }
             return null;
