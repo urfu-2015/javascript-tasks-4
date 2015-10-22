@@ -3,6 +3,9 @@
 function GetAllAvailableFriends(collection, startPoint) {
     /*поиском в ширину обходим всех доступных друзей и получаем
     упорядоченный список друзей и расстояние до них*/
+    if (!Object.hasAttribute(startPoint)) {
+        return [{}];
+    }
     var distances = [];
     var queue = [];
     var visited = {};
@@ -15,7 +18,7 @@ function GetAllAvailableFriends(collection, startPoint) {
         var friends = collection[contact.name].friends.sort();
 
         for (var i = 0; i < friends.length; i++) {
-            if (typeof visited[friends[i]] === 'undefined') {
+            if (Object.hasAttribute(visited[friends[i]])) {
                 var friendlyContact = {name: friends[i], distance: contact.distance + 1};
 
                 distances.push(friendlyContact);
@@ -33,14 +36,15 @@ function GetFriendIndex(allFriends, friendName) {
             return i;
         }
     }
+    return undefined;
 }
 
 module.exports.get = function (collection, startPoint, depth) {
     var currentPoint = startPoint;
     var currentIndex = 0;
-    var currentMaleIndex = 0;
     var allFriends = GetAllAvailableFriends(collection, startPoint);
 
+    depth = depth || Number.MAX_VALUE;
     return {
         next: function () {
             if (arguments[0] === undefined) {
@@ -57,54 +61,47 @@ module.exports.get = function (collection, startPoint, depth) {
                     return null;
                 }
                 currentIndex = GetFriendIndex(allFriends, arguments[0]);
-                currentMaleIndex = currentIndex;
-                /*Вот тут я не понял, как должен вести себя nextMale после того, как мы к
-                конкретному контакту обратились. В примерах показано, что prevMale должен
-                счтитаться от этого контакте, но разве не должны быть по отдельности next, prev
-                и nextMale?*/
-                return {name: arguments[0], phone: collection[arguments[0]].phone};
-            }
-        },
-        prev: function () {
-            if (arguments[0] === undefined) {
-                currentIndex--;
-                if (allFriends[currentIndex].distance <= 0) {
-                    currentIndex++;
+                if (typeof currentIndex === 'undefined') {
                     return null;
                 }
                 var currentFriend = allFriends[currentIndex].name;
 
                 return {name: currentFriend, phone: collection[currentFriend].phone};
-            } else {
-                if (!arguments[0] in collection) {
-                    return null;
-                }
-                return {name: arguments[0], phone: collection[arguments[0]].phone};
             }
         },
+        prev: function () {
+            currentIndex--;
+            if (allFriends[currentIndex].distance <= 0) {
+                currentIndex++;
+                return null;
+            }
+            var currentFriend = allFriends[currentIndex].name;
+
+            return {name: currentFriend, phone: collection[currentFriend].phone};
+        },
         nextMale: function () {
-            currentMaleIndex++;
-            for (var i = currentMaleIndex; i < allFriends.length; i++) {
+            currentIndex++;
+            for (var i = currentIndex; i < allFriends.length; i++) {
                 if (allFriends[i].distance > depth) {
                     currentInMaleIndex--;
                     return null;
                 }
                 if (collection[allFriends[i].name].gender === 'Мужской') {
-                    currentMaleIndex = i;
+                    currentIndex = i;
                     var currentFriend = allFriends[i].name;
                     return {name: currentFriend, phone: collection[currentFriend].phone};
                 }
             }
         },
         prevMale: function () {
-            currentMaleIndex--;
-            if (currentMaleIndex < 0) {
-                currentMaleIndex++;
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex++;
                 return null;
             }
-            for (var i = currentMaleIndex; i > 0; i--) {
+            for (var i = currentIndex; i > 0; i--) {
                 if (collection[allFriends[i].name].gender === 'Мужской') {
-                    currentMaleIndex = i;
+                    currentIndex = i;
                     var currentFriend = allFriends[i].name;
                     return {name: currentFriend, phone: collection[currentFriend].phone};
                 }
