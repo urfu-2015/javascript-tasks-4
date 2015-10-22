@@ -6,8 +6,8 @@ module.exports.get = function (collection, startPoint, depth) {
         currentFriendId: 0,
         next: function (name) {
             checkCollectionChange.call(this, collection, startPoint, depth);
-            if (this.currentFriendId === this.friends.length - 1) {
-                return false;
+            if (this.currentFriendId > this.friends.length - 2) {
+                return null;
             }
             return getData.call(this, collection, name, 1);
         },
@@ -17,7 +17,7 @@ module.exports.get = function (collection, startPoint, depth) {
         prev: function (name) {
             checkCollectionChange.call(this, collection, startPoint, depth);
             if (this.currentFriendId === 0) {
-                return false;
+                return null;
             }
             return getData.call(this, collection, name, -1);
         },
@@ -35,14 +35,13 @@ function getData(collection, name, step) {
         this.currentFriendId = this.friends.indexOf(name);
     }
     var friend = collection[name];
-    return {
-        name: name,
-        phone: friend.phone
-    };
+    friend.name = name;
+    return friend;
 }
 
 function getMale(collection, fun, name) {
     var next = fun.call(this, name);
+    console.log('next', next);
     while (next && collection[next.name].gender != 'Мужской') {
         next = fun.call(this, name);
     }
@@ -50,6 +49,9 @@ function getMale(collection, fun, name) {
 }
 
 function getAllFriends(collection, startPoint, depth) {
+    if (Object.keys(collection).indexOf(startPoint) == -1) {
+        return [];
+    }
     depth = depth || Object.keys(collection).length;
     var allFriends = [];
     var currentDepth = -1;
@@ -83,4 +85,18 @@ function checkCollectionChange(collection, startPoint, depth) {
     var currentName = this.friends[this.currentFriendId];
     this.friends = getAllFriends(collection, startPoint, depth);
     this.currentFriendId = this.friends.indexOf(currentName);
+}
+
+function cloneContact(contact) {
+    var fields = Object.keys(contact);
+    return fields.reduce(function (newContact, field) {
+        if (field === 'friends') {
+            newContact.friends = contact.friends.map(function (friend) {
+                return friend;
+            });
+            return newContact;
+        }
+        newContact[field] = contact[field];
+        return newContact;
+    }, {});
 }
