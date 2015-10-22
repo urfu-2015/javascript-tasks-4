@@ -41,7 +41,12 @@ function GetFriendIndex(allFriends, friendName) {
 
 function GetFriendByIndex(collection, friends, index) {
     var friend = friends[index].name;
-    return {name: friend, phone: collection[friend].phone};
+    return {
+        name: friend,
+        gender:collection[friend].gender,
+        phone: collection[friend].phone,
+        friends: collection[friend].friends
+    };
 }
 
 module.exports.get = function (collection, startPoint, depth) {
