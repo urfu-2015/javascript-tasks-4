@@ -87,9 +87,7 @@ module.exports.get = function (collection, startPoint, depth) {
 
     return {
         next: function () {
-            if (collectionHasChanged(workCollection, collection)) {
-                this.handleDeletion();
-            }
+            this.handleDeletion();
             if (arguments[0] === undefined) {
                 index++;
                 if (index >= allFriends.length) {
@@ -105,9 +103,7 @@ module.exports.get = function (collection, startPoint, depth) {
             return workCollection[allFriends[index].name];
         },
         prev: function () {
-            if (collectionHasChanged(workCollection, collection)) {
-                this.handleDeletion();
-            }
+            this.handleDeletion();
             index--;
             if (index <= 0) {
                 index++;
@@ -116,9 +112,7 @@ module.exports.get = function (collection, startPoint, depth) {
             return workCollection[allFriends[index].name];
         },
         nextMale: function () {
-            if (collectionHasChanged(workCollection, collection)) {
-                this.handleDeletion();
-            }
+            this.handleDeletion();
             for (var i = index + 1; i < allFriends.length; i++) {
                 if (workCollection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
@@ -128,9 +122,7 @@ module.exports.get = function (collection, startPoint, depth) {
             return null;
         },
         prevMale: function () {
-            if (collectionHasChanged(workCollection, collection)) {
-                this.handleDeletion();
-            }
+            this.handleDeletion();
             for (var i = index - 1; i > 0; i--) {
                 if (workCollection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
@@ -140,12 +132,14 @@ module.exports.get = function (collection, startPoint, depth) {
             return null;
         },
         handleDeletion: function () {
-            workCollection = clearConnections(workCollection, collection);
-            var currentFriendName = allFriends[index].name;
+            if (collectionHasChanged(workCollection, collection)) {
+                workCollection = clearConnections(workCollection, collection);
+                var currentFriendName = allFriends[index].name;
 
-            allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
-            index = GetFriendIndex(allFriends, currentFriendName);
-            index = index === -1 ? 0 : index;
+                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+                index = GetFriendIndex(allFriends, currentFriendName);
+                index = index === -1 ? 0 : index;
+            }
         }
     };
 };
