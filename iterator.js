@@ -1,8 +1,9 @@
 'use strict';
 
-function GetAllAvailableFriends(collection, startPoint) {
+function GetAllAvailableFriends(collection, startPoint, depth) {
     /*поиском в ширину обходим всех доступных друзей и получаем
-    упорядоченный список друзей и расстояние до них*/
+    упорядоченный список друзей, которые находятся в пределах
+    depth кругов рукопожатий*/
     if (!collection.hasOwnProperty(startPoint)) {
         return [{}];
     }
@@ -21,6 +22,10 @@ function GetAllAvailableFriends(collection, startPoint) {
             if (!visited.hasOwnProperty(friends[i])) {
                 var friendlyContact = {name: friends[i], distance: contact.distance + 1};
 
+                if (friendlyContact.distance > depth) {
+                    visited[friendlyContact.name] = true;
+                    continue;
+                }
                 distances.push(friendlyContact);
                 queue.push(friendlyContact);
                 visited[friendlyContact.name] = true;
@@ -36,66 +41,116 @@ function GetFriendIndex(allFriends, friendName) {
             return i;
         }
     }
-    return undefined;
+    return -1;
+}
+
+function collectionHasChanged(workCollection, collection) {
+    return Object.keys(workCollection).length > Object.keys(collection).length;
+}
+
+function clearConnections(workCollection, collection) {
+    var deletedContactsNames = {};
+
+    Object.keys(workCollection).forEach(function (item) {
+        if (!collection.hasOwnProperty(item)) {
+            deletedContactsNames[item] = true;
+        }
+    });
+    var newWorkCollection = {};
+
+    Object.keys(workCollection).forEach(function (item) {
+        if (deletedContactsNames.hasOwnProperty(item)) {
+            return;
+        }
+        var clearedFriends = [];
+
+        workCollection[item].friends.forEach(function (friend) {
+            if (!deletedContactsNames.hasOwnProperty(friend)) {
+                clearedFriends.push(friend);
+            }
+        });
+        newWorkCollection[item] = {
+            name: workCollection[item].name,
+            gender: workCollection[item].gender,
+            phone: workCollection[item].phone,
+            friends: clearedFriends
+        };
+    });
+    return newWorkCollection;
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    var index = 0;
-    var allFriends = GetAllAvailableFriends(collection, startPoint);
-
     depth = depth || Number.MAX_VALUE;
+    var workCollection = Object.assign({}, collection);
+    var index = 0;
+    var allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+
     return {
         next: function () {
+            if (collectionHasChanged(workCollection, collection)) {
+                var currentFriendName = allFriends[index].name;
+                workCollection = clearConnections(workCollection, collection);
+                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+                index = GetFriendIndex(allFriends, currentFriendName);
+                index = index === -1 ? 0 : index;
+            }
             if (arguments[0] === undefined) {
                 index++;
-                if (index >= allFriends.length || allFriends[index].distance > depth) {
+                if (index >= allFriends.length) {
                     index--;
                     return null;
                 }
-                return collection[allFriends[index].name];
-            } else {
-                if (!arguments[0] in collection) {
-                    return null;
-                }
-                index = GetFriendIndex(allFriends, arguments[0]);
-                if (typeof index === 'undefined') {
-                    return null;
-                }
-                return collection[allFriends[index].name];
+                return workCollection[allFriends[index].name];
             }
-        },
-        prev: function () {
-            index--;
-            if (index <= 0 || allFriends[index].distance <= 0) {
-                index++;
+            index = GetFriendIndex(allFriends, arguments[0]);
+            if (index === -1) {
                 return null;
             }
-            return collection[allFriends[index].name];
+            return workCollection[allFriends[index].name];
         },
-        nextMale: function () {
-            index++;
-            for (var i = index; i < allFriends.length; i++) {
-                if (allFriends[i].distance > depth) {
-                    index--;
-                    return null;
-                }
-                if (collection[allFriends[i].name].gender === 'Мужской') {
-                    index = i;
-                    return collection[allFriends[index].name];
-                }
+        prev: function () {
+            if (collectionHasChanged(workCollection, collection)) {
+                var currentFriendName = allFriends[index].name;
+                workCollection = clearConnections(workCollection, collection);
+                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+                index = GetFriendIndex(allFriends, currentFriendName);
+                index = index === -1 ? 0 : index;
             }
-            return null;
-        },
-        prevMale: function () {
             index--;
             if (index <= 0) {
                 index++;
                 return null;
             }
-            for (var i = index; i > 0; i--) {
-                if (collection[allFriends[i].name].gender === 'Мужской') {
+            return workCollection[allFriends[index].name];
+        },
+        nextMale: function () {
+            if (collectionHasChanged(workCollection, collection)) {
+                var currentFriendName = allFriends[index].name;
+                workCollection = clearConnections(workCollection, collection);
+                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+                index = GetFriendIndex(allFriends, currentFriendName);
+                index = index === -1 ? 0 : index;
+            }
+            for (var i = index + 1; i < allFriends.length; i++) {
+                if (workCollection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
-                    return collection[allFriends[index].name];
+                    return workCollection[allFriends[index].name];
+                }
+            }
+            return null;
+        },
+        prevMale: function () {
+            if (collectionHasChanged(workCollection, collection)) {
+                var currentFriendName = allFriends[index].name;
+                workCollection = clearConnections(workCollection, collection);
+                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+                index = GetFriendIndex(allFriends, currentFriendName);
+                index = index === -1 ? 0 : index;
+            }
+            for (var i = index - 1; i > 0; i--) {
+                if (workCollection[allFriends[i].name].gender === 'Мужской') {
+                    index = i;
+                    return workCollection[allFriends[index].name];
                 }
             }
             return null;
