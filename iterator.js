@@ -88,7 +88,7 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         next: function () {
             this.handleDeletion();
-            if (arguments[0] === undefined) {
+            if (typeof arguments[0] !== 'string') {
                 index++;
                 if (index >= allFriends.length) {
                     index--;
