@@ -11,7 +11,7 @@ function addToFriendsList(collection, friendsList, startPoint) {
     var friendsToAdd = [];
     for (var i in friendsList) {
         var candidates = collection[friendsList[i]]['friends'].sort();
-        for (var j in friendsList) {
+        for (var j in candidates) {
             if (friendsList.indexOf(candidates[j]) === -1 && candidates[j] !== startPoint) {
                 friendsToAdd.push(candidates[j]);
             }
@@ -19,9 +19,8 @@ function addToFriendsList(collection, friendsList, startPoint) {
     }
     if (friendsToAdd.length !== 0) {
         return friendsToAdd;
-    } else {
-        return null;
     }
+    return null;
 }
 
 module.exports.get = function (collection, startPoint, depth) {
@@ -29,13 +28,25 @@ module.exports.get = function (collection, startPoint, depth) {
         friendsList: collection[startPoint]['friends'].sort(),
         iterationIndex: -1,
         numOfAdditions: 0,
-        next: function() {
+        depth: depth || Infinity,
+        next: function(friend) {
+            if (Object.keys(collection).indexOf(startPoint) === -1) {
+                return null;
+            }
             this.iterationIndex += 1;
-            if (this.iterationIndex === this.friendsList.length) {
+            if (typeof friend !== 'undefined') {
+                for (var i = this.iterationIndex; i < this.friendsList.length; i++) {
+                    if (this.friendsList[i] === friend) {
+                        return newJSON(collection, this.friendsList[i]);
+                    }
+                    this.iterationIndex += 1;
+                }
+            }
+            if (this.iterationIndex >= this.friendsList.length) {
                 return null;
             }
             var addedList = addToFriendsList(collection, this.friendsList, startPoint);
-            if (addedList) {
+            if (addedList && this.numOfAdditions < this.depth - 1) {
                 this.friendsList = this.friendsList.concat(addedList);
                 this.numOfAdditions += 1;
             }
@@ -51,7 +62,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
             }
             var addedList = addToFriendsList(collection, this.friendsList, startPoint);
-            if (addedList) {
+            if (addedList && this.numOfAdditions < this.depth) {
                 this.friendsList = this.friendsList.concat(addedList);
                 this.numOfAdditions += 1;
             }
@@ -62,15 +73,27 @@ module.exports.get = function (collection, startPoint, depth) {
 
             return newJSON(collection, this.friendsList[this.iterationIndex]);
         },
-        prev: function() {
+        prev: function(friend) {
+            if (Object.keys(collection).indexOf(startPoint) === -1) {
+                return null;
+            }
             this.iterationIndex -= 1;
+            if (typeof friend !== 'undefined') {
+                for (var i = this.iterationIndex; i >= 0; i--) {
+                    if (this.friendsList[i] === friend) {
+                        return newJSON(collection, this.friendsList[i]);
+                    }
+                    this.iterationIndex -= 1;
+                }
+            }
             if (this.iterationIndex < 0) {
                 return null;
             }
             return newJSON(collection, this.friendsList[this.iterationIndex]);
         },
         prevMale: function() {
-            while (this.iterationIndex > 0) {
+            this.iterationIndex -= 1;
+            while (this.iterationIndex >= 0) {
                 if (collection[this.friendsList[this.iterationIndex]]['gender'] !== 'Мужской') {
                     this.iterationIndex -= 1;
                 } else {
