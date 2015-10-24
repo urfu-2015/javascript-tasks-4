@@ -33,7 +33,7 @@ function Iterator(collection, startPoint, depth) {
                 return;
             }
 
-            curents = following;
+            curents = following.sort();
             following = [];
             curentDepth ++;
 
@@ -69,7 +69,7 @@ function Iterator(collection, startPoint, depth) {
                 return null;
             }
             curent = indexElement;
-            return collection[listNames[indexElement]];
+            return collectEntry(listNames[indexElement]);
         }
 
         curent ++;
@@ -78,7 +78,7 @@ function Iterator(collection, startPoint, depth) {
             return null;
         }
 
-        return collection[listNames[curent]];
+        return collectEntry(listNames[curent]);
     };
 
     this.prev = function () {
@@ -93,7 +93,7 @@ function Iterator(collection, startPoint, depth) {
             return null;
         }
 
-        return collection[listNames[curent]];
+        return collectEntry(listNames[curent]);
     };
 
     this.nextMale = function () {
@@ -105,7 +105,7 @@ function Iterator(collection, startPoint, depth) {
         for (var i = curent + 1; i < listNames.length; i++) {
             if (collection[listNames[i]]['gender'] === 'Мужской') {
                 curent = i;
-                return collection[listNames[i]];
+                return collectEntry(listNames[i]);
             }
         };
         curent = listNames.length;
@@ -121,7 +121,7 @@ function Iterator(collection, startPoint, depth) {
         for (var i = curent - 1; i > -1; i--) {
             if (collection[listNames[i]]['gender'] === 'Мужской') {
                 curent = i;
-                return collection[listNames[i]];
+                return collectEntry(listNames[i]);
             }
         };
 
@@ -140,5 +140,8 @@ function Iterator(collection, startPoint, depth) {
             return;
         }
         listNames = createListNames(startPoint);
+    }
+    function collectEntry(name) {
+        return collection[name];
     }
 };
