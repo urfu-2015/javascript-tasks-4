@@ -46,7 +46,7 @@ dudes.next('Пётр'); // { name: 'Пётр', phone: '+70000000000' }
 // Так и есть, переносим всё на 8 часов. Идём обратно, чтобы всех предупредить
 // .prevMale() возращает JSON с именем и телефоном, но только предыдущего парня
 dudes.prevMale(); // { name: 'Олег Олегыч', phone: '+70000000000' }
-dudes.prevMale(); // { name: 'Дарья (Пиратка)', phone: '+70000000000' }
+dudes.prevMale(); // { name: 'Веня', phone: '+70000000000' }
 
 // Вообще предупредим всех до самого начала
 while (dudes.prevMale()) {}
@@ -55,4 +55,4 @@ while (dudes.prevMale()) {}
 dudes.next('Пётр');
 
 // И продолжаем набор на мальчишник и свадьбу
-while (dudes.nextMale() || friends.next()) {}
+while (dudes.prevMale() || friends.next()) {}
