@@ -81,7 +81,6 @@ module.exports.get = function (collection, startPoint, depth) {
                     return prevMaleFriend;
                 }
             }
-            return null;
         },
         hasPrevMale: function () {
             for (var i = index - 1; i >= 0; --i) {
