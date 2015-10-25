@@ -31,11 +31,11 @@ function createRelations(collection, startPoint, depth) {
     var people = [[startPoint]];// Массив с уровнями друзей
     var currentDepth = 0;
     var friends = [];
-    
+
     while (currentDepth < depth) {
         currentDepth++;
         people[currentDepth] = [];
-        
+
         // Создаём следующий уровень друзей
         for (var i = 0, l = people[currentDepth - 1].length; i < l; i++) {// По уровню людей
             friends = [];
@@ -81,12 +81,12 @@ module.exports.get = function (collection, startPoint, depth) {
     var nextFunction = function next(name) {
         var friends = [];
         var friend = {};
-        
+
         people = createRelations(collection, startPoint, currentDepth);
         if (people[currentDepth].length <= currentFriend) {
             currentFriend = people[currentDepth].length - 1;
         }
-        
+
         currentFriend++;
         if (currentFriend >= people[currentDepth].length) {// Если больше нет друзей текущей глубины
             if (currentDepth + 1 > depth) {// Если больше нельзя идти вглубь
@@ -95,7 +95,7 @@ module.exports.get = function (collection, startPoint, depth) {
             } else {// Идём вглубь
                 currentFriend = 0;
                 currentDepth++;
-                
+
                 people = createRelations(collection, startPoint, currentDepth);
                 if (people[currentDepth].length <= currentFriend) {
                     currentFriend = people[currentDepth].length - 1;
@@ -125,12 +125,12 @@ module.exports.get = function (collection, startPoint, depth) {
 
     var prevFunction = function prev(name) {
         var friend = {};
-        
+
         people = createRelations(collection, startPoint, currentDepth);
         if (people[currentDepth].length <= currentFriend) {
             currentFriend = people[currentDepth].length - 1;
         }
-        
+
         currentFriend--;
         if (currentFriend < 0) {// Если больше нет друзей текущей глубины
             if (currentDepth - 1 == 0) {// Если больше нельзя всплывать
