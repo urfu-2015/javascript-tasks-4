@@ -17,18 +17,18 @@ var dudes = iterator.get(faceBook, 'Сергей');
 
 // Звоним одному
 // .next() возращает JSON с именем и телефоном следующего ближайшего друга
-friends.next(); // { name: 'Васян', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Васян', phone: '+70000000000' }
 
 // Второму
-friends.next(); // { name: 'Полина', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Полина', phone: '+70000000000' }
 
 // Параллельно собираем друзей и приглашаем к 7 часам в Grizzly Bar
 // .nextMale() возращает JSON с именем и телефоном, но только ближайшего парня
-dudes.nextMale(); // { name: 'Васян', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Васян', phone: '+70000000000' }
 
-friends.next(); // { name: 'Леонид', phone: '+70000000000' }
-dudes.nextMale(); // { name: 'Леонид', phone: '+70000000000' }
-dudes.nextMale(); // { name: 'Веня', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Леонид', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Леонид', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Веня', phone: '+70000000000' }
 
 // Есть чувак, который всё время опаздывает, позвоним ему сразу
 dudes.next('Пётр'); // { name: 'Пётр', phone: '+70000000000' }
