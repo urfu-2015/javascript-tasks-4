@@ -18,7 +18,7 @@ function addToFriendsList(collection, friendsList, startPoint) {
         }
     }
     if (!friendsToAdd.length) {
-        return friendsList;
+        return friendsToAdd;
     }
     return null;
 }
