@@ -6,7 +6,7 @@ module.exports.get = function (collection, startPoint, depth) {
     var contact = collection[contactName];
     var friendList = contact.friends.sort();
     var queue = [].concat(friendList);
-    var qc = -1;
+    var qc = -1; // queue counter
     var handShakes = 1;
     return {
         next: function (name) {
