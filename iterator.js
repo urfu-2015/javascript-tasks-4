@@ -11,6 +11,7 @@ module.exports.get = function (collection, startPoint, depth) {
     var data = getFriends(collection, startPoint, depth);
     var currentContact = 0;
     var lastContact = data.length;
+
     return {
         next: function(name) {
             if (collection[startPoint] === undefined || currentContact >= lastContact - 1) {
