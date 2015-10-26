@@ -1,5 +1,16 @@
 'use strict';
 
+/** Основной метод, который инициализирует итератор, по сути он
+    просчитывает круг друзей с нужной глубиной (если она указана),
+    и предоставляет интерфейс для итерирования
+ * @param {dict} collection
+ * @param {string} startPoint
+ * @param {Integer} depth
+ * @return {function} next
+ * @return {function} prev
+ * @return {function} getNextMale
+ * @return {function} getPrevMale
+*/
 module.exports.get = function (collection, startPoint, depth) {
     var result = [null];
     var badVar;
@@ -10,6 +21,7 @@ module.exports.get = function (collection, startPoint, depth) {
     if (!(startPoint in collection)) {
         badVar = false;
     } else {
+        // BFS
         var queue = [];
         var used = [];
         var d = {};
@@ -33,8 +45,16 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
             }
         }
+        // end BFS
     }
 
+    /** Один из интерфейсов, который предоставляет итератор:
+        просто сдвигает индекс, чтобы получить следующего друга (Если это возможно).
+        (Воможен вариант с получением индекса конкретного имени)
+     * @param {string} name
+     * @return {object} null
+     * @return {dict} result[currentFriendIndex]
+    */
     function getNext(name) {
         if (!badVar) {
             currentFriendIndex++;
@@ -54,6 +74,11 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     };
 
+    /** Один из интерфейсов, который предоставляет итератор:
+        просто сдвигает индекс, чтобы получить предыдущего друга (Если это возможно).
+     * @return {object} null
+     * @return {dict} result[currentFriendIndex]
+    */
     function getPrev() {
         currentFriendIndex--;
         if (currentFriendIndex <= 0) {
@@ -64,6 +89,11 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     };
 
+    /** Вспомогательная функция, которая по имени строит выходной результат,
+        отсекая 'gender' и 'friends'
+     * @param {string} name
+     * @return {dict} temp_result
+    */
     function getOutput(name) {
         var temp_result = {};
         temp_result['name'] = name;
@@ -71,6 +101,12 @@ module.exports.get = function (collection, startPoint, depth) {
         return temp_result;
     };
 
+    /** Один из интерфейсов, который предоставляет итератор:
+        просто сдвигает индекс, чтобы получить следующего друга мужского пола
+        (Если это возможно).
+     * @return {object} null
+     * @return {dict} result[currentFriendIndex]
+    */
     function getNextMale() {
         currentFriendIndex++;
         if (currentFriendIndex < result.length) {
@@ -84,6 +120,12 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     };
 
+    /** Один из интерфейсов, который предоставляет итератор:
+        просто сдвигает индекс, чтобы получить предыдущего друга мужского пола
+        (Если это возможно).
+     * @return {object} null
+     * @return {dict} result[currentFriendIndex]
+    */
     function getPrevMale() {
         currentFriendIndex--;
         if (currentFriendIndex <= 0) {
