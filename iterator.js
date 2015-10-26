@@ -51,7 +51,10 @@ Iterator.prototype._makeFriendList =
 };
 
 Iterator.prototype._updateFriendList = function _updateFriendList() {
-    var currentName = this._friendList[this._currentIndex];
+    var currentName = null;
+    if (this._friendList !== null) {
+        currentName = this._friendList[this._currentIndex];
+    }
     this._friendList =
         this._makeFriendList(this._collection, this._startPoint, this._depth);
     if (this._friendList === null) {
@@ -81,6 +84,9 @@ Iterator.prototype._get = function _get(order) {
 
 Iterator.prototype.prev = function prev(name) {
     this._updateFriendList();
+    if (this._friendList === null) {
+        return null;
+    }
     /* Если определено имя, то ищем его */
     if (name !== undefined) {
         var resultInfo;
@@ -95,6 +101,9 @@ Iterator.prototype.prev = function prev(name) {
 
 Iterator.prototype.next = function next(name) {
     this._updateFriendList();
+    if (this._friendList === null) {
+        return null;
+    }
     /* Если определено имя, то ищем его */
     if (name !== undefined) {
         var resultInfo;
