@@ -17,7 +17,7 @@ describe('Базовое тестирование итератора', function 
     it('Метод next() должен возвращать следующего друга', function () {
         var friends = iterator.get(faceBook, 'Сергей', 3);
 
-        friends.next().should.have.keys({ name: 'Васян', phone: '+70000000000' });
+        JSON.parse(friends.next()).should.have.keys({ name: 'Васян', phone: '+70000000000' });
     });
 
     it('Метод prev() должен возвращать предыдущего друга', function () {
@@ -26,7 +26,7 @@ describe('Базовое тестирование итератора', function 
         friends.next();
         friends.next();
 
-        friends.prev().should.have.keys({ name: 'Васян', phone: '+70000000000' });
+        JSON.parse(friends.prev()).should.have.keys({ name: 'Васян', phone: '+70000000000' });
     });
 
     it('Метод prev() должен возвращать null, если нет предыдущего друга', function () {

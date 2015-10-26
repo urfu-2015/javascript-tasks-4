@@ -6,7 +6,11 @@ module.exports.get = function (collection, startPoint, depth) {
 
 function Iterator(collection, startPoint, depth) {
     this.collection = collection;
-    this.callList = BFS(collection, depth, [startPoint], [startPoint], 0);
+    if (!collection[startPoint]) {
+        this.callList = [];
+    } else {
+        this.callList = BFS(collection, depth, [startPoint], [startPoint], 0);
+    }
     this.callList.splice(0, 1);
     this.iterIndex = -1;
     this.current = null;
@@ -14,7 +18,7 @@ function Iterator(collection, startPoint, depth) {
 
 Iterator.prototype.next = function (name) {
     if (name) {
-        this.insertNow(name);
+        this.iterIndex = this.callList.indexOf(name) - 1;
     }
     if (this.iterIndex === this.callList.length - 1) {
         this.iterIndex++;
@@ -41,7 +45,7 @@ Iterator.prototype.prev = function () {
 
 Iterator.prototype.nextMale = function (name) {
     if (name) {
-        this.insertNow(name);
+        this.iterIndex = this.callList.indexOf(name) - 1;
     }
     do {
         this.next();
@@ -56,19 +60,10 @@ Iterator.prototype.prevMale = function () {
     return this.JSONCurrent();
 };
 
-Iterator.prototype.insertNow = function (name) {
-    this.iterIndex = this.callList.indexOf(name) - 1;
-    // var nameIndex = this.callList.indexOf(name);
-    // if (nameIndex === -1) return;
-    // if (nameIndex < this.iterIndex) {
-    //     this.iterIndex--;
-    // }
-    // this.callList.splice(nameIndex, 1);
-    // this.callList.splice(this.iterIndex + 1, 0, name);
-};
-
 Iterator.prototype.JSONCurrent = function () {
-    if (!this.current) return this.current;
+    if (!this.current) {
+        return this.current;
+    }
     return JSON.stringify({
         name: this.current,
         phone: this.collection[this.current].phone
@@ -76,7 +71,9 @@ Iterator.prototype.JSONCurrent = function () {
 };
 
 function BFS(collection, depth, result, queue, i) {
-    if (i === depth) return result;
+    if (i === depth) {
+        return result;
+    }
     var friends = collection[queue.shift()].friends
         .filter(friend => result.indexOf(friend) === -1)
         .sort();
