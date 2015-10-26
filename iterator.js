@@ -57,13 +57,14 @@ Iterator.prototype.prevMale = function () {
 };
 
 Iterator.prototype.insertNow = function (name) {
-    var nameIndex = this.callList.indexOf(name);
-    if (nameIndex === -1) return;
-    if (nameIndex < this.iterIndex) {
-        this.iterIndex--;
-    }
-    this.callList.splice(nameIndex, 1);
-    this.callList.splice(this.iterIndex + 1, 0, name);
+    this.iterIndex = this.callList.indexOf(name) - 1;
+    // var nameIndex = this.callList.indexOf(name);
+    // if (nameIndex === -1) return;
+    // if (nameIndex < this.iterIndex) {
+    //     this.iterIndex--;
+    // }
+    // this.callList.splice(nameIndex, 1);
+    // this.callList.splice(this.iterIndex + 1, 0, name);
 };
 
 Iterator.prototype.JSONCurrent = function () {
