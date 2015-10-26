@@ -60,7 +60,7 @@ module.exports.get = function (collection, startPoint, depth) {
             if (index === length) {
                 return null;
             }
-            while(true) {
+            while (true) {
                 var nMaleFriend = friends[index];
                 if (nMaleFriend.gende === 'Мужской') {
                     index++;
@@ -96,22 +96,23 @@ function lookForFriends(collection, startPoint, depth) {
     if (collection[startPoint] === undefined || depth === 0) {
         return friends;
     }
-    var queue = [[startPoint, 0]],
+    var queue = [],
         friendDepth = [],
         friendFriends = [];
+    queue.push(startPoint);
     friendDepth[startPoint] = 0;
     friendFriends[startPoint] = true;
     while (queue.length > 0 && friendDepth < depth) {
         var nowFriend = queue.shift();
         var friendsOfNowFriend = collection[nowFriend].friends.sort();
-        friendsOfNowFriend.forEach(function(friend) {
+        friendsOfNowFriend.forEach (function (friend) {
             if (friendFriends[friend] !== true) {
                 queue.push(friend);
                 friendFriends[friend] = true;
                 friendDepth[friend] = friendDepth[nowFriend] + 1;
                 friends.push(friend);
             }
-        })
-    }    
+        });
+    }
     return friends;
 };
