@@ -4,7 +4,7 @@ module.exports.get = function (collection, startPoint, depth) {
     if (depth === undefined) {
         depth = collection.length;
     }
-    var friends = getFriends (collection, startPoint, depth);
+    var friends = getFriends(collection, startPoint, depth);
     var numberFriends = friends.length;
     var currentNumber = 0;
     return {
@@ -38,7 +38,7 @@ module.exports.get = function (collection, startPoint, depth) {
     };
 };
 
-function getFriends (collection, startPoint, depth) {
+function getFriends(collection, startPoint, depth) {
     var friends = [];
     if (Object.keys(collection).indexOf(startPoint) === -1) {
         return friends;
