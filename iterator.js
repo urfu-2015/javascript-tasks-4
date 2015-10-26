@@ -3,87 +3,63 @@
 module.exports.get = function (collection, startPoint, depth) {
     var friendsOrder = __createFriendsOrder(collection, startPoint, depth);
     var currentIndex = -1;
-    var getNext = function () {
-        currentIndex++;
-        if (currentIndex >= friendsOrder.length) {
-            currentIndex--;
+    var iterateAndGetElement = function (positions) {
+        if (currentIndex + positions >= 0 && currentIndex + positions < friendsOrder.length) {
+            currentIndex += positions;
+            var currentName = friendsOrder[currentIndex];
+            return {
+                name: currentName,
+                phone: collection[currentName].phone,
+                gender: collection[currentName].gender
+            };
+        } else {
             return null;
         }
-        var currentName = friendsOrder[currentIndex];
+    };
+    var iterateWithPredicate = function (positions, predicate) {
+        var friend = iterateAndGetElement(positions);
+        while (friend !== null && !predicate(friend)) {
+            friend = iterateAndGetElement(positions);
+        }
+        return friend;
+    };
+    var getFormattedFriend = function (friend) {
+        if (friend === null) {
+            return friend;
+        }
         return {
-            name: currentName,
-            phone: collection[currentName].phone,
-            gender: collection[currentName].gender
+            name: friend.name,
+            phone: friend.phone
         };
     };
-    var getPrev = function () {
-        currentIndex--;
-        if (currentIndex <= -1) {
-            currentIndex++;
-            return null;
-        }
-        var currentName = friendsOrder[currentIndex];
-        return {
-            name: currentName,
-            phone: collection[currentName].phone,
-            gender: collection[currentName].gender
-        };
+    var iterateMale = function (positions) {
+        var answerFriend = iterateWithPredicate(positions, function (friend) {
+            return friend.gender === 'Мужской';
+        });
+        return answerFriend;
     };
-    var getNextWithName = function (name) {
-        var answerFriend = getNext();
-        if (name !== undefined) {
-            while (answerFriend !== null && answerFriend.name != name) {
-                answerFriend = getNext();
-            }
+    var iterateWithName = function (name, positions) {
+        var answerFriend;
+        if (name === undefined) {
+            answerFriend = iterateAndGetElement(positions);
+        } else {
+            answerFriend = iterateWithPredicate(positions, function (friend) {
+                return friend.name === name;
+            });
         }
-        if (answerFriend === null) {
-            return answerFriend;
-        }
-        return {
-            name: answerFriend.name,
-            phone: answerFriend.phone
-        };
+        return answerFriend;
     };
     var getNextMale = function () {
-        var currentFriend = getNext();
-        while (currentFriend !== null && currentFriend.gender != 'Мужской') {
-            currentFriend = getNext();
-        }
-        if (answerFriend === null) {
-            return answerFriend;
-        }
-        return {
-            name: currentFriend.name,
-            phone: currentFriend.phone
-        };
+        return getFormattedFriend(iterateMale(1));
     };
     var getPrevMale = function () {
-        var currentFriend = getPrev();
-        while (currentFriend !== null && currentFriend.gender != 'Мужской') {
-            currentFriend = getPrev();
-        }
-        if (answerFriend === null) {
-            return answerFriend;
-        }
-        return {
-            name: currentFriend.name,
-            phone: currentFriend.phone
-        };
+        return getFormattedFriend(iterateMale(-1));
+    };
+    var getNextWithName = function (name) {
+        return getFormattedFriend(iterateWithName(name, 1));
     };
     var getPrevWithName = function (name) {
-        var answerFriend = getPrev();
-        if (name !== undefined) {
-            while (answerFriend !== null && answerFriend.name != name) {
-                answerFriend = getPrev();
-            }
-        }
-        if (answerFriend === null) {
-            return answerFriend;
-        }
-        return {
-            name: answerFriend.name,
-            phone: answerFriend.phone
-        };
+        return getFormattedFriend(iterateWithName(name, -1));
     };
     return {
         next: getNextWithName,
@@ -98,7 +74,7 @@ function __createFriendsOrder(collection, startPoint, depth) {
         return [];
     }
     var friendsOrder = [];
-    depth = depth || collection.length;
+    depth = depth || Object.keys(collection).length;
     var nowDepth = 0;
     var thisDepthQueue = [];
     var nextDepthQueue = [];
