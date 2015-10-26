@@ -59,7 +59,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return {
                     name: resultContacts[this.index],
                     phone: curContact.phone
-                }
+                };
             } else {
                 if (resultContacts.indexOf(name) < 0) {
                     return null;
@@ -124,5 +124,5 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             return null;
         }
-    }
+    };
 };
