@@ -96,7 +96,7 @@ function getFriends(collection, startPoint, depth) {
                 used[to] = true;
                 people.push({
                     name: to,
-                    phone: collection[to].phone,
+                    phone: collection[to].phone
                 });
                 queue.push(to);
             }
