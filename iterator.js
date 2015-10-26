@@ -10,7 +10,7 @@ module.exports.get = function (collection, startPoint, depth) {
     return new Iterator(collection, startPoint, depth);
 };
 
-function Iterator (collection, startPoint, depth) {
+function Iterator(collection, startPoint, depth) {
     this._collection = collection;
     this._startPoint = startPoint;
     this._depth = depth;
@@ -18,8 +18,8 @@ function Iterator (collection, startPoint, depth) {
     this._friendList = this._makeFriendList(collection, startPoint, depth);
 }
 
-Iterator.prototype._makeFriendList
-    = function _makeFriendList(collection, startPoint, depth) {
+Iterator.prototype._makeFriendList =
+    function _makeFriendList(collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
         return null;
     }
@@ -32,10 +32,10 @@ Iterator.prototype._makeFriendList
     while (queue.length > 0) {
         var tempResult = [];
         var current = queue.pop();
-        for (var i=0; i<collection[current.name].friends.length; ++i) {
-            if (collection[collection[current.name].friends[i]] !== undefined
-                && current.depth < depth
-                && resultList.indexOf(collection[current.name].friends[i]) < 0) {
+        for (var i = 0; i < collection[current.name].friends.length; ++i) {
+            if (collection[collection[current.name].friends[i]] !== undefined &&
+                current.depth < depth &&
+                resultList.indexOf(collection[current.name].friends[i]) < 0) {
                 queue.unshift({
                     name: collection[current.name].friends[i],
                     depth: current.depth + 1
@@ -52,8 +52,8 @@ Iterator.prototype._makeFriendList
 
 Iterator.prototype._updateFriendList = function _updateFriendList() {
     var currentName = this._friendList[this._currentIndex];
-    this._friendList
-        = this._makeFriendList(this._collection, this._startPoint, this._depth);
+    this._friendList =
+        this._makeFriendList(this._collection, this._startPoint, this._depth);
     if (this._friendList === null) {
         console.error('Ошибка! Удалили стартового друга!');
         return;
@@ -66,8 +66,8 @@ Iterator.prototype._updateFriendList = function _updateFriendList() {
 
 Iterator.prototype._get = function _get(order) {
     order = order === 'next' ? 1 : -1;
-    if (this._currentIndex+order < 0 ||
-        this._currentIndex+order >= this._friendList.length) {
+    if (this._currentIndex + order < 0 ||
+        this._currentIndex + order >= this._friendList.length) {
         return null;
     }
     this._currentIndex += order;
@@ -112,8 +112,8 @@ Iterator.prototype.prevMale = function prevMale(name) {
     do {
         resultInfo = this.prev(name);
     }
-    while (resultInfo != null
-            && this._collection[resultInfo.name].gender != 'Мужской');
+    while (resultInfo != null &&
+            this._collection[resultInfo.name].gender != 'Мужской');
     return resultInfo;
 };
 
@@ -122,7 +122,7 @@ Iterator.prototype.nextMale = function nextMale(name) {
     do {
         resultInfo = this.next(name);
     }
-    while (resultInfo != null
-            && this._collection[resultInfo.name].gender != 'Мужской');
+    while (resultInfo != null &&
+            this._collection[resultInfo.name].gender != 'Мужской');
     return resultInfo;
 };
