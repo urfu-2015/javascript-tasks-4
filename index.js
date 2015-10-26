@@ -10,28 +10,28 @@ var iterator = require('./iterator');
 //  faceBook – книга
 //  Cергей - ищем с себя, то есть начиная со своих друзей
 //  3 – максимальное кол-во рукопожатий до человека
-var friends = iterator.get(faceBook, 'Cергей', 3);
+var friends = iterator.get(faceBook, 'Сергей', 3);
 
 // И отдельно парней на мальчишник
-var dudes = iterator.get(faceBook, 'Cергей');
+var dudes = iterator.get(faceBook, 'Сергей');
 
 // Звоним одному
 // .next() возращает JSON с именем и телефоном следующего ближайшего друга
-friends.next(); // { name: 'Васян', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Васян', phone: '+70000000000' }
 
 // Второму
-friends.next(); // { name: 'Полина', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Полина', phone: '+70000000000' }
 
 // Параллельно собираем друзей и приглашаем к 7 часам в Grizzly Bar
 // .nextMale() возращает JSON с именем и телефоном, но только ближайшего парня
-dudes.nextMale(); // { name: 'Васян', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Васян', phone: '+70000000000' }
 
-friends.next(); // { name: 'Леонид', phone: '+70000000000' }
-dudes.nextMale(); // { name: 'Леонид', phone: '+70000000000' }
-dudes.nextMale(); // { name: 'Веня', phone: '+70000000000' }
+console.log(friends.next()); // { name: 'Леонид', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Леонид', phone: '+70000000000' }
+console.log(dudes.nextMale()); // { name: 'Веня', phone: '+70000000000' }
 
 // Есть чувак, который всё время опаздывает, позвоним ему сразу
-dudes.nextMale('Пётр'); // { name: 'Пётр', phone: '+70000000000' }
+console.log(dudes.nextMale('Пётр')); // { name: 'Пётр', phone: '+70000000000' }
 
 /**
  * Задача со звёдочкой:
@@ -43,12 +43,23 @@ dudes.nextMale('Пётр'); // { name: 'Пётр', phone: '+70000000000' }
  */
 //delete faceBook['Полина']; // Удаляем Полину из книги, так как она переехала в Венецию
 
+console.log();
 // Так и есть, переносим всё на 8 часов. Идём обратно, чтобы всех предупредить
 // .prevMale() возращает JSON с именем и телефоном, но только предыдущего парня
-while (dudes.prevMale()) {}
+while (dudes.prevMale()) {
+    console.log(dudes.JSONCurrent());
+}
 
+console.log();
 // Возвращаемся к Петру
-dudes.next('Пётр');
+
+console.log(dudes.next('Пётр'));
 
 // И продолжаем набор на мальчишник и свадьбу
-while (dudes.next() || friends.next()) {}
+while (dudes.next()) {
+    console.log(dudes.JSONCurrent());
+}
+
+while (friends.next()) {
+    console.log(friends.JSONCurrent());
+}
