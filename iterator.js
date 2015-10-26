@@ -137,8 +137,7 @@ function getInvitedFriends(collection, startPoint, depth) {
                 friends.forEach(function (friend) {
                     var newContact = {
                         name: friend,
-                        contactInfo: collection[friend],
-                        addedFrom: currentFriend
+                        contactInfo: collection[friend]
                     };
                     foundFriends.push(newContact);
                 });
