@@ -7,7 +7,7 @@ module.exports.get = function (collection, startPoint, depth) {
 
         next: function (name) {
             if (name == undefined) {
-                if (this.indexPointer < this.friends.length) {
+                if (this.indexPointer < this.friends.length - 1) {
                     this.indexPointer += 1;
                     return {name: this.friends[this.indexPointer],
                         phone: collection[this.friends[this.indexPointer]].phone};
@@ -23,7 +23,8 @@ module.exports.get = function (collection, startPoint, depth) {
             if (name == undefined) {
                 if (this.indexPointer > 0) {
                     this.indexPointer -= 1;
-                    return collection[this.friends[this.indexPointer]];
+                    return {name: this.friends[this.indexPointer],
+                        phone: collection[this.friends[this.indexPointer]].phone};
                 } else {
                     return null;
                 }
@@ -55,7 +56,6 @@ module.exports.get = function (collection, startPoint, depth) {
 
 function getFriend(collection, friends, name) {
     if (friends.indexOf(name) >= 0) {
-        console.log(name);
         return {name: name, phone: collection[name].phone};
     } else {
         return null;
@@ -64,7 +64,6 @@ function getFriend(collection, friends, name) {
 
 function createFriendList(collection, startPoint, depth) {
     depth = depth || Object.keys(collection).length;
-    var friendList = [startPoint];
     function getFriends(friends, currentDepth) {
         var newFriends = [];
         friends.forEach(function (friend) {
@@ -77,7 +76,12 @@ function createFriendList(collection, startPoint, depth) {
             getFriends(newFriends, currentDepth + 1);
         }
     }
-    getFriends([startPoint], 0);
-    return friendList;
+    if (startPoint in collection) {
+        var friendList = [startPoint];
+        getFriends([startPoint], 0);
+        return friendList;
+    } else {
+        return [];
+    }
 }
 
