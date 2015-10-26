@@ -6,27 +6,33 @@ function doesUserExists(collection, userName) {
     } else {
         return false;
     }
+    //Хотел так сократить, но валидатор ругается
     //return !!collection[userName];
 }
 
+/**
+ * Получаем всех друзей первого круга для данного человека
+ * При этом учитываем, кого уже посмотрели с помощью usedFriends
+ * @param collection
+ * @param startPoint
+ * @param usedFriends
+ * @returns {Array}
+ */
 function getFriends(collection, startPoint, usedFriends) {
-    var friendsQueue = [];
     var startPointFriends = collection[startPoint]['friends'];
     startPointFriends = startPointFriends.sort();
     var startPointNewFriends = [];
-    //console.log(startPointFriends);
     var startPointFriendsLen = startPointFriends.length;
     for (var f = 0; f < startPointFriendsLen; ++f) {
         if (!doesUserExists(usedFriends, startPointFriends[f])) {
             startPointNewFriends.push(startPointFriends[f]);
         }
     }
-    //console.log(startPointNewFriends);
     return startPointNewFriends;
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    depth = depth || collection.length;
+    depth = depth || Object.keys(collection).length;
     var currDepth = 0;
     var currIndex = 0;
     var currFriends = [startPoint];
@@ -35,30 +41,41 @@ module.exports.get = function (collection, startPoint, depth) {
     usedFriends[startPoint] = collection[startPoint];
     return {
         next: function (name) {
+            // Пока не понимаю как использовать имя
+            // Писал в личку
             if (!doesUserExists(collection, startPoint)) {
                 return null;
             }
+            // Выдаем друзей до нужной глубины
             if (currDepth < depth) {
+                //TODO заканчивать раньше, чем закончится глубина
                 var tmpFriends = getFriends(collection, currFriends[currIndex], usedFriends);
+                //Если после 1-ого уровня друзей пусто, то дальше только null
                 if (!currDepth && !tmpFriends.length) {
                     return null;
                 }
+                //Формируем следующий уровень, пока просматриваем друзей текущего
                 newLevel = newLevel.concat(tmpFriends);
+                //Отмечаем тех, кого уже посмотрели
                 tmpFriends.forEach(function (item) {
                     usedFriends[item] = collection[item];
                 });
                 currIndex++;
+                //Если на данном уровне дошли до конца - спускаемся на след.
                 if (currIndex === currFriends.length) {
                     currFriends = currFriends.concat(newLevel);
                     newLevel = [];
                     currDepth++;
                 }
-                var toShow = {};
-                toShow['name'] = currFriends[currIndex];
-                toShow['phone'] = collection[currFriends[currIndex]]['phone'];
-                console.log(toShow);
-                //yield toShow; // А так хотелось
-                return toShow;
+                //Готовим вывод, проверив, что не дошли до конца
+                if (collection[currFriends[currIndex]]) {
+                    var toShow = {};
+                    toShow['name'] = currFriends[currIndex];
+                    toShow['phone'] = collection[currFriends[currIndex]]['phone'];
+                    //yield toShow; // А так хотелось
+                    return toShow;
+                }
+                return null;
             }
             return null;
         },
@@ -68,10 +85,23 @@ module.exports.get = function (collection, startPoint, depth) {
                 var toShow = {};
                 toShow['name'] = currFriends[currIndex];
                 toShow['phone'] = collection[currFriends[currIndex]]['phone'];
-                console.log(toShow);
                 return toShow;
             }
             return null;
+        },
+        nextMale: function () {
+            var nextMale = this.next();
+            while (nextMale !== null && collection[nextMale['name']]['gender'] !== 'Мужской') {
+                nextMale = this.next();
+            }
+            return nextMale;
+        },
+        prevMale: function () {
+            var prevMale = this.prev();
+            while (prevMale !== null && collection[prevMale['name']]['gender'] !== 'Мужской') {
+                prevMale = this.prev();
+            }
+            return prevMale;
         }
     };
 };
