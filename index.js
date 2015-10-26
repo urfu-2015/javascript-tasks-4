@@ -10,10 +10,9 @@ var iterator = require('./iterator');
 //  faceBook – книга
 //  Cергей - ищем с себя, то есть начиная со своих друзей
 //  3 – максимальное кол-во рукопожатий до человека
-var friends = iterator.get(faceBook, 'Cергей', 3);
-
+var friends = iterator.get(faceBook, 'Сергей', 3);
 // И отдельно парней на мальчишник
-var dudes = iterator.get(faceBook, 'Cергей');
+var dudes = iterator.get(faceBook, 'Сергей');
 
 // Звоним одному
 // .next() возращает JSON с именем и телефоном следующего ближайшего друга
@@ -21,7 +20,6 @@ friends.next(); // { name: 'Васян', phone: '+70000000000' }
 
 // Второму
 friends.next(); // { name: 'Полина', phone: '+70000000000' }
-
 // Параллельно собираем друзей и приглашаем к 7 часам в Grizzly Bar
 // .nextMale() возращает JSON с именем и телефоном, но только ближайшего парня
 dudes.nextMale(); // { name: 'Васян', phone: '+70000000000' }
@@ -45,14 +43,14 @@ dudes.next('Пётр'); // { name: 'Пётр', phone: '+70000000000' }
 
 // Так и есть, переносим всё на 8 часов. Идём обратно, чтобы всех предупредить
 // .prevMale() возращает JSON с именем и телефоном, но только предыдущего парня
-dudes.prevMale(); // { name: 'Олег Олегыч', phone: '+70000000000' }
-dudes.prevMale(); // { name: 'Дарья (Пиратка)', phone: '+70000000000' }
+//dudes.prevMale(); // { name: 'Олег Олегыч', phone: '+70000000000' }
+//dudes.prevMale(); // { name: 'Дарья (Пиратка)', phone: '+70000000000' }
 
 // Вообще предупредим всех до самого начала
-while (dudes.prevMale()) {}
+//while (dudes.prevMale()) {}
 
 // Возвращаемся к Петру
-dudes.next('Пётр');
+//dudes.next('Пётр');
 
 // И продолжаем набор на мальчишник и свадьбу
-while (dudes.nextMale() || friends.next()) {}
+//while (dudes.nextMale() || friends.next()) {}
