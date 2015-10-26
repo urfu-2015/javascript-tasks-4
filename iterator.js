@@ -4,18 +4,24 @@ module.exports.get = function (collection, startPoint, depth) {
     var contactName = startPoint;
     var visited = new Set([contactName]);
     var contact = collection[contactName];
-    var friendList = contact.friends.sort();
-    var queue = [].concat(friendList);
+    var queue;
+    if (contact) {
+       var friendList = contact.friends.sort();
+       var queue = [].concat(friendList);
+   }
     var qc = -1; // queue counter
-    var handShakes = 1;
+    var handShakes = 0;
     return {
         next: function (name) {
             if (name) {
                 qc = queue.indexOf(name) - 1;
             }
             qc++;
+            if (!contact || handShakes === depth) {
+                return null;
+            }
             contactName = queue[qc];
-            if (!contact || !contactName || handShakes > depth) {
+            if (!contactName) {
                 return null;
             }
             contact = collection[contactName];
@@ -41,23 +47,19 @@ module.exports.get = function (collection, startPoint, depth) {
                 qc = queue.indexOf(name) + 1;
             }
             qc--;
-            contactName = route[qc];
-            if (!contact || !contactName || handShakes > depth) {
+            if (!contact || handShakes === depth) {
+                return null;
+            }
+            contactName = queue[qc];
+            if (!contactName) {
                 return null;
             }
             contact = collection[contactName];
             var contactPhone = contact.phone;
-            var friendList = contact.friends.sort();
             var json = {
                 name: contactName,
                 phone: contactPhone
             };
-            queue = queue.concat(friendList.filter(function (entry) {
-                if (visited.has(entry)) {
-                    return false;
-                }
-                return true;
-            }));
             visited.add(contactName);
             handShakes++;
             return json;
@@ -66,8 +68,11 @@ module.exports.get = function (collection, startPoint, depth) {
         nextMale: function () {
             do {
                 qc++;
+                if (!contact || handShakes === depth) {
+                    return null;
+                }
                 contactName = queue[qc];
-                if (!contact || !contactName || handShakes > depth) {
+                if (!contactName) {
                     return null;
                 }
                 contact = collection[contactName];
@@ -94,8 +99,11 @@ module.exports.get = function (collection, startPoint, depth) {
         prevMale: function () {
             do {
                 qc--;
+                if (!contact || handShakes === depth) {
+                    return null;
+                }
                 contactName = queue[qc];
-                if (!contact || !contactName || handShakes > depth) {
+                if (!contactName) {
                     return null;
                 }
                 contact = collection[contactName];
