@@ -4,6 +4,14 @@ module.exports.get = function (collection, startPoint, depth) {
     if (depth === undefined) {
         var depth = Number.MAX_SAFE_INTEGER;
     }
+    if (collection[startPoint] === undefined) {
+        return {
+            next: returnNull,
+            prev: returnNull,
+            nextMale: returnNull,
+            prevMale: returnNull
+        };
+    }
     var index = -1;
     var pointNames = getTreePoints(collection, startPoint, depth);
     return {
@@ -16,8 +24,10 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
             }
             if (index < pointNames.length) {
-                return '{ name: \'' + pointNames[index] +
-                    '\', phone: \'' +  collection[pointNames[index]].phone +'\' }';
+                return {
+                    name: pointNames[index],
+                    phone: collection[pointNames[index]].phone
+                };
             }
             index = oldIndex;
             return null;
@@ -26,13 +36,15 @@ module.exports.get = function (collection, startPoint, depth) {
             var oldIndex = index;
             index--;
             if (name !== undefined) {
-                while (index >=0 && pointNames[index] !== name) {
+                while (index >= 0 && pointNames[index] !== name) {
                     index--;
                 }
             }
             if (index >= 0) {
-                return '{ name: \'' + pointNames[index] +
-                    '\', phone: \'' +  collection[pointNames[index]].phone +'\' }';
+                return {
+                    name: pointNames[index],
+                    phone: collection[pointNames[index]].phone
+                };
             }
             index = oldIndex;
             return null;
@@ -56,8 +68,10 @@ module.exports.get = function (collection, startPoint, depth) {
                 index++;
             }
             if (index < pointNames.length) {
-                return '{ name: \'' + pointNames[index] +
-                    '\', phone: \'' +  collection[pointNames[index]].phone +'\' }';
+                return {
+                    name: pointNames[index],
+                    phone: collection[pointNames[index]].phone
+                };
             }
             index = oldIndex;
             return null;
@@ -81,8 +95,10 @@ module.exports.get = function (collection, startPoint, depth) {
                 index--;
             }
             if (index >= 0) {
-                return '{ name: \'' + pointNames[index] +
-                    '\', phone: \'' +  collection[pointNames[index]].phone +'\' }';
+                return {
+                    name: pointNames[index],
+                    phone: collection[pointNames[index]].phone
+                };
             }
             index = oldIndex;
             return null;
@@ -115,4 +131,8 @@ function getTreePoints(collection, startPoint, depth) {
         }
     }
     return points;
+}
+
+function returnNull() {
+    return null;
 }
