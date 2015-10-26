@@ -32,7 +32,7 @@ module.exports.get = function (collection, startPoint, depth) {
         toAddContacts.sort(function (a, b) {
             var newA = a.toLocaleLowerCase();
             var newB = b.toLocaleLowerCase();
-            return (newA.charCodeAt(0)  - newB.charCodeAt(0));
+            return (newA.charCodeAt(0) - newB.charCodeAt(0));
         });
         for (var j = 0; j < toAddContacts.length; j++) {
             curContact = toAddContacts[j];
@@ -53,19 +53,19 @@ module.exports.get = function (collection, startPoint, depth) {
                 //Контакты закончились
                 return null;
             }
-            if (!name){
+            if (!name) {
                 this.index += 1;
                 var curContact = collection[resultContacts[this.index]];
-                    return {
-                        name: resultContacts[this.index],
-                        phone: curContact.phone
-                    }
+                return {
+                    name: resultContacts[this.index],
+                    phone: curContact.phone
+                }
             } else {
                 if (resultContacts.indexOf(name) < 0) {
                     return null;
                 }
                 this.index += 1;
-                while(resultContacts[this.index] != name){
+                while (resultContacts[this.index] != name) {
                     if (this.index === resultContacts.length) {
                         return null;
                     }
@@ -75,10 +75,10 @@ module.exports.get = function (collection, startPoint, depth) {
                 return {
                     name: resultContacts[this.index],
                     phone: curContact.phone
-                }
+                };
             }
         },
-        nextMale: function() {
+        nextMale: function () {
             if (this.index >= resultContacts.length - 1) {
                 //Контакты закончились
                 return null;
@@ -90,7 +90,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     return {
                         name: resultContacts[this.index],
                         phone: curContact.phone
-                    }
+                    };
                 }
             }
             return null;
@@ -105,9 +105,9 @@ module.exports.get = function (collection, startPoint, depth) {
             return {
                 name: contacts[this.index],
                 phone: curContact.phone
-            }
+            };
         },
-        prevMale: function() {
+        prevMale: function () {
             if (this.index <= 0) {
                 //Контакты закончились
                 return null;
@@ -119,7 +119,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     return {
                         name: contacts[this.index],
                         phone: curContact.phone
-                    }
+                    };
                 }
             }
             return null;
