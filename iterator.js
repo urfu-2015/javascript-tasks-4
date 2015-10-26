@@ -6,23 +6,24 @@ module.exports.get = function (collection, startPoint, depth) {
     var stack = [];
     if (Object.keys(collection).indexOf(startPoint) == -1) {
         iterator.hasStart = false;
-    }
-    stack.push({name: startPoint, depth: 0});
-    while (visited.length < Object.keys(collection).length) {
-        var current = stack.shift();
-        if (current.depth >= depth) {
-            break;
-        }
-        if (current.name !== startPoint) {
-            var record = collection[current.name];
-            record.name = current.name;
-            iterator.collection.push(record);
-        }
-        visited.push(current.name);
-        var currentFriends = collection[current.name].friends.sort();
-        for (var friend = 0; friend < currentFriends.length; friend++) {
-            if (visited.indexOf(currentFriends[friend]) === -1) {
-                stack.push({name: currentFriends[friend], depth: current.depth + 1});
+    } else {
+        stack.push({name: startPoint, depth: 0});
+        while (visited.length < Object.keys(collection).length) {
+            var current = stack.shift();
+            if (current.depth >= depth) {
+                break;
+            }
+            if (current.name !== startPoint) {
+                var record = collection[current.name];
+                record.name = current.name;
+                iterator.collection.push(record);
+            }
+            visited.push(current.name);
+            var currentFriends = collection[current.name].friends.sort();
+            for (var friend = 0; friend < currentFriends.length; friend++) {
+                if (visited.indexOf(currentFriends[friend]) === -1) {
+                    stack.push({name: currentFriends[friend], depth: current.depth + 1});
+                }
             }
         }
     }

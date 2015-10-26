@@ -10,14 +10,14 @@ var iterator = require('./iterator');
 //  faceBook – книга
 //  Сергей — ищем с себя, то есть начиная со своих друзей
 //  3 – максимальное количество рукопожатий до человека
-var friends = iterator.get(faceBook, 'Антон', 3);
+var friends = iterator.get(faceBook, 'Сергей', 3);
 
 // И отдельно парней на мальчишник
 var dudes = iterator.get(faceBook, 'Сергей');
 
 // Звоним одному
 // .next() возращает JSON с именем и телефоном следующего ближайшего друга
-console.log(friends.next()); // { name: 'Васян', phone: '+70000000000' }
+friends.next(); // { name: 'Васян', phone: '+70000000000' }
 
 // Второму
 friends.next(); // { name: 'Полина', phone: '+70000000000' }
