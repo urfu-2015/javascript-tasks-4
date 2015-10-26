@@ -1,10 +1,9 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-        if (depth === undefined) {
+    if (depth === undefined) {
         depth = collection.length;
-    }
-    else if (depth < 0) {
+    } else if (depth < 0) {
         console.error('Неверное значение аргумента!');
         return;
     }
@@ -12,18 +11,18 @@ module.exports.get = function (collection, startPoint, depth) {
         return {
             next: null,
             prev: null
-        }
+        };
     }
     var friends = lookForFriends(collection, startPoint, depth);
     var length = friends.length;
     var index = 0;
-    return { 
-        next: function() {
+    return {
+        next: function () {
             if (index === length) {
                 return null;
             }
             if (name !== undefined) {
-                while(true) {
+                while (true) {
                     var nFriend = friends[index];
                     if (index >= length - 1) {
                         return null;
@@ -32,7 +31,7 @@ module.exports.get = function (collection, startPoint, depth) {
                         index++;
                         var nextFriend = {};
                         nextFriend['name'] = nFriend.name;
-                        nextFriend['phone'] = nFriend.phone; 
+                        nextFriend['phone'] = nFriend.phone;
                         return nextFriend;
                     }
                     index++;
@@ -46,7 +45,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return nextFriend;
             }
         },
-        prev: function() {
+        prev: function () {
             if (index <= 1) {
                 return null;
             }
@@ -57,7 +56,7 @@ module.exports.get = function (collection, startPoint, depth) {
             prevFriend['phone'] = pFriend.phone;
             return prevFriend;
         },
-        nextMale: function() {
+        nextMale: function () {
             if (index === length) {
                 return null;
             }
@@ -73,24 +72,23 @@ module.exports.get = function (collection, startPoint, depth) {
                 index++;
             }
         },
-        prevMale: function() {
+        prevMale: function () {
             if (index <= 1) {
                 return null;
             }
             index--;
-            while(true) {
+            while (true) {
                 var pMaleFriend = friends[index];
                 if (pMaleFriend.gender === 'Мужской') {
                     index--;
                     var prevMaleFriend = {};
                     prevMaleFriend['name'] = pMaleFriend.name;
                     prevMaleFriend['phone'] = pMaleFriend.phone;
-                    return prevMaleFriend;
                 }
                 index--;
             }
         }
-    }
+    };
 };
 
 function lookForFriends(collection, startPoint, depth) {
