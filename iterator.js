@@ -52,7 +52,7 @@ module.exports.get = function (collection, startPoint) {
         next: function () {
             var latePerson = arguments[0];
             if (latePerson === undefined) {
-                if (sutableFriends[startPoint] === undefined || k >= namesOfFriends.length) {
+                if (sutableFriends[startPoint] === undefined || (k + 1) >= namesOfFriends.length) {
                     return null;
                 }
                 friend.name = namesOfFriends[++k];
