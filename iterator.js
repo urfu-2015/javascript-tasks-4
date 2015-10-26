@@ -85,6 +85,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     var prevMaleFriend = {};
                     prevMaleFriend['name'] = pMaleFriend.name;
                     prevMaleFriend['phone'] = pMaleFriend.phone;
+                    return prevMaleFriend;
                 }
                 index--;
             }
