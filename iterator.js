@@ -22,8 +22,8 @@ module.exports.get = function (collection, startPoint, depth) {
             var contactPhone = contact.phone;
             var friendList = contact.friends.sort();
             var json = {
-                name : contactName,
-                phone : contactPhone
+                name: contactName,
+                phone: contactPhone
             };
             queue = queue.concat(friendList.filter(function (entry) {
                 if (visited.has(entry)) {
@@ -35,7 +35,7 @@ module.exports.get = function (collection, startPoint, depth) {
             handShakes++;
             return json;
         },
-        
+
         prev: function (name) {
             if (name) {
                 qc = queue.indexOf(name) + 1;
@@ -49,8 +49,8 @@ module.exports.get = function (collection, startPoint, depth) {
             var contactPhone = contact.phone;
             var friendList = contact.friends.sort();
             var json = {
-                name : contactName,
-                phone : contactPhone
+                name: contactName,
+                phone: contactPhone
             };
             queue = queue.concat(friendList.filter(function (entry) {
                 if (visited.has(entry)) {
@@ -63,15 +63,15 @@ module.exports.get = function (collection, startPoint, depth) {
             return json;
         },
 
-        nextMale : function () {
+        nextMale: function () {
             do {
                 qc++;
                 contactName = queue[qc];
                 if (!contact || !contactName || handShakes > depth) {
-                return null;
+                    return null;
                 }
                 contact = collection[contactName];
-                var contactGender = contact.gender; 
+                var contactGender = contact.gender;
                 var friendList = contact.friends.sort();
                 queue = queue.concat(friendList.filter(function (entry) {
                 if (visited.has(entry)) {
@@ -83,20 +83,20 @@ module.exports.get = function (collection, startPoint, depth) {
             while (contactGender != 'Мужской' || visited.has(contactName));
             var contactPhone = contact.phone;
             var json = {
-                name : contactName,
-                phone : contactPhone
+                name: contactName,
+                phone: contactPhone
             };
             visited.add(contactName);
             handShakes++;
             return json;
         },
-        
-        prevMale : function () {
+
+        prevMale: function () {
             do {
                 qc--;
                 contactName = queue[qc];
                 if (!contact || !contactName || handShakes > depth) {
-                return null;
+                    return null;
                 }
                 contact = collection[contactName];
                 var contactGender = contact.gender;
@@ -104,12 +104,12 @@ module.exports.get = function (collection, startPoint, depth) {
             while (contactGender != 'Мужской');
             var contactPhone = contact.phone;
             var json = {
-                name : contactName,
-                phone : contactPhone
+                name: contactName,
+                phone: contactPhone
             };
             visited.add(contactName);
             handShakes++;
             return json;
         }
-    }
+    };
 };
