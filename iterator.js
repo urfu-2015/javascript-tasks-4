@@ -70,11 +70,12 @@ function createFriendList(collection, startPoint, depth) {
         friends.forEach(function (friend) {
             newFriends = newFriends.concat(collection[friend].friends.filter(function (friend) {
                 return friendList.indexOf(friend) < 0;
-            }).sort())
+            }).sort());
         });
         friendList = friendList.concat(newFriends);
-        if (currentDepth < depth - 1 && newFriends.length != 0)
+        if (currentDepth < depth - 1 && newFriends.length != 0) {
             getFriends(newFriends, currentDepth + 1);
+        }
     }
     getFriends([startPoint], 0);
     return friendList;
