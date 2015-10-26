@@ -13,7 +13,7 @@ module.exports.get = function (collection, startPoint, depth) {
     var lastContact = data.length;
 
     return {
-        next: function(name) {
+        next: function (name) {
             if (collection[startPoint] === undefined || currentContact >= lastContact - 1) {
                 return null;
             }
@@ -28,7 +28,7 @@ module.exports.get = function (collection, startPoint, depth) {
                         return {
                             name: contact.name,
                             phone: contact.phone
-                        }
+                        };
                     }
                     currentContact++;
                 }
@@ -38,10 +38,10 @@ module.exports.get = function (collection, startPoint, depth) {
                 return {
                     name: contact.name,
                     phone: contact.phone
-                }
+                };
             }
         },
-        prev: function() {
+        prev: function () {
             if (collection[startPoint] === undefined || currentContact < 2) {
                 return null;
             }
@@ -51,9 +51,9 @@ module.exports.get = function (collection, startPoint, depth) {
             return {
                 name: contact.name,
                 phone: contact.phone
-            }
+            };
         },
-        nextMale: function() {
+        nextMale: function () {
             if (collection[startPoint] === undefined || currentContact >= lastContact - 1) {
                 return null;
             }
@@ -64,12 +64,12 @@ module.exports.get = function (collection, startPoint, depth) {
                     return {
                         name: contact.name,
                         phone: contact.phone
-                    }
+                    };
                 }
                 currentContact++;
             }
         },
-        prevMale: function(){
+        prevMale: function () {
             if (collection[startPoint] === undefined || currentContact < 2) {
                 return null;
             }
@@ -81,12 +81,12 @@ module.exports.get = function (collection, startPoint, depth) {
                     return {
                         name: contact.name,
                         phone: contact.phone
-                    }
+                    };
                 }
                 currentContact--;
             }
         }
-    }
+    };
 };
 
 function isCheckList(contact, contactList) {
@@ -115,7 +115,8 @@ function getFriends(collection, startPoint, depth) {
             var friendsOfFriends = [];
             var currentList = collection[currentFriend].friends.slice();
             for (var contact = 0; contact < currentList.length; contact++) {
-                if (!(isCheckList(currentList[contact], checkFriends)) && currentList[contact] != startPoint) {
+                if (!(isCheckList(currentList[contact], checkFriends)) &&
+                    currentList[contact] != startPoint) {
                     friendsOfFriends.push(currentList[contact]);
                     checkFriends.push(currentList[contact]);
                 }
