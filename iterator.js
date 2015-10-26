@@ -4,9 +4,10 @@ module.exports.get = function (collection, startPoint, depth) {
     var queue = [];
     var used = [];
     var contacts = [];
+    var haveStartPoint = true;
     if (collection[startPoint] === undefined) {
         // 'No such person in your faceBook.'
-        return null;
+        haveStartPoint = false;
     }
     if (collection[startPoint]['friends'] === undefined) {
         console.log('Wrong contact format.');
@@ -50,6 +51,9 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         index: -1,
         next: function (name) {
+            if (!haveStartPoint) {
+                return null;
+            }
             if (this.index >= resultContacts.length - 1) {
                 //Контакты закончились
                 return null;
@@ -80,6 +84,9 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         },
         nextMale: function () {
+            if (!haveStartPoint) {
+                return null;
+            }
             if (this.index >= resultContacts.length - 1) {
                 //Контакты закончились
                 return null;
@@ -97,6 +104,9 @@ module.exports.get = function (collection, startPoint, depth) {
             return null;
         },
         prev: function () {
+            if (!haveStartPoint) {
+                return null;
+            }
             if (this.index === 0) {
                 //Контакты закончились
                 return null;
@@ -109,6 +119,9 @@ module.exports.get = function (collection, startPoint, depth) {
             };
         },
         prevMale: function () {
+            if (!haveStartPoint) {
+                return null;
+            }
             if (this.index === 0) {
                 //Контакты закончились
                 return null;
