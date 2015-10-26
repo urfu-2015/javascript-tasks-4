@@ -1,10 +1,10 @@
 'use strict';
 
-module.exports.get = function(phoneBook, startPosition, depthFind) {
+module.exports.get = function (phoneBook, startPosition, depthFind) {
     if (phoneBook[startPosition] === undefined) {
         return {
             next: null,
-            prev: null,
+            prev: null
         };
     };
     if (depthFind === undefined) {
@@ -13,21 +13,21 @@ module.exports.get = function(phoneBook, startPosition, depthFind) {
     var friends = findFriends(phoneBook, startPosition, depthFind);
     return {
 
-        curIndex : 0 ,
-        next : function() {
-            if (this.curIndex === friends.length)
-                return null
-            else{
+        curIndex: 0,
+        next: function () {
+            if (this.curIndex === friends.length) {
+                return null;
+            } else {
                 this.curIndex++;
-                var resFriend = friends[this.curIndex]; 
+                var resFriend = friends[this.curIndex];
                 return resFriend;
             }
         },
-        prev : function() {
-            if (this.curIndex === 0)
-                return null
-            else{
-                this.curIndex--; 
+        prev: function () {
+            if (this.curIndex === 0) {
+                return null;
+            } else {
+                this.curIndex--;
                 var resFriend = friends[this.curIndex];
                 return resFriend;
             }
@@ -35,26 +35,26 @@ module.exports.get = function(phoneBook, startPosition, depthFind) {
     }
 }
 function findFriends(phoneBook, startPosition, depthFind) {
-    var queue = [[startPosition, 0]],
-        friendsNames = [startPosition],
-        friends = [],
-        depth = 0,
-        fname = '',
-        fFriends=[];
+    var queue = [[startPosition, 0]];
+    var friendsNames = [startPosition];
+    var friends = [];
+    var depth = 0;
+    var fname = '';
+    var fFriends = [];
     while (queue.length > 0 && depth < depthFind) {
         var current = queue.shift();
         fname = current[0];
         depth = current[1];
         friends.push({
-            name : fname,
-            phone : phoneBook[fname].phone
+            name: fname,
+            phone: phoneBook[fname].phone
         });
         friendsNames.push(fname);
         fFriends = phoneBook[fname].friends;
-        for(var i = 0; i < fFriends.length; i++){
-                if (friendsNames.indexOf(fFriends[i]) < 0) {
-                    queue.push([fFriends[i], depth + 1]);
-                };
+        for (var i = 0; i < fFriends.length; i++) {
+            if (friendsNames.indexOf(fFriends[i]) < 0) {
+                queue.push([fFriends[i], depth + 1]);
+            };
         };
     };
     return friends;
