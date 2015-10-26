@@ -8,44 +8,45 @@ module.exports.get = function (collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
         // 'No such person in your faceBook.'
         haveStartPoint = false;
-    }
-    if (collection[startPoint]['friends'] === undefined) {
-        console.log('Wrong contact format.');
-        return null;
-    }
-    if (depth === undefined) {
-        depth = Object.keys(collection).length;
-    }
-    queue.push(startPoint);
-    used.push(startPoint);
-    var depthDict = {};
-    depthDict[startPoint] = 0;
-    while (!(queue.length === 0)) {
-        var curContact = queue.shift();
-        var toAddContacts = [];
-        var curFriends = collection[curContact]['friends'];
-        for (var i = 0; i < curFriends.length; i++) {
-            if (used.indexOf(curFriends[i]) < 0) {
-                toAddContacts.push(curFriends[i]);
-                depthDict[curFriends[i]] = depthDict[curContact] + 1;
-                used.push(curFriends[i]);
+    } else {
+        if (collection[startPoint]['friends'] === undefined) {
+            console.log('Wrong contact format.');
+            return;
+        }
+        if (depth === undefined) {
+            depth = Object.keys(collection).length;
+        }
+        queue.push(startPoint);
+        used.push(startPoint);
+        var depthDict = {};
+        depthDict[startPoint] = 0;
+        while (!(queue.length === 0)) {
+            var curContact = queue.shift();
+            var toAddContacts = [];
+            var curFriends = collection[curContact]['friends'];
+            for (var i = 0; i < curFriends.length; i++) {
+                if (used.indexOf(curFriends[i]) < 0) {
+                    toAddContacts.push(curFriends[i]);
+                    depthDict[curFriends[i]] = depthDict[curContact] + 1;
+                    used.push(curFriends[i]);
+                }
+            }
+            toAddContacts.sort(function (a, b) {
+                var newA = a.toLocaleLowerCase();
+                var newB = b.toLocaleLowerCase();
+                return (newA.charCodeAt(0) - newB.charCodeAt(0));
+            });
+            for (var j = 0; j < toAddContacts.length; j++) {
+                curContact = toAddContacts[j];
+                queue.push(curContact);
+                contacts.push(curContact);
             }
         }
-        toAddContacts.sort(function (a, b) {
-            var newA = a.toLocaleLowerCase();
-            var newB = b.toLocaleLowerCase();
-            return (newA.charCodeAt(0) - newB.charCodeAt(0));
-        });
-        for (var j = 0; j < toAddContacts.length; j++) {
-            curContact = toAddContacts[j];
-            queue.push(curContact);
-            contacts.push(curContact);
-        }
-    }
-    var resultContacts = [];
-    for (var i = 0; i < contacts.length; i++) {
-        if (depthDict[contacts[i]] <= depth) {
-            resultContacts.push(contacts[i]);
+        var resultContacts = [];
+        for (var i = 0; i < contacts.length; i++) {
+            if (depthDict[contacts[i]] <= depth) {
+                resultContacts.push(contacts[i]);
+            }
         }
     }
     return {
