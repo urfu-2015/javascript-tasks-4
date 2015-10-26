@@ -85,10 +85,7 @@ function getFriends(collection, startPoint, depth) {
     var queue = [];
     queue.push(startPoint);
     var used = [];
-    var d = [];
-    var p = [];
     used[startPoint] = true;
-    p[startPoint] = -1;
     while (depth > 0 && queue.length > 0) {
         depth--;
         var v = queue.shift();
@@ -99,11 +96,9 @@ function getFriends(collection, startPoint, depth) {
                 used[to] = true;
                 people.push({
                     name: to,
-                    phone: collection[to].phone
+                    phone: collection[to].phone,
                 });
                 queue.push(to);
-                d[to] = d[v] + 1;
-                p[to] = v;
             }
         }
     }
