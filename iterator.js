@@ -96,16 +96,16 @@ function lookForFriends(collection, startPoint, depth) {
     if (collection[startPoint] === undefined || depth === 0) {
         return friends;
     }
-    var queue = [],
-        friendDepth = [],
-        friendFriends = [];
+    var queue = [];
+    var friendDepth = [];
+    var friendFriends = [];
     queue.push(startPoint);
     friendDepth[startPoint] = 0;
     friendFriends[startPoint] = true;
     while (queue.length > 0 && friendDepth < depth) {
         var nowFriend = queue.shift();
         var friendsOfNowFriend = collection[nowFriend].friends.sort();
-        friendsOfNowFriend.forEach (function (friend) {
+        friendsOfNowFriend.forEach(function (friend) {
             if (friendFriends[friend] !== true) {
                 queue.push(friend);
                 friendFriends[friend] = true;
