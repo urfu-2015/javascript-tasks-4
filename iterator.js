@@ -34,7 +34,6 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         }
     }
-    console.log(result);
 
     function getNext(name) {
         if (!badVar) {
@@ -94,7 +93,6 @@ module.exports.get = function (collection, startPoint, depth) {
             while (collection[result[currentFriendIndex]['name']].gender != 'Мужской') {
                 currentFriendIndex--;
             }
-            console.log(currentFriendIndex);
             return result[currentFriendIndex];
         }
     };
