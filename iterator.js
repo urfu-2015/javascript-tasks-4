@@ -1,10 +1,4 @@
-
-
-
-//function FriendsIterator (collection, startPoint, depth) {
-//    depth = depth || collection.length;
-//    var currDepth = 0;
-//}
+'use strict';
 
 function doesUserExists (collection, userName) {
     return !!collection[userName];
@@ -39,8 +33,11 @@ module.exports.get = function (collection, startPoint, depth) {
             if (!doesUserExists(collection, startPoint)) {
                 return null;
             }
-            while (currDepth < depth) {
+            if (currDepth < depth) {
                 var tmpFriends = getFriends(collection, currFriends[currIndex], usedFriends);
+                if (!currDepth && !tmpFriends.length) {
+                    return null;
+                }
                 newLevel = newLevel.concat(tmpFriends);
                 tmpFriends.forEach(function (item) {
                     usedFriends[item] = collection[item];
@@ -55,7 +52,18 @@ module.exports.get = function (collection, startPoint, depth) {
                 toShow['name'] = currFriends[currIndex];
                 toShow['phone'] = collection[currFriends[currIndex]]['phone'];
                 console.log(toShow);
-                //yield toShow;
+                //yield toShow; // А так хотелось
+                return toShow;
+            }
+            return null;
+        },
+        prev: function () {
+            if (currIndex > 0) {
+                currIndex--;
+                var toShow = {};
+                toShow['name'] = currFriends[currIndex];
+                toShow['phone'] = collection[currFriends[currIndex]]['phone'];
+                console.log(toShow);
                 return toShow;
             }
             return null;
