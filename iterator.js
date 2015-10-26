@@ -1,12 +1,17 @@
 'use strict';
 
-function doesUserExists (collection, userName) {
-    return !!collection[userName];
+function doesUserExists(collection, userName) {
+    if (collection[userName]) {
+        return true;
+    } else {
+        return false;
+    }
+    //return !!collection[userName];
 }
 
-function getFriends (collection, startPoint, usedFriends) {
+function getFriends(collection, startPoint, usedFriends) {
     var friendsQueue = [];
-    var startPointFriends = collection[startPoint]["friends"];
+    var startPointFriends = collection[startPoint]['friends'];
     startPointFriends = startPointFriends.sort();
     var startPointNewFriends = [];
     //console.log(startPointFriends);
@@ -68,5 +73,5 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             return null;
         }
-    }
+    };
 };
