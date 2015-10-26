@@ -4,16 +4,13 @@ module.exports.get = function (collection, startPoint, depth) {
     var index = 0;
     var data = getInvitedFriends(collection, startPoint, depth);
     var length = data.length;
+    var currentName = startPoint;
     return {
-        print: function () {
-            data.forEach(function (contact) {
-                console.log(contact.name);
-            });
-        },
         next: function (name) {
             if (collection[startPoint] === undefined) {
                 return null;
             }
+            this.checkChanges();
             var element;
             if (!this.hasNext() || !this.hasName(name) || startPoint === undefined ||
                 collection[startPoint] === undefined) {
@@ -23,20 +20,32 @@ module.exports.get = function (collection, startPoint, depth) {
                 element = data[index];
                 if (element.name === name || name === undefined) {
                     index += 1;
-                    return element.contactInfo;
+                    currentName = element.name;
+                    var res = {
+                        name: element.name,
+                        phone: element.contactInfo.phone
+                    };
+                    return res;
                 }
                 index += 1;
+                currentName = element.name;
             }
             return null;
         },
         prev: function () {
+            this.checkChanges();
             var element;
             if (!this.hasPrev() || startPoint === undefined) {
                 return null;
             }
             element = data[index - 2];
+            currentName = element.name;
             index -= 1;
-            return element.contactInfo;
+            var res = {
+                name: element.name,
+                phone: element.contactInfo.phone
+            };
+            return res;
         },
         hasName: function (name) {
             if (name != undefined) {
@@ -58,20 +67,46 @@ module.exports.get = function (collection, startPoint, depth) {
         },
         getMale: function (direction, step, func) {
             var element;
+            this.checkChanges();
             while (func()) {
                 element = data[index - step];
                 if (element.contactInfo.gender === 'Мужской') {
                     index += 1 * direction;
-                    return element.contactInfo;
+                    currentName = element.name;
+                    var res = {
+                        name: element.name,
+                        phone: element.contactInfo.phone
+                    };
+                    return res;
                 }
                 index += 1 * direction;
+                currentName = element.name;
             }
             return null;
+        },
+        checkChanges: function () {
+            if (collectionLength != Object.keys(collection).length) {
+                data = getInvitedFriends(collection, startPoint, depth);
+                length = data.length;
+                this.findIndex();
+            }
+        },
+        findIndex: function () {
+            if (data.some(contact => contact.name === currentName)) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].name === currentName) {
+                        index = i;
+                    }
+                }
+            }
         }
     };
 };
 
+var collectionLength;
+
 function getInvitedFriends(collection, startPoint, depth) {
+    collectionLength = Object.keys(collection).length;
     var invitedFriends = [];
     if (collection[startPoint] === undefined) {
         return invitedFriends;
@@ -83,23 +118,33 @@ function getInvitedFriends(collection, startPoint, depth) {
         var foundFriends = [];
         while (queue.length != 0) {
             var currentFriend = queue.shift();
-            var friends = collection[currentFriend].friends.slice();
-            friends = friends.filter(function (friend) {
-                return !(invitedFriends.some(contact => contact.name === friend) ||
-                    (foundFriends.some(contact => contact.name === friend)));
-            });
-            friends = friends.sort(function (a, b) {
-                return a > b ? 1 : -1;
-            });
-            friends.forEach(function (friend) {
-                var newContact = {
-                    name: friend,
-                    contactInfo: collection[friend],
-                    addedFrom: currentFriend
-                };
-                foundFriends.push(newContact);
-            });
+            if (collection[currentFriend] != undefined) {
+                //получили всех друзей
+                var friends = collection[currentFriend].friends.slice();
+                /*оставили только тех, кто ещё не встречался, не был удалён,
+                не является организатором*/
+                friends = friends.filter(function (friend) {
+                    return !(invitedFriends.some(contact => contact.name === friend) ||
+                        (foundFriends.some(contact => contact.name === friend)) ||
+                        startPoint === friend ||
+                        Object.keys(collection).indexOf(friend) === -1);
+                });
+                //отсортировали
+                friends = friends.sort(function (a, b) {
+                    return a > b ? 1 : -1;
+                });
+                //добавили в итоговый список, указывая имена как поле
+                friends.forEach(function (friend) {
+                    var newContact = {
+                        name: friend,
+                        contactInfo: collection[friend],
+                        addedFrom: currentFriend
+                    };
+                    foundFriends.push(newContact);
+                });
+            }
         }
+        //останавливаем поиск, если друзей больше не можем найти или достигнута depth
         if (foundFriends.length === 0 || i == depth) {
             toStop = true;
         } else {
