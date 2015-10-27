@@ -8,7 +8,7 @@ module.exports.get = function (collection, startPoint, depth) {
     var stack = createStack(collection, startPoint, depth);
     return {
         next: function (name) {
-            if (collection.indexOf(startPoint) < 0) {
+            if (!stack) {
                 return null;
             }
             if (name != undefined) {
@@ -43,7 +43,7 @@ module.exports.get = function (collection, startPoint, depth) {
         },
 
         prev: function () {
-            if (collection.indexOf(startPoint) < 0) {
+            if (!stack) {
                 return null;
             }
             return index > 0 ? {
@@ -81,6 +81,9 @@ function createStack(collection, startPoint) {
 function iterateFriends(collection, name, depth, stack) {
     if (depth > d) {
         return;
+    }
+    if (!(name in collection)) {
+        return null;
     }
     for (var friend of collection[name].friends) {
         if (stack.indexOf(friend) < 0 && friend != start) {
