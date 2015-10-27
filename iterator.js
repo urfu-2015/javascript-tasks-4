@@ -8,6 +8,9 @@ module.exports.get = function (collection, startPoint, depth) {
     var stack = createStack(collection, startPoint, depth);
     return {
         next: function (name) {
+            if (collection.indexOf(startPoint) < 0) {
+                return null;
+            }
             if (name != undefined) {
                 index = stack.indexOf(name);
             } else {
@@ -40,6 +43,9 @@ module.exports.get = function (collection, startPoint, depth) {
         },
 
         prev: function () {
+            if (collection.indexOf(startPoint) < 0) {
+                return null;
+            }
             return index > 0 ? {
                 name: stack[--index],
                 phone: collection[stack[index]].phone
