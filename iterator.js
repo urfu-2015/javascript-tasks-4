@@ -65,7 +65,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 phone: collection[stack[index]].phone
             } : null;
         }
-    }
+    };
 };
 
 function createStack(collection, startPoint) {
