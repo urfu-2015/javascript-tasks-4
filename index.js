@@ -10,7 +10,7 @@ var iterator = require('./iterator');
 //  faceBook – книга
 //  Сергей — ищем с себя, то есть начиная со своих друзей
 //  3 – максимальное количество рукопожатий до человека
-var friends = iterator.get(faceBook, 'Сергей', 3);
+var friends = iterator.get(faceBook, 'Сергей', 1);
 
 // И отдельно парней на мальчишник
 var dudes = iterator.get(faceBook, 'Сергей');
@@ -56,3 +56,4 @@ dudes.next('Пётр');
 
 // И продолжаем набор на мальчишник и свадьбу
 while (dudes.nextMale() || friends.next()) {}
+
