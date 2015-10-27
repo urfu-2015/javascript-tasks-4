@@ -10,8 +10,7 @@ module.exports.get = function (collection, startPoint, depth) {
         next: function (name) {
             if (name != undefined) {
                 index = stack.indexOf(name);
-            }
-            else {
+            } else {
                 index++;
                 return index < stack.length ? {
                     name: stack[index],
@@ -25,12 +24,12 @@ module.exports.get = function (collection, startPoint, depth) {
 
             if (++index >= stack.length) {
                 isFind = false;
-            }
-            else {
+            } else {
                 while (collection[stack[index]].gender != 'Мужской' && isFind) {
                     index++;
-                    if (index == stack.length)
+                    if (index == stack.length) {
                         isFind = false;
+                    }
                 }
             }
 
@@ -52,12 +51,12 @@ module.exports.get = function (collection, startPoint, depth) {
 
             if (--index < 0) {
                 isFind = false;
-            }
-            else {
+            } else {
                 while (collection[stack[index]].gender != 'Мужской' && isFind) {
                     index--;
-                    if (index < 0)
+                    if (index < 0) {
                         isFind = false;
+                    }
                 }
             }
 
@@ -69,11 +68,11 @@ module.exports.get = function (collection, startPoint, depth) {
     }
 };
 
-function createStack (collection, startPoint) {
+function createStack(collection, startPoint) {
     return iterateFriends(collection, startPoint, 0, []);
 }
 
-function iterateFriends (collection, name, depth, stack) {
+function iterateFriends(collection, name, depth, stack) {
     if (depth > d) {
         return;
     }
