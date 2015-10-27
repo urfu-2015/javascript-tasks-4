@@ -6,11 +6,8 @@ module.exports.get = function (collection, startPoint, depth) {
 
 function Iterator(collection, startPoint, depth) {
     this.collection = collection;
-    if (!collection[startPoint]) {
-        this.callList = [];
-    } else {
-        this.callList = BFS(collection, depth, [startPoint], [startPoint], 0);
-    }
+    this.callList = !collection[startPoint] ?
+        [] : BFS(collection, depth, [startPoint], [startPoint], 0);
     this.callList.splice(0, 1);
     this.iterIndex = -1;
     this.current = null;
@@ -20,26 +17,14 @@ Iterator.prototype.next = function (name) {
     if (name) {
         this.iterIndex = this.callList.indexOf(name) - 1;
     }
-    if (this.iterIndex === this.callList.length - 1) {
-        this.iterIndex++;
-    }
-    if (this.iterIndex === this.callList.length) {
-        this.current = null;
-    } else {
-        this.current = this.callList[++this.iterIndex];
-    }
+    this.iterIndex = Math.min(this.callList.length, this.iterIndex + 1);
+    this.current = this.callList[this.iterIndex] || null;
     return this.JSONCurrent();
 };
 
 Iterator.prototype.prev = function () {
-    if (this.iterIndex === 0) {
-        this.iterIndex--;
-    }
-    if (this.iterIndex === -1) {
-        this.current = null;
-    } else {
-        this.current = this.callList[--this.iterIndex];
-    }
+    this.iterIndex = Math.max(-1, this.iterIndex - 1);
+    this.current = this.callList[this.iterIndex] || null;
     return this.JSONCurrent();
 };
 
@@ -71,18 +56,16 @@ Iterator.prototype.JSONCurrent = function () {
 };
 
 function BFS(collection, depth, result, queue, i) {
-    if (i === depth) {
+    if (i === depth || !queue.length) {
         return result;
     }
-    var friends = collection[queue.shift()].friends
+    collection[queue.shift()].friends
         .filter(friend => result.indexOf(friend) === -1)
-        .sort();
-    friends.forEach(friend => {
-        queue.push(friend);
-        result.push(friend);
-    });
-    friends.forEach(friend => {
-        BFS(collection, depth, result, queue, i + 1);
-    });
+        .sort()
+        .forEach(friend => {
+            queue.push(friend);
+            result.push(friend);
+        });
+    BFS(collection, depth, result, queue, i + 1);
     return result;
 }
