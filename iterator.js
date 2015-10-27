@@ -100,7 +100,7 @@ module.exports.get = function (collection, startPoint, depth) {
     };
 };
 
-function getFriends (collection, friends, invited) {
+function getFriends(collection, friends, invited) {
     var result = [];
     for (var i = 0; i < friends.length; i++) {
         var personsFriends = collection[friends[i]].friends.slice().sort();
@@ -109,7 +109,7 @@ function getFriends (collection, friends, invited) {
     return uniq(result, invited);
 }
 
-function merge (collect1, collect2) {
+function merge(collect1, collect2) {
     var result = collect1.slice();
     for (var i = 0; i < collect2.length; i++) {
         if (result.indexOf(collect2[i]) === -1) {
@@ -119,12 +119,13 @@ function merge (collect1, collect2) {
     return result;
 }
 
-function uniq (collection, filter) {
+function uniq(collection, filter) {
     var result = [];
     for (var i = 0; i < collection.length; i++) {
         if (result.indexOf(collection[i]) === -1 && filter.indexOf(collection[i]) === -1) {
-            result.push(collection[i])
+            result.push(collection[i]);
         }
     }
     return result;
 }
+
