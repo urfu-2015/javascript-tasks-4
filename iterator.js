@@ -57,7 +57,7 @@ module.exports.get = function (collection, startPoint, depth) {
         return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
         // console.log("name:" + this.collection[this.count].name + ", " +
         //     "phone:" + this.collection[this.count].phone);
-    }
+    };
 
     iterator.prev = function () {
         if (!this.started) {
@@ -83,7 +83,7 @@ module.exports.get = function (collection, startPoint, depth) {
         return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
         // console.log("name:" + this.collection[this.count].name + ", " +
         //     "phone:" + this.collection[this.count].phone);
-    }
+    };
 
     iterator.nextMale = function () {
         if (!this.started) {
@@ -108,7 +108,7 @@ module.exports.get = function (collection, startPoint, depth) {
         return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
         // console.log("name:" + this.collection[this.count].name + ", " +
         //     "phone:" + this.collection[this.count].phone);
-    }
+    };
 
     iterator.prevMale = function () {
         if (!this.started) {
@@ -132,7 +132,7 @@ module.exports.get = function (collection, startPoint, depth) {
         return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
         // console.log("name:" + this.collection[this.count].name + ", " +
         //     "phone:" + this.collection[this.count].phone);
-    }
+    };
 
     return iterator;
-}
+};
