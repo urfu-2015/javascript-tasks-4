@@ -11,7 +11,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (depth >= 2) {
                     friendsOfFriends = getFriends(collection, friends, []);
                     friends = merge(friends, friendsOfFriends);
-                    for(var i = 0; i < depth - 2; i++){
+                    for (var i = 0; i < depth - 2; i++) {
                         friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
                         friends = merge(friends, friendsOfFriends);
                     }
@@ -22,22 +22,21 @@ module.exports.get = function (collection, startPoint, depth) {
                 do {
                     friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
                     friends = merge(friends, friendsOfFriends);
-                } while (friendsOfFriends.length !== 0)
+                } while (friendsOfFriends.length !== 0);
             }
         }
     } else {
-        friends = []
+        friends = [];
     }
     if (friends.indexOf(startPoint) !== -1) {
         friends.splice(friends.indexOf(startPoint), 1);
     }
-
     return {
         faceBook: collection,
         friendList: friends,
         index: 0,
         indexMale: 0,
-        next: function(name) {
+        next: function (name) {
             if (name && typeof name === 'string') {
                 return {
                     name: name,
@@ -54,7 +53,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
         },
-        prevMale: function() {
+        prevMale: function () {
             if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
                 this.indexMale --;
                 while (this.indexMale < this.friendList.length && this.indexMale >= 0 &&
@@ -73,7 +72,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
         },
-        nextMale: function(name) {
+        nextMale: function (name) {
             if (name && typeof name === 'string' && this.faceBook[name]) {
                 return {
                     name: name,
@@ -101,7 +100,7 @@ module.exports.get = function (collection, startPoint, depth) {
     };
 };
 
-function getFriends(collection, friends, invited) {
+function getFriends (collection, friends, invited) {
     var result = [];
     for (var i = 0; i < friends.length; i++) {
         var personsFriends = collection[friends[i]].friends.slice().sort();
@@ -110,9 +109,9 @@ function getFriends(collection, friends, invited) {
     return uniq(result, invited);
 }
 
-function merge(collect1, collect2){
+function merge (collect1, collect2) {
     var result = collect1.slice();
-    for (var i = 0; i < collect2.length; i++){
+    for (var i = 0; i < collect2.length; i++) {
         if (result.indexOf(collect2[i]) === -1) {
             result.push(collect2[i]);
         }
@@ -120,7 +119,7 @@ function merge(collect1, collect2){
     return result;
 }
 
-function uniq(collection, filter) {
+function uniq (collection, filter) {
     var result = [];
     for (var i = 0; i < collection.length; i++) {
         if (result.indexOf(collection[i]) === -1 && filter.indexOf(collection[i]) === -1) {
@@ -129,5 +128,3 @@ function uniq(collection, filter) {
     }
     return result;
 }
-
-
