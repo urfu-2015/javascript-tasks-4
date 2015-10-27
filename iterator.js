@@ -30,9 +30,9 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             currentPersonId++;
             while (currentPersonId <= currentList.length) {
-                if (currentPersonId == currentList.length) {
+                if (currentPersonId === currentList.length) {
                     var name = findNextName(collection, previousPersons, depth);
-                    if (name == null) {
+                    if (name === null) {
                         // console.log('null');
                         return null;
                     }
@@ -78,10 +78,10 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             currentPersonId--;
             while (currentPersonId >= -1) {
-                if (currentPersonId == -1) {
+                if (currentPersonId === -1) {
                     previousPersons.pop();
                     var name = previousPersons[previousPersons.length - 1];
-                    if (name == null) {
+                    if (typeof name === 'undefined') {
                         // console.log('null');
                         return null;
                     }
@@ -115,14 +115,14 @@ function findNextName(collection, previousPersons, MaxDepth) {
     while (queue.length > 0) {
         var person = queue.shift();
         var parentDepth = depth.splice(0, 1)[0];
-        if (previousPersons.indexOf(person) == -1) {
+        if (previousPersons.indexOf(person) === -1) {
             previousPersons.push(person);
             return person;
         }
         var friends = collection[person].friends;
         for (var i = 0; i < friends.length; i++) {
             var currentDepth = parentDepth + 1;
-            if (used.indexOf(friends[i]) == -1 &&
+            if (used.indexOf(friends[i]) === -1 &&
                 currentDepth < MaxDepth) {
                 queue.push(friends[i]);
                 depth.push(currentDepth);
@@ -135,7 +135,7 @@ function findNextName(collection, previousPersons, MaxDepth) {
 
 function сhangesInCollection(collection, collectionLength, previousPersons) {
     var newCollectionLength = Object.keys(collection).length;
-    if (collectionLength == newCollectionLength) {
+    if (collectionLength === newCollectionLength) {
         return newCollectionLength;
     }
     var remoteName;
@@ -148,7 +148,7 @@ function сhangesInCollection(collection, collectionLength, previousPersons) {
     }
     for (var e in collection) {
         for (var i = 0; i < collection[e].friends.length; i++) {
-            if (collection[e].friends[i] == remoteName) {
+            if (collection[e].friends[i] === remoteName) {
                 collection[e].friends.splice(i, 1);
             }
         };
