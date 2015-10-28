@@ -4,26 +4,30 @@
 module.exports.get = function (collection, startPoint, depth) {
     var friends;
     if (startPoint) {
-        friends = (collection[startPoint].friends).sort();
-        if (friends) {
-            var friendsOfFriends;
-            if (depth) {
-                if (depth >= 2) {
-                    friendsOfFriends = getFriends(collection, friends, []);
+        if (collection.hasOwnProperty(startPoint)) {
+            friends = (collection[startPoint].friends).sort();
+            if (friends) {
+                var friendsOfFriends;
+                if (depth) {
+                    if (depth >= 2) {
+                        friendsOfFriends = getFriends(collection, friends, []);
+                        friends = merge(friends, friendsOfFriends);
+                        for (var i = 0; i < depth - 2; i++) {
+                            friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
+                            friends = merge(friends, friendsOfFriends);
+                        }
+                    }
+                } else {
+                    friendsOfFriends = getFriends(collection, friends, friends);
                     friends = merge(friends, friendsOfFriends);
-                    for (var i = 0; i < depth - 2; i++) {
+                    do {
                         friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
                         friends = merge(friends, friendsOfFriends);
-                    }
+                    } while (friendsOfFriends.length !== 0);
                 }
-            } else {
-                friendsOfFriends = getFriends(collection, friends, friends);
-                friends = merge(friends, friendsOfFriends);
-                do {
-                    friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
-                    friends = merge(friends, friendsOfFriends);
-                } while (friendsOfFriends.length !== 0);
             }
+        } else {
+            friends = [];
         }
     } else {
         friends = [];
@@ -37,6 +41,9 @@ module.exports.get = function (collection, startPoint, depth) {
         index: 0,
         indexMale: 0,
         next: function (name) {
+            if (!this.friendList) {
+                return null;
+            }
             if (name && typeof name === 'string') {
                 return {
                     name: name,
@@ -45,10 +52,21 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             if (this.index < this.friendList.length && this.index >= 0) {
                 this.index ++;
-                return {
-                    name: this.friendList[this.index - 1],
-                    phone: this.faceBook[this.friendList[this.index - 1]].phone
-                };
+                var person = {};
+                person['name'] = this.friendList[this.index - 1];
+                person['phone'] = this.faceBook[this.friendList[this.index - 1]].phone;
+                return person;
+            } else {
+                return null;
+            }
+        },
+        prev: function () {
+            if (this.index <= this.friendList.length && this.index > 0) {
+                this.index --;
+                var person = {};
+                person['name'] = this.friendList[this.index];
+                person['phone'] = this.faceBook[this.friendList[this.index]].phone;
+                return person;
             } else {
                 return null;
             }
@@ -59,7 +77,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 while (this.indexMale < this.friendList.length && this.indexMale >= 0 &&
                 this.faceBook[this.friendList[this.indexMale]].gender !== 'Мужской') {
                     this.indexMale --;
-                };
+                }
                 if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
                     var person = {};
                     person['name'] = this.friendList[this.indexMale];
