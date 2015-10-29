@@ -28,10 +28,8 @@ module.exports.get = function (collection, startPoint, depth) {
             index = getIndex(friends, arguments, index, true);
             return index < friends.length ?
                 {
-                    value: {
-                        friend: friends[index][0],
-                        phone: friends[index][1]['phone']
-                    }
+                    friend: friends[index][0],
+                    phone: friends[index][1]['phone']
                 } : null;
         },
         prev: function () {
@@ -42,10 +40,8 @@ module.exports.get = function (collection, startPoint, depth) {
             index = getIndex(friends, arguments, index, true);
             return index > -1 ?
                 {
-                    value: {
-                        friend: friends[index][0],
-                        phone: friends[index][1]['phone']
-                    }
+                    friend: friends[index][0],
+                    phone: friends[index][1]['phone']
                 } : null;
         },
         nextMale: function () {
@@ -123,9 +119,7 @@ function getIndex(queue, names, index, isName) {
 function getMale(friends, index) {
     return friends[index][1]['gender'] == 'Мужской' ?
         {
-            value: {
-                friend: friends[index][0],
-                phone: friends[index][1]['phone']
-            }
+            friend: friends[index][0],
+            phone: friends[index][1]['phone']
         } : null;
 }
