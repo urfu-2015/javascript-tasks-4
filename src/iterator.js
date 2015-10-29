@@ -7,6 +7,7 @@ export const get = function (collection, startPoint, depth) {
 };
 
 const filterByName = name => obj => obj.name === name;
+const filterByGender = gender => obj => obj.gender === gender;
 
 const always = () => true;
 
@@ -37,11 +38,13 @@ class GenderIterator {
     }
 
     nextMale() {
-        //TODO
+        var it = this.iterator;
+        return findBy(filterByGender('Мужской'), it::it.next);
     }
 
     prevMale() {
-        //TODO
+        var it = this.iterator;
+        return findBy(filterByGender('Мужской'), it.next.bind(it, GO_BACKWARD));
     }
 
 }

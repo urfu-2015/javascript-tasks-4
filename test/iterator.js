@@ -86,12 +86,39 @@ describe('Базовое тестирование итератора', function 
 
     it('prev учитывает name', function () {
         var friends = iterator.get(faceBook, 'Сергей', 3);
-        console.log(friends.next());
-        console.log(friends.next());
-        console.log(friends.next());
-        console.log(friends.next());
+        friends.next();
+        friends.next();
+        friends.next();
+        friends.next();
+        friends.next();
 
         // Больше друзей в круге первом нет
         friends.prev('Васян').should.deep.equal(getRecord('Васян'));
+    });
+
+    it('nextMale', function () {
+
+        var friends = iterator.get(faceBook, 'Сергей', 3);
+        friends.nextMale().gender.should.equal('Мужской');
+        friends.nextMale().gender.should.equal('Мужской');
+        friends.nextMale().gender.should.equal('Мужской');
+        friends.nextMale().gender.should.equal('Мужской');
+
+    });
+
+    it('prevMale', function () {
+
+        var friends = iterator.get(faceBook, 'Сергей', 3);
+
+        friends.next();
+        friends.next();
+        friends.next();
+        friends.next();
+        friends.next();
+
+        friends.prevMale().gender.should.equal('Мужской');
+        friends.prevMale().gender.should.equal('Мужской');
+
+
     });
 });
