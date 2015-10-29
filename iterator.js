@@ -112,47 +112,40 @@ function getInvitedFriends(collection, startPoint, depth) {
         return invitedFriends;
     }
     var queue = [startPoint];
-    var toStop = false;
     var i = 0;
-    while (!toStop) {
+    while (true) {
         var foundFriends = [];
         while (queue.length != 0) {
             var currentFriend = queue.shift();
             if (collection[currentFriend] != undefined) {
-                //получили всех друзей
                 var friends = collection[currentFriend].friends.slice();
-                /*оставили только тех, кто ещё не встречался, не был удалён,
-                не является организатором*/
-                friends = friends.filter(function (friend) {
-                    return !(invitedFriends.some(contact => contact.name === friend) ||
-                        (foundFriends.some(contact => contact.name === friend)) ||
-                        startPoint === friend ||
-                        Object.keys(collection).indexOf(friend) === -1);
-                });
-                //отсортировали
-                friends = friends.sort(function (a, b) {
-                    return a > b ? 1 : -1;
-                });
-                //добавили в итоговый список, указывая имена как поле
-                friends.forEach(function (friend) {
-                    var newContact = {
-                        name: friend,
-                        contactInfo: collection[friend]
-                    };
-                    foundFriends.push(newContact);
-                });
+                friends = friends
+                    .filter(function (friend) {
+                        var isInvited = invitedFriends.some(contact => contact.name === friend);
+                        var isFound = foundFriends.some(contact => contact.name === friend);
+                        var isStartPoint = startPoint === friend;
+                        var isRemoved = Object.keys(collection).indexOf(friend) === -1;
+                        return !(isInvited || isFound || isStartPoint || isRemoved);
+                    })
+                    .sort()
+                    .forEach(function (friend) {
+                        var newContact = {
+                            name: friend,
+                            contactInfo: collection[friend],
+                            addedFrom: currentFriend
+                        };
+                        foundFriends.push(newContact);
+                    });
             }
         }
-        //останавливаем поиск, если друзей больше не можем найти или достигнута depth
-        if (foundFriends.length === 0 || i == depth) {
-            toStop = true;
-        } else {
-            invitedFriends = invitedFriends.concat(foundFriends);
-            foundFriends.forEach(function (friend) {
-                queue.push(friend.name);
-            });
-        }
+        invitedFriends = invitedFriends.concat(foundFriends);
+        foundFriends.forEach(function (friend) {
+            queue.push(friend.name);
+        });
         i++;
+        if (foundFriends.length === 0 || i == depth) {
+            break;
+        }
     }
     return invitedFriends;
 }
