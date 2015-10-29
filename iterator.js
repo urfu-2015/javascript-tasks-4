@@ -32,7 +32,7 @@ module.exports.get = function (collection, startPoint, depth) {
                         friend: friends[index][0],
                         phone: friends[index][1]['phone']
                     }
-            } : null;
+                } : null;
         },
         prev: function () {
             var current = friends[index];
@@ -46,7 +46,7 @@ module.exports.get = function (collection, startPoint, depth) {
                         friend: friends[index][0],
                         phone: friends[index][1]['phone']
                     }
-            } : null
+                } : null;
         },
         nextMale: function () {
             var current = friends[index];
@@ -127,5 +127,5 @@ function getMale(friends, index) {
                 friend: friends[index][0],
                 phone: friends[index][1]['phone']
             }
-    } : null;
+        } : null;
 }
