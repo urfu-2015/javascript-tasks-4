@@ -1,61 +1,69 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-	var friends = getFriends(collection, startPoint, 0, depth);
-	var indexFriend = 0;
-	return {
-		next: function () {
-			// проверка 
-			return friends[indexFriend + 1] ? frineds[++indexFriend] : null;
+    var depth = depth || Infinity;
+    var friends = getFriends(collection, startPoint, -1, depth).sort(function (elementFirst, elementSecond) {
+            if (elementFirst.name < elementSecond.name) {
+                return -1;
+            }
+                return 1;
+        });
+    var indexFriend = 0;
+    console.log(friends);
+    return {
+        next: function () {
+            if (friends[indexFriend + 1]) {
+                var friend = {name: friends[indexFriend + 1].name, phone: friends[indexFriend + 1].phone};
+                indexFriend++;
 
-		},
+                return friend;
+            }
+        },
 
-		prev: function () {
-			return friends[indexFriend - 1] ? friends[--indexFriend] : null;
-		},
+        prev: function () {
+            if (friends[indexFriend - 1]) {
+                var friend = {name: friends[indexFriend - 1].name, phone: friends[indexFriend - 1].phone};
+                indexFriend--;
 
-		nextMale: function () {
-			while(friends[indexFriend]) {
-				if (collection[frineds[indexFriend + 1].gender] === 'мужской') {
-					return friends[++indexFriend];
-				} else {
-					indexFriend++;
-				}
-			}
-			return null;
-		}
+                return friend;
+            }
+        },
+        nextMale: function () {
+            while (friends[indexFriend + 1]) {
+                if (friends[indexFriend + 1].gender === 'мужской') {
+                    return friends[++indexFriend];
+                } else {
+                    indexFriend++;
+                }
+            }
+            return null;
+        },
 
-		prevMale: function () {
-			while(friends[indexFriend]) {
-				if (collection[frineds[indexFriend - 1].gender] === 'мужской') {
-					return friends[--indexFriend];
-				} else {
-					indexFriend--;
-				}
-			}
-			return null;
-		}
-	}
+        prevMale: function () {
+            while (friends[indexFriend - 1]) {
+                if (friends[indexFriend + 1].gender === 'мужской') {
+                    return friends[--indexFriend];
+                } else {
+                    indexFriend--;
+                }
+            }
+            return null;
+        }
+    }
 };
 
-/*function getFriends (data, name, current, depth, result) {
-    var persons = data[name].friends;
-    var node = data[name];
-
-    if (persons.length === 0) {
+function getFriends (data, name, current, depth, result) {
+    result = result || [];
+    var person = data[name];
+    if (!person) {
         return result;
     }
+    result.push({ name: name, phone: person.phone, gender: person.gender });
+    var friends = person.friends;
+    delete data[name];
 
-    result.push({ name: name, phone: node.phone});
-    current++;
-    persons.reduce(function (name1) {
-        if (current < depth){
-            result.concat(data[name1]).map(function (name2) {
-                return getFriends(data, name2, current, depth, result);
-            });
-        } else {
-            return result;
-    }
-   }, result);
+    return (++current < depth && friends && friends.length) ?
+        friends.reduce(function(result, name) {
+            return getFriends(data, name, current, depth, result);
+        }, result) : result;
 }
-*/
