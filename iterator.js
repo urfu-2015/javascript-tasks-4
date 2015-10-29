@@ -8,7 +8,6 @@ module.exports.get = function (collection, startPoint, depth) {
     var stack = createStack(collection, startPoint, depth);
     return {
         next: function (name) {
-            var nesseseryVariable = depth;
             if (!stack) {
                 return null;
             }
@@ -80,7 +79,7 @@ function createStack(collection, startPoint) {
 }
 
 function iterateFriends(collection, name, depth, stack) {
-    if (depth > d) {
+    if (depth == d) {
         return;
     }
     if (!(name in collection)) {
