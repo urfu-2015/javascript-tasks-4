@@ -4,7 +4,7 @@
 var faceBook = require('./faceBook.js');
 
 // Подключаем волшебный итератор по книге
-var iterator = require('./iterator');
+var iterator = require('./src/iterator');
 
 // Собираем друзей на свадьбу
 //  faceBook – книга
