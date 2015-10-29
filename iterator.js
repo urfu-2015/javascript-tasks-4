@@ -76,7 +76,7 @@ function createFriendList(collection, startPoint, depth) {
             getFriends(newFriends, currentDepth + 1);
         }
     }
-    if (startPoint in collection) {
+    if (startPoint in collection and depth != 0) {
         var friendList = [startPoint];
         getFriends([startPoint], 0);
         return friendList;
