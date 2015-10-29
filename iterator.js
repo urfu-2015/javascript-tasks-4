@@ -1,9 +1,9 @@
 'use strict';
 
-function newJSON(collection, friendName) {
+function newJSON(phone, friendName) {
     return {
         name: friendName,
-        phone: collection[friendName]['phone']
+        phone: phone
     };
 }
 
@@ -17,7 +17,7 @@ function addToFriendsList(collection, friendsList, startPoint) {
             }
         }
     }
-    if (!friendsToAdd.length) {
+    if (friendsToAdd.length) {
         return friendsToAdd;
     }
     return null;
@@ -41,55 +41,66 @@ module.exports.get = function (collection, startPoint, depth) {
             if (Object.keys(collection).indexOf(startPoint) === -1) {
                 return null;
             }
+            if (!this.depth) {
+                return;
+            }
             this.iterationIndex += 1;
+            var list = this.friendsList;
             if (typeof friend !== 'undefined') {
-                for (var i = this.iterationIndex; i < this.friendsList.length; i++) {
-                    if (this.friendsList[i] === friend) {
-                        return newJSON(collection, this.friendsList[i]);
+                for (var i = this.iterationIndex; i < list.length; i++) {
+                    if (list[i] === friend) {
+                        return newJSON(collection[friend]['phone'], friend);
                     }
                     this.iterationIndex += 1;
                 }
             }
-            if (this.iterationIndex >= this.friendsList.length) {
+            if (this.iterationIndex >= list.length) {
                 return null;
             }
 
-            var addedList = addToFriendsList(collection, this.friendsList, startPoint);
+            var addedList = addToFriendsList(collection, list, startPoint);
             if (addedList && this.numOfAdditions < this.depth) {
-                this.friendsList = this.friendsList.concat(addedList);
+                this.friendsList = list.concat(addedList);
                 this.numOfAdditions += 1;
             }
-            return newJSON(collection, this.friendsList[this.iterationIndex]);
+            return newJSON(collection[list[this.iterationIndex]]['phone'],
+                list[this.iterationIndex]);
         },
         nextMale: function () {
+            if (!this.depth) {
+                return;
+            }
             this.iterationIndex += 1;
-            while (this.iterationIndex < this.friendsList.length) {
-                if (collection[this.friendsList[this.iterationIndex]]['gender'] !== 'Мужской') {
+            var list = this.friendsList;
+            while (this.iterationIndex < list.length) {
+                if (collection[list[this.iterationIndex]]['gender'] !== 'Мужской') {
                     this.iterationIndex += 1;
                 } else {
                     break;
                 }
             }
-            var addedList = addToFriendsList(collection, this.friendsList, startPoint);
+            var addedList = addToFriendsList(collection, list, startPoint);
             if (addedList && this.numOfAdditions < this.depth) {
-                this.friendsList = this.friendsList.concat(addedList);
+                this.friendsList = list.concat(addedList);
                 this.numOfAdditions += 1;
             }
-            if (this.iterationIndex >= this.friendsList.length) {
+            if (this.iterationIndex >= list.length) {
                 return null;
             }
 
-            return newJSON(collection, this.friendsList[this.iterationIndex]);
+            return newJSON(collection[list[this.iterationIndex]]['phone'],
+                list[this.iterationIndex]);
         },
         prev: function (friend) {
             if (Object.keys(collection).indexOf(startPoint) === -1) {
                 return null;
             }
             this.iterationIndex -= 1;
+            var list = this.friendsList;
             if (typeof friend !== 'undefined') {
                 for (var i = this.iterationIndex; i >= 0; i--) {
-                    if (this.friendsList[i] === friend) {
-                        return newJSON(collection, this.friendsList[i]);
+                    if (list[i] === friend) {
+                        return newJSON(collection[friend]['phone'], friend);
                     }
                     this.iterationIndex -= 1;
                 }
@@ -97,12 +108,14 @@ module.exports.get = function (collection, startPoint, depth) {
             if (this.iterationIndex < 0) {
                 return null;
             }
-            return newJSON(collection, this.friendsList[this.iterationIndex]);
+            return newJSON(collection[list[this.iterationIndex]]['phone'],
+                list[this.iterationIndex]);
         },
         prevMale: function () {
             this.iterationIndex -= 1;
+            var list = this.friendsList;
             while (this.iterationIndex >= 0) {
-                if (collection[this.friendsList[this.iterationIndex]]['gender'] !== 'Мужской') {
+                if (collection[list[this.iterationIndex]]['gender'] !== 'Мужской') {
                     this.iterationIndex -= 1;
                 } else {
                     break;
@@ -111,7 +124,8 @@ module.exports.get = function (collection, startPoint, depth) {
             if (this.iterationIndex < 0) {
                 return null;
             }
-            return newJSON(collection, this.friendsList[this.iterationIndex]);
+            return newJSON(collection[list[this.iterationIndex]]['phone'],
+                list[this.iterationIndex]);
         }
     };
 };
