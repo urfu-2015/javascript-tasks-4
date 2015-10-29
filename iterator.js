@@ -142,6 +142,6 @@ function Iterator(collection, startPoint, depth) {
         listNames = createListNames(startPoint);
     }
     function collectEntry(name) {
-        return collection[name];
+        return {name: name, phone: collection[name].phone};
     }
 };
