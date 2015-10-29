@@ -1,113 +1,118 @@
 'use strict';
 
 function getFriends(collection, startPoint, depth) {
+    Object.keys(collection).forEach(function (name) {
+        collection[name].friends.sort(function (a, b) {
+            return a > b ? 1 : -1;
+        });
+    });
+    if (depth === undefined) {
+        depth = Object.keys(collection).length;
+    }
     if (collection[startPoint] === undefined) {
         return [];
     } else {
-
-    var depthOfFriends = [[startPoint]] ;
-    var currentDepth = 0;
-    var visited = [startPoint];
-    while (currentDepth < depth) {
-        var people = [];
-        var l = depthOfFriends[currentDepth].length;
-        for (var i = 0; i < l; i++) {
-            var numOfFriends = collection[depthOfFriends[currentDepth][i]].friends.length;
-            for (var j = 0; j < numOfFriends; j++) {
-                var currentFriend = collection[depthOfFriends[currentDepth][i]].friends[j];
-                if (visited.indexOf(currentFriend) = -1 && collection.indexOf(currentFriend) > -1) {
-                    people.push(currentFriend);
+        var depthOfFriends = [[startPoint]];
+        var currentDepth = 0;
+        var visited = [startPoint];
+        while (currentDepth < depth) {
+            var people = [];
+            depthOfFriends[currentDepth].map(function (somebody) {
+                collection[somebody].friends.map(function (guys) {
+                    if (visited.indexOf(guys) === -1 && collection[guys] !== undefined) {
+                        people.push(guys);
+                        visited.push(guys);
                     }
-                }
-                people = people.sort;
-                depthOfFriends[currentDepth] = depthOfFriends[currentDepth].concat(people);
-                visited = visited.concat(people);
-            }
+                });
+            });
+            depthOfFriends[currentDepth + 1] = people;
             currentDepth++;
         }
-        return (depthOfFriends);
+        return flattened(depthOfFriends);
     }
+}
+
+function flattened(oldArray) {
+    return oldArray.reduce(function (a, b) {
+        return a.concat(b);
+    });
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    
-    if (depth === undefined) {
-        depth = collection.length;
-    }
-
     var allFriends = getFriends(collection, startPoint, depth);
-    var currentDepth = 0;
-    var currentFriends = 0;
-
-return{
-     next: function(name) {
-        if (allFriends === []) {
-            return (null);
-        } else {
-            if (name === undefined) {
-                currentFriends = currentFriends++;
-                if (currentFriends > [allFriends[currentDepth]].length) {
-                    currentDepth = currentDepth++;
-                    if (currentDepth <= depth) {
-                        currentFriends = 0;
-                        return {
-                            name: allFriends[currentDepth][currentFriends],
-                            phone: collection[allFriends[currentDepth][currentFriends]].phone
-                        };
-                    } else {
+    var maxNumOfFriend = allFriends.length;
+    var currentFriend = 1;
+    return {
+        next: function (name) {
+            if (collection[startPoint] === undefined || currentFriend >= maxNumOfFriend - 1) {
+                return null;
+            }
+            if (name !== undefined) {
+                while (true) {
+                    var friend = allFriends[currentFriend];
+                    if (currentFriend >= maxNumOfFriend - 1) {
                         return null;
                     }
-                } else {
-                return {
-                            name: [allFriends[currentDepth]][currentFriends],
-                            phone: collection[allFriends[currentDepth][currentFriends]].phone
-                        }
-                }
-            } else {
-            return {
-                            name: name,
-                            phone: collection[name].phone
-                        }
-            }
-        }
-    },
-
-    /*function nextMale(name) {
-        
-    }*/
-     pref: function(name) {
-        if (allFriends === []) {
-            return (null);
-        } else {
-            if (name === undefined) {
-                currentFriends = currentFriends--;
-                if (currentFriends < 0) {
-                    currentDepth = currentDepth--;
-                    if (currentDepth < 0) {
-                    return (null)} else {
+                    if (friend === name) {
+                        currentFriend++;
                         return {
-                            name: allFriends[currentDepth][currentFriends],
-                            phone: collection[allFriends[currentDepth][currentFriends]].phone
-                        }
+                            name: friend,
+                            phone: collection[friend].phone
+                        };
                     }
-                } else {
-                return {
-                            name: allFriends[currentDepth][currentFriends],
-                            phone: collection[allFriends[currentDepth][currentFriends]].phone
-                        }
+                    currentFriend++;
                 }
-                
             } else {
+                var friend = allFriends[currentFriend];
+                currentFriend++;
+                return {
+                            name: friend,
+                            phone: collection[friend].phone
+                        };
+            }
+        },
+        prev: function () {
+            if (collection[startPoint] === undefined || currentFriend < 2) {
+                return null;
+            }
+            var friend = allFriends[currentFriend - 2];
+            currentFriend--;
             return {
-                            name: allFriends[currentDepth][currentFriends],
-                            phone: collection[allFriends[currentDepth][currentFriends]].phone
-                        }
+                            name: friend,
+                            phone: collection[friend].phone
+                        };
+        },
+        nextMale: function () {
+            if (collection[startPoint] === undefined || currentFriend >= maxNumOfFriend - 1) {
+                return null;
+            }
+            while (true) {
+                var friend = allFriends[currentFriend];
+                if (collection[friend].gender === 'Мужской') {
+                    currentFriend++;
+                    return {
+                        name: friend,
+                        phone: collection[friend].phone
+                    };
+                }
+                currentFriend++;
+            }
+        },
+        prevMale: function () {
+            if (collection[startPoint] === undefined || currentFriend < 2) {
+                return null;
+            }
+            while (true) {
+                var friend = allFriends[currentFriend - 2];
+                if (collection[friend].gender === 'Мужской') {
+                    currentFriend--;
+                    return {
+                            name: friend,
+                            phone: collection[friend].phone
+                        };
+                }
+                currentFriend--;
             }
         }
-    }
-    /*function prefMale(name) {
-        
-    }*/
-}
-}
-
+    };
+};
