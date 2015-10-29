@@ -28,7 +28,7 @@ function Iterator(collection, startPoint, depth) {
             this.current = friendsList[index];
         } while ((gender !== undefined && collection[this.current].gender !== gender) ||
                     (name !== undefined && this.current !== name));
-        return collection[this.current];
+        return { name: this.current, phone: collection[this.current].phone };
     };
 }
 
