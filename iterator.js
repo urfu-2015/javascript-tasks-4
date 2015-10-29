@@ -5,9 +5,9 @@ module.exports.get = function (collection, startPoint, depth) {
     var usedContacts = new Set();
     var queue = [];
     var parents = {};
-    var _depth = {};
+    var depthByContact = {};
     var currentContact = startPoint;
-    _depth[currentContact] = 0;
+    depthByContact[currentContact] = 0;
     var prevsCount = 0;
     var prevsMaleCount = 0;
     var traversal = [];
@@ -40,7 +40,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     yield traversal[traversal.length - prevsCount];
                     prevsCount--;
                 }
-                if (!usedContacts.has(contact) && _depth[currentContact] < depth) {
+                if (!usedContacts.has(contact) && depthByContact[currentContact] < depth) {
                     contactData = {};
                     contactData.name = contact;
                     contactData.phone = collection[contact].phone;
@@ -49,7 +49,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                     queue.push(contact);
                     parents[contact] = currentContact;
-                    _depth[contact] = _depth[currentContact] + 1;
+                    depthByContact[contact] = depthByContact[currentContact] + 1;
                     usedContacts.add(contact);
                     traversal.push(contactData);
                     yield contactData;
