@@ -43,7 +43,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 var previouslyUnused = true;
                 for (var i = 0; i < previousPersons.length - 1; i++) {
                     var tempList = collection[previousPersons[i]].friends;
-                    if (tempList.indexOf(friendName) != -1) {
+                    if (tempList.indexOf(friendName) !== -1) {
                         previouslyUnused = false;
                     }
                 };
@@ -51,15 +51,15 @@ module.exports.get = function (collection, startPoint, depth) {
                     currentPersonId++;
                     continue;
                 }
-                if (previousPersons.indexOf(friendName) != -1) {
+                if (previousPersons.indexOf(friendName) !== -1) {
                     currentPersonId++;
                     continue;
                 }
-                if (parameter && collection[friendName].gender != 'Мужской') {
+                if (parameter && collection[friendName].gender !== 'Мужской') {
                     currentPersonId++;
                     continue;
                 }
-                if (targetPerson && friendName != targetPerson) {
+                if (targetPerson && friendName !== targetPerson) {
                     currentPersonId++;
                     continue;
                 }
@@ -89,11 +89,11 @@ module.exports.get = function (collection, startPoint, depth) {
                     currentPersonId = currentList.length - 1;
                 }
                 var friendName = currentList[currentPersonId];
-                if (previousPersons.indexOf(friendName) != -1) {
+                if (previousPersons.indexOf(friendName) !== -1) {
                     currentPersonId--;
                     continue;
                 }
-                if (parameter && collection[friendName].gender != 'Мужской') {
+                if (parameter && collection[friendName].gender !== 'Мужской') {
                     currentPersonId--;
                     continue;
                 }
