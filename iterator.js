@@ -28,7 +28,7 @@ module.exports.get = function (collection, startPoint, depth) {
             index = getIndex(friends, arguments, index, true);
             return index < friends.length ?
                 {
-                    friend: friends[index][0],
+                    name: friends[index][0],
                     phone: friends[index][1]['phone']
                 } : null;
         },
@@ -40,7 +40,7 @@ module.exports.get = function (collection, startPoint, depth) {
             index = getIndex(friends, arguments, index, true);
             return index > -1 ?
                 {
-                    friend: friends[index][0],
+                    name: friends[index][0],
                     phone: friends[index][1]['phone']
                 } : null;
         },
@@ -119,7 +119,7 @@ function getIndex(queue, names, index, isName) {
 function getMale(friends, index) {
     return friends[index][1]['gender'] == 'Мужской' ?
         {
-            friend: friends[index][0],
+            name: friends[index][0],
             phone: friends[index][1]['phone']
         } : null;
 }
