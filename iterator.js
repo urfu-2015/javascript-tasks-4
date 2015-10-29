@@ -9,7 +9,7 @@ function Iterator(collection, startPoint, depth) {
 
     depth = Number.isInteger(depth) ? depth : 0;
 
-    if (typeof startPoint === undefined || Object.keys(collection).indexOf(startPoint) === -1) {
+    if (typeof startPoint === undefined || !collection.hasOwnProperty(startPoint)) {
         curent = NaN;
     } else {
         var listNames = createListNames(startPoint);
@@ -48,7 +48,7 @@ function Iterator(collection, startPoint, depth) {
                 if (curents.indexOf(friend) === -1 &&
                     following.indexOf(friend) === -1 &&
                     result.indexOf(friend) === -1 &&
-                    Object.keys(collection).indexOf(friend) !== -1) {
+                    collection.hasOwnProperty(friend)) {
                     friends.push(friend);
                 }
             }
@@ -131,11 +131,11 @@ function Iterator(collection, startPoint, depth) {
 
     function isChange() {
         return listNames.every(item => {
-            return Object.keys(collection).indexOf(item) !== -1;
+            return collection.hasOwnProperty(item);
         });
     }
     function rebuild() {
-        if (Object.keys(collection).indexOf(startPoint) === -1) {
+        if (!collection.hasOwnProperty(startPoint)) {
             curent = NaN;
             return;
         }
