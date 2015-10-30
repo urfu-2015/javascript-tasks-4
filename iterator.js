@@ -2,35 +2,51 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var depth = depth || Infinity;
-    var friends = getFriends(collection, startPoint, -1, depth).sort(function (elementFirst, elementSecond) {
+    var friends = getFriends(collection, startPoint, -1, depth).slice(1); // убрали startPoint
+    friends = friends.sort(function (elementFirst, elementSecond) {
             if (elementFirst.name < elementSecond.name) {
                 return -1;
             }
                 return 1;
         });
-    var indexFriend = 0;
-    console.log(friends);
+    var indexFriend = -1;
     return {
-        next: function () {
+        next: function (name) {
+            if (name) {
+                var person = friends.filter(function (friend) {
+
+                    return friend.name === name;
+                });
+                if (person) {
+                    return {name: name, phone: person.phone};
+                }
+            }
             if (friends[indexFriend + 1]) {
-                var friend = {name: friends[indexFriend + 1].name, phone: friends[indexFriend + 1].phone};
+                var friend = {
+                    name: friends[indexFriend + 1].name, 
+                    phone: friends[indexFriend + 1].phone
+                };
                 indexFriend++;
 
                 return friend;
             }
+            return null;
         },
-
         prev: function () {
             if (friends[indexFriend - 1]) {
-                var friend = {name: friends[indexFriend - 1].name, phone: friends[indexFriend - 1].phone};
+                var friend = {
+                    name: friends[indexFriend - 1].name, 
+                    phone: friends[indexFriend - 1].phone
+                };
                 indexFriend--;
 
                 return friend;
             }
+            return null;
         },
         nextMale: function () {
             while (friends[indexFriend + 1]) {
-                if (friends[indexFriend + 1].gender === 'мужской') {
+                if (friends[indexFriend + 1].gender === 'Мужской') {
                     return friends[++indexFriend];
                 } else {
                     indexFriend++;
@@ -38,10 +54,9 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             return null;
         },
-
         prevMale: function () {
             while (friends[indexFriend - 1]) {
-                if (friends[indexFriend + 1].gender === 'мужской') {
+                if (friends[indexFriend - 1].gender === 'Мужской') {
                     return friends[--indexFriend];
                 } else {
                     indexFriend--;
@@ -51,7 +66,6 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     }
 };
-
 function getFriends (data, name, current, depth, result) {
     result = result || [];
     var person = data[name];
