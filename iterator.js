@@ -49,6 +49,25 @@ module.exports.get = function (collection, startPoint, depth) {
             } else {
                 return getFriend(collection, this.friends, name);
             }
+        },
+        
+        prevMale: function (name) {
+            if (name == undefined) {
+                this.indexPointer -= 1;
+                while (this.indexPointer >= 0) {
+                    if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
+                        return {
+                            name: this.friends[this.indexPointer],
+                            phone: collection[this.friends[this.indexPointer]].phone
+                        };
+                    } else {
+                        this.indexPointer -= 1;
+                    }
+                }
+                return null;
+            } else {
+                return getFriend(collection, this.friends, name);
+            }
         }
     };
 };
@@ -63,7 +82,6 @@ function getFriend(collection, friends, name) {
 }
 
 function createFriendList(collection, startPoint, depth) {
-    depth = depth || Object.keys(collection).length;
     function getFriends(friends, currentDepth) {
         var newFriends = [];
         friends.forEach(function (friend) {
@@ -76,7 +94,9 @@ function createFriendList(collection, startPoint, depth) {
             getFriends(newFriends, currentDepth + 1);
         }
     }
+
     if (startPoint in collection && depth != 0) {
+        depth = depth || Object.keys(collection).length;
         var friendList = [startPoint];
         getFriends([startPoint], 0);
         return friendList;
