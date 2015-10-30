@@ -23,7 +23,7 @@ function Iterator(collection, startPoint, depth) {
     var init = function () {
         queue = [];
         if (collection[startPoint]) {
-            queue.push(startPoint);// = queue.concat(collection[startPoint].friends || []);
+            queue.push(startPoint);
         }
         currentIndex = -1;
         names = Object.keys(collection);
@@ -58,7 +58,7 @@ function Iterator(collection, startPoint, depth) {
             }
             currentIndex--;
             var current = queue[currentIndex];
-            if (current != startPoint && conditionFn(current, collection[current])) {
+            if (conditionFn(current, collection[current])) {
                 previousName = current;
                 return {name: current, phone: collection[current].phone};
             }
@@ -88,6 +88,7 @@ function Iterator(collection, startPoint, depth) {
             var current = queue[currentIndex];
             // дошли до конца, возвращаем null
             if (current === undefined) {
+                currentIndex--;
                 return null;
             }
 
