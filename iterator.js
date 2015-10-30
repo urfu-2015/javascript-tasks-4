@@ -50,7 +50,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return getFriend(collection, this.friends, name);
             }
         },
-        
+
         prevMale: function (name) {
             if (name == undefined) {
                 this.indexPointer -= 1;
