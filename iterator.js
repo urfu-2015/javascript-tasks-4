@@ -2,15 +2,15 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var iterator = {count: -1, collection: [], hasStart: true};
-    var visited = [];
+    var visited = [startPoint];
     var stack = [];
     if (Object.keys(collection).indexOf(startPoint) == -1) {
         iterator.hasStart = false;
     } else {
         stack.push({name: startPoint, depth: 0});
-        while (visited.length < Object.keys(collection).length) {
+        while (stack.length > 0 && visited.length < Object.keys(collection).length) {
             var current = stack.shift();
-            if (current.depth >= depth) {
+            if (depth && current.depth > depth) {
                 break;
             }
             if (current.name !== startPoint) {
@@ -18,18 +18,26 @@ module.exports.get = function (collection, startPoint, depth) {
                 record.name = current.name;
                 iterator.collection.push(record);
             }
-            visited.push(current.name);
             var currentFriends = collection[current.name].friends.sort();
             for (var friend = 0; friend < currentFriends.length; friend++) {
-                if (visited.indexOf(currentFriends[friend]) === -1) {
+                if (collection[currentFriends[friend]] &&
+                    visited.indexOf(currentFriends[friend]) === -1) {
                     stack.push({name: currentFriends[friend], depth: current.depth + 1});
+                    visited.push(currentFriends[friend]);
                 }
             }
         }
     }
 
+    iterator.update = function (current) {
+        var newIterator = module.exports.get(collection, startPoint, depth);
+        newIterator.next(current);
+        return newIterator;
+    };
+
     iterator.next = function () {
         if (!this.hasStart) {
+
             return null;
         }
         this.count = this.count + 1;
