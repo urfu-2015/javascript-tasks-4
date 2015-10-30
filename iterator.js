@@ -2,9 +2,9 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     if (collection[startPoint]) {
-        var currentList = collection[startPoint].friends;
+        var currentList = collection[startPoint].friends.sort();
     }
-    var currentPersonId = -1;
+    var currentPersonIndex = -1;
     var previousPersons = [startPoint];
     if (typeof depth === 'undefined') {
         depth = Number.MAX_VALUE;
@@ -24,22 +24,22 @@ module.exports.get = function (collection, startPoint, depth) {
             this.hiddenPrev(true);
         },
         hiddenNext: function (parameter, targetPerson) {
-            if (!collection[startPoint]) {
+            if (!collection[startPoint] || depth === 0) {
                 // console.log('null');
                 return null;
             }
-            currentPersonId++;
-            while (currentPersonId <= currentList.length) {
-                if (currentPersonId === currentList.length) {
+            currentPersonIndex++;
+            while (currentPersonIndex <= currentList.length) {
+                if (currentPersonIndex === currentList.length) {
                     var name = findNextName(collection, previousPersons, depth);
                     if (name === null) {
                         // console.log('null');
                         return null;
                     }
-                    currentPersonId = 0;
-                    currentList = collection[name].friends;
+                    currentPersonIndex = 0;
+                    currentList = collection[name].friends.sort();
                 }
-                var friendName = currentList[currentPersonId];
+                var friendName = currentList[currentPersonIndex];
                 var previouslyUnused = true;
                 for (var i = 0; i < previousPersons.length - 1; i++) {
                     var tempList = collection[previousPersons[i]].friends;
@@ -48,19 +48,19 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                 };
                 if (!previouslyUnused) {
-                    currentPersonId++;
+                    currentPersonIndex++;
                     continue;
                 }
                 if (previousPersons.indexOf(friendName) !== -1) {
-                    currentPersonId++;
+                    currentPersonIndex++;
                     continue;
                 }
                 if (parameter && collection[friendName].gender !== 'Мужской') {
-                    currentPersonId++;
+                    currentPersonIndex++;
                     continue;
                 }
                 if (targetPerson && friendName !== targetPerson) {
-                    currentPersonId++;
+                    currentPersonIndex++;
                     continue;
                 }
                 console.log(friendName);
@@ -76,25 +76,30 @@ module.exports.get = function (collection, startPoint, depth) {
                 // console.log('null');
                 return null;
             }
-            currentPersonId--;
-            while (currentPersonId >= -1) {
-                if (currentPersonId === -1) {
+            if (currentPersonIndex !== -1) {
+                currentPersonIndex--;
+            }
+            while (currentPersonIndex >= -1) {
+                if (currentPersonIndex === -1) {
+                    if (previousPersons.length === 1) {
+                        return null;
+                    }
                     previousPersons.pop();
                     var name = previousPersons[previousPersons.length - 1];
                     if (typeof name === 'undefined') {
                         // console.log('null');
                         return null;
                     }
-                    currentList = collection[name].friends;
-                    currentPersonId = currentList.length - 1;
+                    currentList = collection[name].friends.sort();
+                    currentPersonIndex = currentList.length - 1;
                 }
-                var friendName = currentList[currentPersonId];
+                var friendName = currentList[currentPersonIndex];
                 if (previousPersons.indexOf(friendName) !== -1) {
-                    currentPersonId--;
+                    currentPersonIndex--;
                     continue;
                 }
                 if (parameter && collection[friendName].gender !== 'Мужской') {
-                    currentPersonId--;
+                    currentPersonIndex--;
                     continue;
                 }
                 console.log(friendName);
@@ -119,7 +124,7 @@ function findNextName(collection, previousPersons, MaxDepth) {
             previousPersons.push(person);
             return person;
         }
-        var friends = collection[person].friends;
+        var friends = collection[person].friends.sort();
         for (var i = 0; i < friends.length; i++) {
             var currentDepth = parentDepth + 1;
             if (used.indexOf(friends[i]) === -1 &&
