@@ -24,9 +24,9 @@ module.exports.get = function (collection, startPoint, depth) {
         // BFS
         var queue = [];
         var used = [];
-        var d = {};
+        var distances = {};
         for (var el in collection) {
-            d[el] = 0;
+            distances[el] = 0;
         }
         queue.push(startPoint);
         used.push(startPoint);
@@ -35,8 +35,8 @@ module.exports.get = function (collection, startPoint, depth) {
             for (var i = 0; i < collection[currentFriend].friends.sort().length; i++) {
                 var hisFriend = collection[currentFriend].friends[i];
                 if (used.indexOf(hisFriend) == -1) {
-                    d[hisFriend] = d[currentFriend] + 1;
-                    if (d[hisFriend] > depth) {
+                    distances[hisFriend] = distances[currentFriend] + 1;
+                    if (distances[hisFriend] > depth) {
                         break main;
                     }
                     used.push(hisFriend);
