@@ -25,7 +25,6 @@ describe('Базовое тестирование итератора', function 
 
         friends.next();
         friends.next();
-
         friends.prev().should.equal(faceBook['Васян']);
     });
 
