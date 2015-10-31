@@ -29,9 +29,9 @@ module.exports.get = function (collection, startPoint, depth) {
     var isCollectionChanged = function () {
         var _contact = contact;
         do {
-            var contactIsDeleted = typeof collection[_contact.name] === 'undefined';
-            var sourceIsDeleted = typeof _contact.source === 'undefined';
-            if (contactIsDeleted || sourceIsDeleted) {
+            var isContactDeleted = typeof collection[_contact.name] === 'undefined';
+            var isSourceDeleted = typeof _contact.source === 'undefined';
+            if (isContactDeleted || isSourceDeleted) {
                 return true;
             }
             _contact = _contact.source;
@@ -64,12 +64,12 @@ module.exports.get = function (collection, startPoint, depth) {
                     var friendList = contact.friends.sort();
                     contactQueue = add2Queue(friendList);
                 }
-                var contactNameGiven = typeof arguments[0] !== 'undefined';
-                var contactNameFound = contact.name === arguments[0];
-                var contactIsVisited = visitedContacts.has(contact.name) && !contactNameGiven;
-                var contactIsDeleted = contact === {};
+                var isContactNameGiven = typeof arguments[0] !== 'undefined';
+                var isContactFound = contact.name === arguments[0];
+                var isContactVisited = visitedContacts.has(contact.name) && !isContactNameGiven;
+                var isContactDeleted = contact === {};
             }
-            while ((contactNameGiven && !contactNameFound) || contactIsVisited || contactIsDeleted);
+            while ((isContactNameGiven && !isContactFound) || isContactVisited || isContactDeleted);
             var json = {
                 name: contact.name,
                 phone: contact.phone
@@ -89,11 +89,11 @@ module.exports.get = function (collection, startPoint, depth) {
                     contactQueue.splice(qc, 1);
                     contact = {};
                 }
-                var contactNameGiven = typeof arguments[0] !== 'undefined';
-                var contactNameFound = contact.name === arguments[0];
-                var contactIsDeleted = contact === {};
+                var isContactNameGiven = typeof arguments[0] !== 'undefined';
+                var isContactFound = contact.name === arguments[0];
+                var isContactDeleted = contact === {};
             }
-            while ((contactNameGiven && contactNameFound) || contactIsDeleted);
+            while ((isContactNameGiven && !isContactFound) || isContactDeleted);
             var json = {
                 name: contact.name,
                 phone: contact.phone
@@ -117,10 +117,10 @@ module.exports.get = function (collection, startPoint, depth) {
                     var friendList = contact.friends.sort();
                     contactQueue = add2Queue(friendList);
                 }
-                var contactIsVisited = visitedContacts.has(contact.name);
-                var contactIsDeleted = contact === {};
+                var isContactVisited = visitedContacts.has(contact.name);
+                var isContactDeleted = contact === {};
             }
-            while ((contact.gender != 'Мужской') || contactIsVisited || contactIsDeleted);
+            while ((contact.gender != 'Мужской') || isContactVisited || isContactDeleted);
             var json = {
                 name: contact.name,
                 phone: contact.phone
@@ -140,10 +140,9 @@ module.exports.get = function (collection, startPoint, depth) {
                     contactQueue.splice(qc, 1);
                     contact = {};
                 }
-                var contactIsVisited = visitedContacts.has(contact.name);
-                var contactIsDeleted = contact === {};
+                var isContactDeleted = contact === {};
             }
-            while ((contact.gender != 'Мужской') || contactIsDeleted);
+            while ((contact.gender != 'Мужской') || isContactDeleted);
             var json = {
                 name: contact.name,
                 phone: contact.phone
