@@ -2,12 +2,10 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var contactQueue = [];
+    var qc = -1; // contact queue counter
+    var visitedContacts = new Set();
     var contactName = startPoint;
     var contact = collection[contactName];
-    contact.name = contactName;
-    contact.source = contact;
-    contact.depth = 0;
-    var visitedContacts = new Set([contact.name]);
 
     var add2Queue = function (contactNames) {
         return contactQueue.concat(contactNames.map(function (_contactName) {
@@ -42,8 +40,13 @@ module.exports.get = function (collection, startPoint, depth) {
         return false;
     };
 
-    contactQueue = add2Queue(contact.friends.sort());
-    var qc = -1; // contact queue counter
+    if (contact) {
+        contact.name = contactName;
+        contact.source = contact;
+        contact.depth = 0;
+        visitedContacts.add(contact.name);
+        contactQueue = add2Queue(contact.friends.sort());
+    }
 
     return {
         next: function () {
