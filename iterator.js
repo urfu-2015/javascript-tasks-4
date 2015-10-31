@@ -33,6 +33,7 @@ function getFriends(collection, startPoint, usedFriends) {
 
 module.exports.get = function (collection, startPoint, depth) {
     depth = depth || Object.keys(collection).length;
+    var didFinish = false;
     var currDepth = 0;
     var currIndex = 0;
     var currFriends = [startPoint];
@@ -41,14 +42,15 @@ module.exports.get = function (collection, startPoint, depth) {
     usedFriends[startPoint] = collection[startPoint];
     return {
         next: function (name) {
-            // Пока не понимаю как использовать имя
-            // Писал в личку
+            // Имя еще не использую
             if (!doesUserExists(collection, startPoint)) {
+                return null;
+            }
+            if (didFinish) {
                 return null;
             }
             // Выдаем друзей до нужной глубины
             if (currDepth < depth) {
-                //TODO заканчивать раньше, чем закончится глубина
                 var tmpFriends = getFriends(collection, currFriends[currIndex], usedFriends);
                 //Если после 1-ого уровня друзей пусто, то дальше только null
                 if (!currDepth && !tmpFriends.length) {
@@ -61,6 +63,11 @@ module.exports.get = function (collection, startPoint, depth) {
                     usedFriends[item] = collection[item];
                 });
                 currIndex++;
+                //Если на новом уровне никого нет, то мы дошли до конца
+                if (newLevel.length === 0) {
+                    didFinish = true;
+                    return null;
+                }
                 //Если на данном уровне дошли до конца - спускаемся на след.
                 if (currIndex === currFriends.length) {
                     currFriends = currFriends.concat(newLevel);
@@ -72,7 +79,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     var toShow = {};
                     toShow['name'] = currFriends[currIndex];
                     toShow['phone'] = collection[currFriends[currIndex]]['phone'];
-                    //yield toShow; // А так хотелось
+                    console.log(toShow);
                     return toShow;
                 }
                 return null;
