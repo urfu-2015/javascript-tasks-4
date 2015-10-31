@@ -56,6 +56,7 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     name: friends[currentIndexFriend].name,
                     phone: collection[friends[currentIndexFriend].name].phone
                 };
+                return resultObject;
             } else {
                 var newIndex = -1;
                 for (var i = 0; i < friends.length; i++) {
