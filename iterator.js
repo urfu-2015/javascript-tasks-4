@@ -57,8 +57,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     contactQueue.splice(qc, 1);
                     qc--;
                     contact = {};
-                }
-                else {
+                } else {
                     var friendList = contact.friends.sort();
                     contactQueue = add2Queue(friendList);
                 }
@@ -111,8 +110,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     contactQueue.splice(qc, 1);
                     qc--;
                     contact = {};
-                }
-                else {
+                } else {
                     var friendList = contact.friends.sort();
                     contactQueue = add2Queue(friendList);
                 }
