@@ -113,7 +113,8 @@ module.exports.get = function (collection, startPoint, depth) {
         // В этом случае сделаем его стартовой точкой,
         // а дальше сведем к предыдущим случаям
         if (!friend) {
-            startPoint = friend['name'];
+            // Берем за начала того, на котором кого-то удалили
+            startPoint = lastShown['name'];
             didFinish = false;
             currDepth = 0;
             currIndex = 0;
@@ -134,6 +135,9 @@ module.exports.get = function (collection, startPoint, depth) {
     };
     return {
         next: function (name) {
+            if (didCollectionChanged()) {
+                _recalculateFriends();
+            }
             // Если нам дали имя, просто дойдем до него
             if (doesUserExists(collection, name)) {
                 var friend = _next();
@@ -148,6 +152,9 @@ module.exports.get = function (collection, startPoint, depth) {
             return tmpNext;
         },
         prev: function () {
+            if (didCollectionChanged()) {
+                _recalculateFriends();
+            }
             if (currIndex > 0) {
                 currIndex--;
                 toShow = {};
@@ -159,8 +166,11 @@ module.exports.get = function (collection, startPoint, depth) {
             return null;
         },
         nextMale: function () {
+            if (didCollectionChanged()) {
+                _recalculateFriends();
+            }
             var nextMale = this.next();
-            while (nextMale !== null && collection[nextMale['name']]['gender'] !== 'Мужской') {
+            while (nextMale && collection[nextMale['name']]['gender'] !== 'Мужской') {
                 nextMale = this.next();
             }
             return nextMale;
@@ -170,7 +180,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 _recalculateFriends();
             }
             var prevMale = this.prev();
-            while (prevMale !== null && collection[prevMale['name']]['gender'] !== 'Мужской') {
+            while (prevMale && collection[prevMale['name']]['gender'] !== 'Мужской') {
                 prevMale = this.prev();
             }
             return prevMale;
