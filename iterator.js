@@ -1,11 +1,13 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-    var friendsOrder = __createFriendsOrder(collection, startPoint, depth);
+    var friendsOrder = createFriendsOrder(collection, startPoint, depth);
     var currentIndex = -1;
+    var currentCollectionLength = Object.keys(collection).length;
     var iterateAndGetElement = function (positions) {
-        if (currentIndex + positions >= 0 && currentIndex + positions < friendsOrder.length) {
-            currentIndex += positions;
+        var newIndex = currentIndex + positions;
+        if (newIndex >= 0 && newIndex < friendsOrder.length) {
+            currentIndex = newIndex;
             var currentName = friendsOrder[currentIndex];
             return {
                 name: currentName,
@@ -15,6 +17,15 @@ module.exports.get = function (collection, startPoint, depth) {
         } else {
             return null;
         }
+    };
+    var updateFriendsOrder = function () {
+        if (currentCollectionLength == Object.keys(collection).length) {
+            return;
+        }
+        var newFriendsOrder = createFriendsOrder(collection, startPoint, depth);
+        currentCollectionLength = Object.keys(collection).length;
+        currentIndex = __getNewIndex(friendsOrder, newFriendsOrder, currentIndex);
+        friendsOrder = newFriendsOrder;
     };
     var iterateWithPredicate = function (positions, predicate) {
         var friend = iterateAndGetElement(positions);
@@ -50,15 +61,19 @@ module.exports.get = function (collection, startPoint, depth) {
         return answerFriend;
     };
     var getNextMale = function () {
+        updateFriendsOrder();
         return getFormattedFriend(iterateMale(1));
     };
     var getPrevMale = function () {
+        updateFriendsOrder();
         return getFormattedFriend(iterateMale(-1));
     };
     var getNextWithName = function (name) {
+        updateFriendsOrder();
         return getFormattedFriend(iterateWithName(name, 1));
     };
     var getPrevWithName = function (name) {
+        updateFriendsOrder();
         return getFormattedFriend(iterateWithName(name, -1));
     };
     return {
@@ -69,7 +84,18 @@ module.exports.get = function (collection, startPoint, depth) {
     };
 };
 
-function __createFriendsOrder(collection, startPoint, depth) {
+function __getNewIndex(friendsOrder, newFriendsOrder, currentIndex) {
+    for (var posInOldList = currentIndex; posInOldList < friendsOrder.length; posInOldList++) {
+        for (var posInNewList = 0; posInNewList < newFriendsOrder.length; posInNewList++) {
+            if (friendsOrder[posInOldList] == newFriendsOrder[posInNewList]) {
+                return posInNewList;
+            }
+        }
+    }
+    return currentIndex < newFriendsOrder.length ? currentIndex : newFriendsOrder.length;
+}
+
+function createFriendsOrder(collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
         return [];
     }
@@ -86,7 +112,7 @@ function __createFriendsOrder(collection, startPoint, depth) {
         }
         var nowName = thisDepthQueue.shift();
         collection[nowName].friends.sort().forEach(function (friendName) {
-            if (friendsOrder.indexOf(friendName) == -1) {
+            if (friendsOrder.indexOf(friendName) == -1 && collection[friendName] !== undefined) {
                 friendsOrder.push(friendName);
                 nextDepthQueue.push(friendName);
             }
