@@ -157,11 +157,10 @@ function getFriends(collection, startPoint, depth) {
                         phone: collection[friend].phone,
                         friends: collection[friend].friends
                     };
-                    newFriends.push(newContact)
+                    newFriends.push(newContact);
                     currentFriends.push(newContact);
                 }
             });
-
             var numberFriend = 0;
             while (numberFriend < friendsOfFriends.length) {
                 if (startPoint != friendsOfFriends[numberFriend]) {
