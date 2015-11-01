@@ -32,8 +32,8 @@ module.exports.get = function (phoneBook, startPosition, depthFind) {
                 return resFriend;
             }
         }
-    }
-}
+    };
+};
 function findFriends(phoneBook, startPosition, depthFind) {
     var queue = [[startPosition, 0]];
     var friendsNames = [startPosition];
