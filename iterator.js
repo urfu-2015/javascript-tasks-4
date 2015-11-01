@@ -21,7 +21,7 @@ function doesUserExists(collection, userName) {
 function getFriends(collection, startPoint, usedFriends) {
     var startPointFriends = collection[startPoint]['friends'];
     startPointFriends = startPointFriends.sort();
-    startPointFriends = startPointFriends.filter(function(friend) {
+    startPointFriends = startPointFriends.filter(function (friend) {
         return collection[friend];
     });
     var startPointNewFriends = [];
@@ -46,7 +46,7 @@ module.exports.get = function (collection, startPoint, depth) {
     var toShow = {};
     var lastShown = {};
     usedFriends[startPoint] = collection[startPoint];
-    var _next = function (){
+    var _next = function () {
         // Если стартовой точки нет, то сразу закончили
         if (!doesUserExists(collection, startPoint)) {
             didFinish = true;
@@ -104,7 +104,7 @@ module.exports.get = function (collection, startPoint, depth) {
         var friend = _next();
         // Либо связь потерялась совсем и дойти до последнего выданного
         // не сможем, либо дойдем, пересчитав все по ходу
-        while (friend && lastShown !== friend) {
+        while (friend && lastShown['name'] !== friend['name']) {
             friend = _next();
         }
         // Если дойти не смогли, то обратно от этого человека,
@@ -124,7 +124,13 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     };
     var didCollectionChanged = function () {
-        return collection !== collectionCopy;
+        // Раз сы только удаляем, можем сравнить и так на изменение
+        if (Object.keys(collection).length !== Object.keys(collectionCopy).length) {
+            collectionCopy = (JSON.parse(JSON.stringify(collection)));
+            return true;
+        } else {
+            return false;
+        }
     };
     return {
         next: function (name) {
