@@ -127,15 +127,15 @@ function getFriends(collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
         return newFriends;
     }
-    var nameFriends = [];
+    var nextFriends = [];
     var checkFriends = [];
     var depthFriends = [startPoint];
     while (depth > 0) {
         var currentFriends = [];
-        nameFriends = depthFriends;
+        nextFriends = depthFriends;
         depthFriends = [];
-        while (nameFriends.length != 0) {
-            var currentFriend = nameFriends.shift();
+        while (nextFriends.length > 0) {
+            var currentFriend = nextFriends.shift();
             var friendsOfFriends = [];
             var currentList = collection[currentFriend].friends.slice();
             for (var contact = 0; contact < currentList.length; contact++) {
@@ -148,6 +148,7 @@ function getFriends(collection, startPoint, depth) {
             friendsOfFriends = friendsOfFriends.sort(function (contact1, contact2) {
                 return contact1 > contact2 ? 1 : -1;
             });
+
             friendsOfFriends.forEach(function (friend) {
                 if (friend !== startPoint) {
                     var newContact = {
@@ -156,9 +157,11 @@ function getFriends(collection, startPoint, depth) {
                         phone: collection[friend].phone,
                         friends: collection[friend].friends
                     };
+                    newFriends.push(newContact)
                     currentFriends.push(newContact);
                 }
             });
+
             var numberFriend = 0;
             while (numberFriend < friendsOfFriends.length) {
                 if (startPoint != friendsOfFriends[numberFriend]) {
@@ -169,16 +172,5 @@ function getFriends(collection, startPoint, depth) {
         }
         depth--;
     }
-    checkFriends.forEach(function (friend) {
-        if (friend !== startPoint) {
-            var newContact = {
-                name: friend,
-                gender: collection[friend].gender,
-                phone: collection[friend].phone,
-                friends: collection[friend].friends
-            };
-            newFriends.push(newContact);
-        }
-    });
     return newFriends;
 }
