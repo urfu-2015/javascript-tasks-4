@@ -2,14 +2,20 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     if (collection[startPoint]) {
-        var currentList = collection[startPoint].friends.sort();
+        var currentList = collection[startPoint].friends.sort();// это текущий список,
+        //по которому идем
     }
-    var currentPersonIndex = -1;
-    var previousPersons = [startPoint];
+    var currentPersonIndex = -1;//это индекс в текущем списке человека,
+    //которого мы вернули последним
+    var previousPersons = [startPoint]; //это все люди, друзей которых мы уже
+    //просмотрели(для последнего просматриваем еще)
+    // это нужно чтобы 1. Избежать повторов 2. Удобно возвращаться назад
     if (typeof depth === 'undefined') {
         depth = Number.MAX_VALUE;
     }
-    var collectionLength = Object.keys(collection).length;
+    var collectionLength = Object.keys(collection).length;// длинна коллекции текущая,
+    //проверяем не изменилась ли она,
+    //если уменьшилась, то корректируем все в соответствии с изменениями
     return {
         next: function (targetPerson) {
             return this.hiddenNext(false, targetPerson);
@@ -28,9 +34,14 @@ module.exports.get = function (collection, startPoint, depth) {
                 // console.log('null');
                 return null;
             }
+            if (currentPersonIndex < -1) {
+                currentPersonIndex = -1;
+            }
             currentPersonIndex++;
             while (currentPersonIndex <= currentList.length) {
-                if (currentPersonIndex === currentList.length) {
+                if (currentPersonIndex === currentList.length) {// мы дошли до
+                    //конца текущего списка
+                    // и пытаемся найти нового человека(name) для обхода его друзей
                     var name = findNextName(collection, previousPersons, depth);
                     if (name === null) {
                         // console.log('null');
@@ -40,26 +51,29 @@ module.exports.get = function (collection, startPoint, depth) {
                     currentList = collection[name].friends.sort();
                 }
                 var friendName = currentList[currentPersonIndex];
-                var previouslyUnused = true;
+                var previouslyUnused = false;
                 for (var i = 0; i < previousPersons.length - 1; i++) {
                     var tempList = collection[previousPersons[i]].friends;
                     if (tempList.indexOf(friendName) !== -1) {
-                        previouslyUnused = false;
+                        previouslyUnused = true;
                     }
                 };
-                if (!previouslyUnused) {
+                if (previouslyUnused) {//не был ли человек уже выведен ранее
                     currentPersonIndex++;
                     continue;
                 }
-                if (previousPersons.indexOf(friendName) !== -1) {
+                if (friendName === startPoint) {// не начальный ли это человек,
+                    //для него предыдущая
+                    //проверка не работает, так как мы же его не выводили
                     currentPersonIndex++;
                     continue;
                 }
-                if (parameter && collection[friendName].gender !== 'Мужской') {
+                if (parameter && collection[friendName].gender !== 'Мужской') {//проверка на пол,
+                    //если она вообще нужна
                     currentPersonIndex++;
                     continue;
                 }
-                if (targetPerson && friendName !== targetPerson) {
+                if (targetPerson && friendName !== targetPerson) { //это когда нам нужно next
                     currentPersonIndex++;
                     continue;
                 }
@@ -71,18 +85,25 @@ module.exports.get = function (collection, startPoint, depth) {
         },
         hiddenPrev: function (parameter) {
             collectionLength = сhangesInCollection(collection,
-             collectionLength, previousPersons);
+             collectionLength, previousPersons); // роверяем не изменилась ли коллекция
             if (!collection[startPoint]) {
                 // console.log('null');
+                return null;
+            }
+            if (currentPersonIndex < -1) {
                 return null;
             }
             if (currentPersonIndex !== -1) {
                 currentPersonIndex--;
             }
             while (currentPersonIndex >= -1) {
-                if (currentPersonIndex === -1) {
+                if (currentPersonIndex === -1) { //текущий список прошли до начала,
+                    //пытаемся вернуться к тому,
+                    //кого до этого обходили
                     if (previousPersons.length === 1) {
-                        return null;
+                        console.log(startPoint);
+                        currentPersonIndex--;
+                        return Object(collection[startPoint]);
                     }
                     previousPersons.pop();
                     var name = previousPersons[previousPersons.length - 1];
@@ -94,6 +115,17 @@ module.exports.get = function (collection, startPoint, depth) {
                     currentPersonIndex = currentList.length - 1;
                 }
                 var friendName = currentList[currentPersonIndex];
+                var previouslyUnused = false;
+                for (var i = 0; i < previousPersons.length - 1; i++) {
+                    var tempList = collection[previousPersons[i]].friends;
+                    if (tempList.indexOf(friendName) !== -1) {
+                        previouslyUnused = true;
+                    }
+                };
+                if (previouslyUnused) {//не был ли человек уже выведен ранее
+                    currentPersonIndex--;
+                    continue;
+                }
                 if (previousPersons.indexOf(friendName) !== -1) {
                     currentPersonIndex--;
                     continue;
@@ -139,6 +171,7 @@ function findNextName(collection, previousPersons, MaxDepth) {
 }
 
 function сhangesInCollection(collection, collectionLength, previousPersons) {
+    //если коллекция изменилась, выясняем если в нашем пути обратно человек, которого больше нет
     var newCollectionLength = Object.keys(collection).length;
     if (collectionLength === newCollectionLength) {
         return newCollectionLength;
