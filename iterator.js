@@ -1,9 +1,6 @@
 'use strict';
 
-function GetAllAvailableFriends(collection, startPoint, depth) {
-    /*поиском в ширину обходим всех доступных друзей и получаем
-    упорядоченный список друзей, которые находятся в пределах
-    depth кругов рукопожатий*/
+function getAllAvailableFriends(collection, startPoint, depth) {
     if (!collection.hasOwnProperty(startPoint)) {
         return [{}];
     }
@@ -16,26 +13,27 @@ function GetAllAvailableFriends(collection, startPoint, depth) {
     visited[startPoint] = true;
     while (queue.length > 0) {
         var contact = queue.shift();
-        var friends = collection[contact.name].friends.sort();
+        var friends = collection[contact.name].friends.slice(0).sort();
 
         for (var i = 0; i < friends.length; i++) {
-            if (!visited.hasOwnProperty(friends[i])) {
-                var friendlyContact = {name: friends[i], distance: contact.distance + 1};
-
-                if (friendlyContact.distance > depth) {
-                    visited[friendlyContact.name] = true;
-                    continue;
-                }
-                distances.push(friendlyContact);
-                queue.push(friendlyContact);
-                visited[friendlyContact.name] = true;
+            if (visited.hasOwnProperty(friends[i])) {
+                continue;
             }
+            var friendlyContact = {name: friends[i], distance: contact.distance + 1};
+
+            if (friendlyContact.distance > depth) {
+                visited[friendlyContact.name] = true;
+                continue;
+            }
+            distances.push(friendlyContact);
+            queue.push(friendlyContact);
+            visited[friendlyContact.name] = true;
         }
     }
     return distances;
 }
 
-function GetFriendIndex(allFriends, friendName) {
+function getFriendIndex(allFriends, friendName) {
     for (var i = 0; i < allFriends.length; i++) {
         if (allFriends[i].name === friendName) {
             return i;
@@ -50,15 +48,16 @@ function collectionHasChanged(workCollection, collection) {
 
 function clearConnections(workCollection, collection) {
     var deletedContactsNames = {};
+    var workCollectionKeys = Object.keys(workCollection);
 
-    Object.keys(workCollection).forEach(function (item) {
+    workCollectionKeys.forEach(function (item) {
         if (!collection.hasOwnProperty(item)) {
             deletedContactsNames[item] = true;
         }
     });
     var newWorkCollection = {};
 
-    Object.keys(workCollection).forEach(function (item) {
+    workCollectionKeys.forEach(function (item) {
         if (deletedContactsNames.hasOwnProperty(item)) {
             return;
         }
@@ -83,20 +82,19 @@ module.exports.get = function (collection, startPoint, depth) {
     depth = depth || Number.MAX_VALUE;
     var workCollection = Object.assign({}, collection);
     var index = 0;
-    var allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
+    var allFriends = getAllAvailableFriends(workCollection, startPoint, depth);
 
     return {
-        next: function () {
+        next: function (toName) {
             this.handleDeletion();
-            if (typeof arguments[0] !== 'string') {
-                index++;
-                if (index >= allFriends.length) {
-                    index--;
+            if (typeof toName !== 'string') {
+                if (index >= allFriends.length - 1) {
                     return null;
                 }
+                index++;
                 return workCollection[allFriends[index].name];
             }
-            index = GetFriendIndex(allFriends, arguments[0]);
+            index = getFriendIndex(allFriends, arguments[0]);
             if (index === -1) {
                 return null;
             }
@@ -104,11 +102,10 @@ module.exports.get = function (collection, startPoint, depth) {
         },
         prev: function () {
             this.handleDeletion();
-            index--;
-            if (index <= 0) {
-                index++;
+            if (index <= 1) {
                 return null;
             }
+            index--;
             return workCollection[allFriends[index].name];
         },
         nextMale: function () {
@@ -132,14 +129,15 @@ module.exports.get = function (collection, startPoint, depth) {
             return null;
         },
         handleDeletion: function () {
-            if (collectionHasChanged(workCollection, collection)) {
-                workCollection = clearConnections(workCollection, collection);
-                var currentFriendName = allFriends[index].name;
-
-                allFriends = GetAllAvailableFriends(workCollection, startPoint, depth);
-                index = GetFriendIndex(allFriends, currentFriendName);
-                index = index === -1 ? 0 : index;
+            if (!collectionHasChanged(workCollection, collection)) {
+                return;
             }
+            workCollection = clearConnections(workCollection, collection);
+            var currentFriendName = allFriends[index].name;
+
+            allFriends = getAllAvailableFriends(workCollection, startPoint, depth);
+            index = getFriendIndex(allFriends, currentFriendName);
+            index = index === -1 ? 0 : index;
         }
     };
 };
