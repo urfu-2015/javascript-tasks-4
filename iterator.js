@@ -1,7 +1,7 @@
 'use strict';
 
 function sortArray(array) {
-    var newArray = Array.from(array);
+    var newArray = array;
     var l = newArray.length;
     var buffer;
     for (var i = 0; i < l - 1; i++) {
@@ -36,21 +36,32 @@ function createRelations(collection, startPoint, depth) {
         currentDepth++;
         people[currentDepth] = [];
 
-        // Создаём следующий уровень друзей
-        for (var i = 0, l = people[currentDepth - 1].length; i < l; i++) {// По уровню людей
+        /*Создаём следующий уровень друзей
+        Для каждого человека находим всех друзей и добавляем их в массив связей, только
+        если они есть в книге контактов и их еще нет в массиве связей*/
+        people[currentDepth - 1].forEach(function (man) {// Для каждого человека
             friends = [];
-            var lf = collection[ people[currentDepth - 1][i] ].friends.length;
-            for (var j = 0; j < lf; j++) {// По друзьям человека
-                if (!valueIn(people, collection[people[currentDepth - 1][i]].friends[j]) &&
-                    collection[ collection[people[currentDepth - 1][i]].friends[j] ]) {
-                    friends.push(collection[ people[currentDepth - 1][i] ].friends[j]);
+            collection[man].friends.forEach(function (friendOfMan) {// Для каждого друга человека
+                if (!valueIn(people, friendOfMan) && collection[friendOfMan]) {
+                    friends.push(friendOfMan);
                 }
-            }
+            });
             friends = sortArray(friends);
             people[currentDepth] = people[currentDepth].concat(friends);
-        }
+        });
     }
     return people;
+}
+
+function manInCollection(collection, man) {
+    if (collection[man]) {
+        return {
+            name: man,
+            phone: collection[man].phone
+        };
+    } else {
+        return null;
+    }
 }
 
 module.exports.get = function (collection, startPoint, depth) {
@@ -79,14 +90,6 @@ module.exports.get = function (collection, startPoint, depth) {
     }
 
     var nextFunction = function next(name) {
-        var friends = [];
-        var friend = {};
-
-        people = createRelations(collection, startPoint, currentDepth);
-        if (people[currentDepth].length <= currentFriend) {
-            currentFriend = people[currentDepth].length - 1;
-        }
-
         currentFriend++;
         if (currentFriend >= people[currentDepth].length) {// Если больше нет друзей текущей глубины
             if (currentDepth + 1 > depth) {// Если больше нельзя идти вглубь
@@ -97,40 +100,30 @@ module.exports.get = function (collection, startPoint, depth) {
                 currentDepth++;
 
                 people = createRelations(collection, startPoint, currentDepth);
-                if (people[currentDepth].length <= currentFriend) {
-                    currentFriend = people[currentDepth].length - 1;
-                }
 
                 if (!people[currentDepth].length) {
                     return null;
                 }
             }
         }
-        if (collection [ people[currentDepth][currentFriend] ]) {// Если друг есть в книге
-            friend = {
-                name: people[currentDepth][currentFriend],
-                phone: collection [ people[currentDepth][currentFriend] ].phone
-            };
+        var friend = manInCollection(collection, people[currentDepth][currentFriend]);
+        if (friend) {// Если друг есть в книге
             if (name === undefined || name === friend.name) {
                 return friend;
             } else {
                 return next(name);
             }
-
-        } else {// Если друга нет в книге, удалим его из людей
-            people[currentDepth].splice(currentFriend, 1);
+        } else {// Если друга нет в книге, заного построим связи между людьми         
+            people = createRelations(collection, startPoint, currentDepth);
+            if (people[currentDepth].length <= currentFriend) {
+                currentFriend = people[currentDepth].length - 1;
+            }
+            
             return next(name);
         }
     };
 
     var prevFunction = function prev(name) {
-        var friend = {};
-
-        people = createRelations(collection, startPoint, currentDepth);
-        if (people[currentDepth].length <= currentFriend) {
-            currentFriend = people[currentDepth].length - 1;
-        }
-
         currentFriend--;
         if (currentFriend < 0) {// Если больше нет друзей текущей глубины
             if (currentDepth - 1 == 0) {// Если больше нельзя всплывать
@@ -141,43 +134,43 @@ module.exports.get = function (collection, startPoint, depth) {
                 currentFriend = people[currentDepth].length - 1;
             }
         }
-        if (collection [ people[currentDepth][currentFriend] ]) {// Если друг есть в книге
-            friend = {
-                name: people[currentDepth][currentFriend],
-                phone: collection [ people[currentDepth][currentFriend] ].phone
-            };
+        var friend = manInCollection(collection, people[currentDepth][currentFriend]);
+        if (friend) {// Если друг есть в книге
             if (name === undefined || name === friend.name) {
                 return friend;
             } else {
                 return prev(name);
             }
-
-        } else {// Если друга нет в книге, удалим его из людей
-            people[currentDepth].splice(currentFriend, 1);
+        } else {// Если друга нет в книге, заного построим связи между людьми
+            people = createRelations(collection, startPoint, currentDepth);
+            if (people[currentDepth].length <= currentFriend) {
+                currentFriend = people[currentDepth].length - 1;
+            }
+            
             return prev(name);
         }
+    };
+    
+    var getMan = function (name, prev) {
+        var func;
+        (prev) ? func = prevFunction : func = nextFunction;       
+        var person;
+        while (person = func(name)) {
+            if (collection[person.name].gender === 'Мужской') {
+                return person;
+            }
+        }
+        return null;        
     };
 
     return {
         next: nextFunction,
         prev: prevFunction,
         nextMale: function (name) {
-            var person;
-            while (person = nextFunction(name)) {
-                if (collection[person.name].gender === 'Мужской') {
-                    return person;
-                }
-            }
-            return null;
+            return getMan(name);
         },
         prevMale: function (name) {
-            var person;
-            while (person = prevFunction(name)) {
-                if (collection[person.name].gender === 'Мужской') {
-                    return person;
-                }
-            }
-            return null;
+            return getMan(name, true);
         }
     };
 };
