@@ -35,7 +35,7 @@ function Iterator(collection, startPoint, depth) {
 
             curents = following.sort();
             following = [];
-            curentDepth ++;
+            curentDepth++;
 
             if (depth - curentDepth !== 0 || depth === 0) {
                 putNamesInResult();
@@ -44,7 +44,7 @@ function Iterator(collection, startPoint, depth) {
 
         function getFriends(name) {
             var friends = [];
-            for (var friend of collection[name]['friends']) {
+            for (var friend of collection[name].friends) {
                 if (curents.indexOf(friend) === -1 &&
                     following.indexOf(friend) === -1 &&
                     result.indexOf(friend) === -1 &&
@@ -60,7 +60,7 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-        isChange() || rebuild();
+        isChange() && rebuild();
 
         if (arguments.length > 0) {
             var indexElement = listNames.indexOf(arguments[0]);
@@ -72,7 +72,7 @@ function Iterator(collection, startPoint, depth) {
             return collectEntry(listNames[indexElement]);
         }
 
-        curent ++;
+        curent++;
         if (curent >= listNames.length) {
             curent = listNames.length;
             return null;
@@ -85,9 +85,9 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-        isChange() || rebuild();
+        isChange() && rebuild();
 
-        curent --;
+        curent--;
         if (curent < 0) {
             curent = -1;
             return null;
@@ -100,10 +100,10 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-        isChange() || rebuild();
+        isChange() && rebuild();
 
         for (var i = curent + 1; i < listNames.length; i++) {
-            if (collection[listNames[i]]['gender'] === 'Мужской') {
+            if (collection[listNames[i]].gender === 'Мужской') {
                 curent = i;
                 return collectEntry(listNames[i]);
             }
@@ -116,10 +116,10 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-        isChange() || rebuild();
+        isChange() && rebuild();
 
         for (var i = curent - 1; i > -1; i--) {
-            if (collection[listNames[i]]['gender'] === 'Мужской') {
+            if (collection[listNames[i]].gender === 'Мужской') {
                 curent = i;
                 return collectEntry(listNames[i]);
             }
@@ -130,7 +130,7 @@ function Iterator(collection, startPoint, depth) {
     };
 
     function isChange() {
-        return listNames.every(item => {
+        return !listNames.every(item => {
             return collection.hasOwnProperty(item);
         });
     }
