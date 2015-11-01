@@ -104,11 +104,11 @@ module.exports.get = function (collection, startPoint, depth) {
                 currentContact--;
             }
         },
-        isCorrectName : function (name, currentName) {
+        isCorrectName: function (name, currentName) {
             if (name === undefined) {
                 return true;
             } else {
-                return (name === currentName)
+                return (name === currentName);
             }
         }
     };
