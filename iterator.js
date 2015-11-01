@@ -19,20 +19,19 @@ module.exports.get = function (collection, startPoint, depth) {
         friendsList: friends,
         currentIndex: 0,
         next: function (name) {
-            if (this.currentIndex === this.friendsList.length) {
+            if (this.currentIndex === this.friendsList.length - 1) {
                 return null;
             }
             if (name === undefined) {
-                var friend = this.friendsList[this.currentIndex];
                 this.currentIndex++;
-                return friend;
+                return this.friendsList[this.currentIndex];
             } else {
-                while (this.currentIndex < this.friendsList.length) {
+                while (this.currentIndex < this.friendsList.length - 1) {
+                    this.currentIndex++;
                     var currentFriend = this.friendsList[this.currentIndex];
-                    if (currentFriend.name = name) {
+                    if (currentFriend.name == name) {
                         return currentFriend;
                     }
-                    this.currentIndex++;
                 }
                 return null;
             }
@@ -45,15 +44,15 @@ module.exports.get = function (collection, startPoint, depth) {
             return this.friendsList[this.currentIndex];
         },
         nextMale: function () {
-            if (this.currentIndex === this.friendsList.length) {
+            if (this.currentIndex === this.friendsList.length - 1) {
                 return null;
             }
-            while (this.currentIndex < this.friendsList.length) {
+            while (this.currentIndex < this.friendsList.length - 1) {
+                this.currentIndex++;
                 var currentFriend = this.friendsList[this.currentIndex];
-                if (collection[currentFriend.name].gender == 'Мужской') {
+                if (collection[currentFriend.name].gender === 'Мужской') {
                     return currentFriend;
                 }
-                this.currentIndex++;
             }
             return null;
         }
@@ -69,7 +68,6 @@ function getFriends(collection, startPoint, depth) {
         var current = queue.shift();
         var currentFriendName = current[0];
         var currentDepth = current[1];
-        friendNames.push(currentFriendName);
         friends.push({
             name: currentFriendName,
             phone: collection[currentFriendName].phone
@@ -81,9 +79,9 @@ function getFriends(collection, startPoint, depth) {
         for (var i = 0; i < currentFriends.length; i++) {
             if (friendNames.indexOf(currentFriends[i]) < 0) {
                 queue.push([currentFriends[i], currentDepth + 1]);
+                friendNames.push(currentFriends[i]);
             }
         }
     }
-    friends.shift();
     return friends;
 }
