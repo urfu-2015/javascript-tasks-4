@@ -13,10 +13,11 @@ function Iterator(collection, startPoint, depth) {
 }
 
 Iterator.prototype.next = function (name) {
+    this.updateCallList();
     if (name) {
         this.jumpTo(name);
+        return this.JSONCurrent();
     }
-    this.updateCallList();
     this.iterIndex = Math.min(this.callList.length, this.iterIndex + 1);
     this.current = this.callList[this.iterIndex] || null;
     return this.JSONCurrent();
@@ -30,10 +31,11 @@ Iterator.prototype.prev = function () {
 };
 
 Iterator.prototype.nextMale = function (name) {
+    this.updateCallList();
     if (name) {
         this.jumpTo(name);
+        return this.JSONCurrent();
     }
-    this.updateCallList();
     do {
         this.next();
     } while (this.current && this.collection[this.current].gender !== 'Мужской');
@@ -59,7 +61,7 @@ Iterator.prototype.JSONCurrent = function () {
 };
 
 Iterator.prototype.jumpTo = function (name) {
-    this.iterIndex = this.callList.indexOf(name) - 1;
+    this.iterIndex = this.callList.indexOf(name);
     this.current = this.callList[this.iterIndex] || null;
 };
 
