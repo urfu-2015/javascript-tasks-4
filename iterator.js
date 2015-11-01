@@ -92,13 +92,17 @@ module.exports.get = function (collection, startPoint, depth) {
                     return null;
                 }
                 index++;
-                return workCollection[allFriends[index].name];
+                var friend = allFriends[index].name;
+
+                return {name: friend, phone: workCollection[friend].phone};
             }
             index = getFriendIndex(allFriends, arguments[0]);
             if (index === -1) {
                 return null;
             }
-            return workCollection[allFriends[index].name];
+            var friend = allFriends[index].name;
+
+            return {name: friend, phone: workCollection[friend].phone};
         },
         prev: function () {
             this.handleDeletion();
@@ -106,14 +110,18 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
             index--;
-            return workCollection[allFriends[index].name];
+            var friend = allFriends[index].name;
+
+            return {name: friend, phone: workCollection[friend].phone};
         },
         nextMale: function () {
             this.handleDeletion();
             for (var i = index + 1; i < allFriends.length; i++) {
                 if (workCollection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
-                    return workCollection[allFriends[index].name];
+                    var friend = allFriends[index].name;
+
+                    return {name: friend, phone: workCollection[friend].phone};
                 }
             }
             return null;
@@ -123,7 +131,9 @@ module.exports.get = function (collection, startPoint, depth) {
             for (var i = index - 1; i > 0; i--) {
                 if (workCollection[allFriends[i].name].gender === 'Мужской') {
                     index = i;
-                    return workCollection[allFriends[index].name];
+                    var friend = allFriends[index].name;
+
+                    return {name: friend, phone: workCollection[friend].phone};
                 }
             }
             return null;
