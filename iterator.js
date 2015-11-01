@@ -113,12 +113,12 @@ module.exports.get = function (collection, startPoint, depth) {
             } else {
                 return next(name);
             }
-        } else {// Если друга нет в книге, заного построим связи между людьми         
+        } else {// Если друга нет в книге, заного построим связи между людьми
             people = createRelations(collection, startPoint, currentDepth);
             if (people[currentDepth].length <= currentFriend) {
                 currentFriend = people[currentDepth].length - 1;
             }
-            
+
             return next(name);
         }
     };
@@ -146,21 +146,21 @@ module.exports.get = function (collection, startPoint, depth) {
             if (people[currentDepth].length <= currentFriend) {
                 currentFriend = people[currentDepth].length - 1;
             }
-            
+
             return prev(name);
         }
     };
-    
+
     var getMan = function (name, prev) {
         var func;
-        (prev) ? func = prevFunction : func = nextFunction;       
+        (prev) ? func = prevFunction : func = nextFunction;
         var person;
         while (person = func(name)) {
             if (collection[person.name].gender === 'Мужской') {
                 return person;
             }
         }
-        return null;        
+        return null;
     };
 
     return {
