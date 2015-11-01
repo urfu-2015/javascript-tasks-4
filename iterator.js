@@ -107,7 +107,8 @@ function Iterator(collection, startPoint, depth) {
         friends = getFriends(myCollection, startPerson, friendsDepth);
         friendsCount = friends.length;
         if (friends.length === 0) {
-            throw new Error('Start person deleted');
+            console.log('Удален начальный друг');
+            return;
         }
         var currentFriendIndex = -1;
         for (var i = 0; i < friends.length; i++) {
@@ -116,7 +117,8 @@ function Iterator(collection, startPoint, depth) {
             }
         }
         if (currentFriendIndex < 0 && currentPerson !== startPerson) {
-            throw new Error('Current person deleted');
+            console.log('Удален текущий друг');
+            return;
         }
         index = currentFriendIndex;
     };
@@ -152,7 +154,7 @@ function getFriends(collection, startPoint, depth) {
 }
 
 function clone(obj) {
-    if (obj == null || typeof (obj) != 'object') {
+    if (obj == null || typeof (obj) !== 'object') {
         return obj;
     }
     var temp = new obj.constructor();
