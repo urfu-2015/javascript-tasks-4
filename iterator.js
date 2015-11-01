@@ -41,25 +41,43 @@ module.exports.get = function (collection, startPoint, depth) {
                 };
             }
         },
-        prev: function () {
+        prev: function (name) {
             if (collection[startPoint] === undefined || currentContact < 2) {
                 return null;
             }
+            if (name !== undefined) {
+                while (true) {
+                    var contact = data[currentContact - 2];
+                    if (currentContact < 2) {
+                        return null;
+                    }
+                    if (contact.name === name) {
+                        currentContact--;
+                        return {
+                            name: contact.name,
+                            phone: contact.phone
+                        };
+                    }
+                    currentContact--;
+                }
 
-            var contact = data[currentContact - 2];
-            currentContact--;
-            return {
-                name: contact.name,
-                phone: contact.phone
-            };
+            } else {
+                var contact = data[currentContact - 2];
+                currentContact--;
+                return {
+                    name: contact.name,
+                    phone: contact.phone
+                };
+            }
         },
-        nextMale: function () {
+        nextMale: function (name) {
             if (collection[startPoint] === undefined || currentContact >= lastContact - 1) {
                 return null;
             }
+
             while (true) {
                 var contact = data[currentContact];
-                if (contact.gender === 'Мужской') {
+                if (contact.gender === 'Мужской' && this.isCorrectName(name, contact.name)) {
                     currentContact++;
                     return {
                         name: contact.name,
@@ -69,14 +87,14 @@ module.exports.get = function (collection, startPoint, depth) {
                 currentContact++;
             }
         },
-        prevMale: function () {
+        prevMale: function (name) {
             if (collection[startPoint] === undefined || currentContact < 2) {
                 return null;
             }
 
             while (true) {
                 var contact = data[currentContact - 2];
-                if (contact.gender === 'Мужской') {
+                if (contact.gender === 'Мужской' && this.isCorrectName(name, contact.name)) {
                     currentContact--;
                     return {
                         name: contact.name,
@@ -84,6 +102,13 @@ module.exports.get = function (collection, startPoint, depth) {
                     };
                 }
                 currentContact--;
+            }
+        },
+        isCorrectName : function (name, currentName) {
+            if (name === undefined) {
+                return true;
+            } else {
+                return (name === currentName)
             }
         }
     };
@@ -102,8 +127,7 @@ function getFriends(collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
         return newFriends;
     }
-    var nameFriends = [startPoint];
-    var flag = true;
+    var nameFriends = [];
     var checkFriends = [];
     var depthFriends = [startPoint];
     while (depth > 0) {
@@ -121,8 +145,8 @@ function getFriends(collection, startPoint, depth) {
                     checkFriends.push(currentList[contact]);
                 }
             }
-            friendsOfFriends = friendsOfFriends.sort(function (contact1, contac2) {
-                return contact1 > contac2 ? 1 : -1;
+            friendsOfFriends = friendsOfFriends.sort(function (contact1, contact2) {
+                return contact1 > contact2 ? 1 : -1;
             });
             friendsOfFriends.forEach(function (friend) {
                 if (friend !== startPoint) {
@@ -142,9 +166,6 @@ function getFriends(collection, startPoint, depth) {
                 }
                 numberFriend++;
             }
-            if (nameFriends.length === 0) {
-                flag = false;
-            }
         }
         depth--;
     }
@@ -160,5 +181,4 @@ function getFriends(collection, startPoint, depth) {
         }
     });
     return newFriends;
-
 }
