@@ -1,12 +1,8 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-    if (depth === 0) {
-        return null;
-    }
-
     var iterator = {
-        depth: depth || Object.keys(collection).length,
+        depth: (depth === undefined) ? Object.keys(collection).length : depth,
         currentDepth: [],
         currentPerson: 0,
         currentPersonName: '',
@@ -41,6 +37,7 @@ module.exports.get = function (collection, startPoint, depth) {
         };
 
         if (!iterator.rightStart ||
+            iterator.depth === 0 ||
             iterator.queue.indexOf(iterator.currentPersonName) === -1 ||
             iterator.currentPerson + 1 === iterator.collectionLength ||
             iterator.depth < iterator.currentDepth[iterator.currentPerson + 1] ||
