@@ -26,30 +26,30 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             var current = friends[index];
             friends = getFriends(collection, [start], depth);
-            index = getIndex(friends, [current], index, false);
-            index++;
-            index = getIndex(friends, arguments, index, true);
+            index = getIndexByName(friends, current[0], index) + 1;
+            index = getIndexByName(friends, arguments[0], index);
             return index < friends.length ?
                 {
                     name: friends[index][0],
                     phone: friends[index][1]['phone']
                 } : null;
         },
+
         prev: function () {
             if (index <= 0) {
                 return null;
             }
             var current = friends[index];
             friends = getFriends(collection, [start], depth);
-            index = getIndex(friends, [current], index, false);
-            index--;
-            index = getIndex(friends, arguments, index, true);
+            index = getIndexByName(friends, current[0], index) - 1;
+            index = getIndexByName(friends, arguments[0], index);
             return index > -1 ?
                 {
                     name: friends[index][0],
                     phone: friends[index][1].phone
                 } : null;
         },
+
         nextMale: function () {
             var friend = this.next();
             if (!friend) {
@@ -58,6 +58,7 @@ module.exports.get = function (collection, startPoint, depth) {
             friend = getMale(friends, index, friend);
             return friend ? friend : this.nextMale();
         },
+
         prevMale: function () {
             var friend = this.prev();
             if (!friend) {
@@ -104,18 +105,16 @@ function getNull() {
     return null;
 };
 
-function getIndex(queue, names, index, isName) {
-    for (var i = 0; i < names.length; i++) {
-        for (var j = 0; j < queue.length; j++) {
-            if ((isName && queue[j][0] == names[i]) || (!isName && queue[j][0] == names[i][0])) {
-                return j;
-            }
-        };
+function getIndexByName(queue, name, index) {
+    for (var j = 0; j < queue.length; j++) {
+        if (queue[j][0] == name) {
+            return j;
+        }
     };
     return index;
-}
+};
 
 function getMale(friends, index, friend) {
     return friends[index][1]['gender'] == 'Мужской' ?
         friend : null;
-}
+};
