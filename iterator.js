@@ -65,12 +65,15 @@ function manInCollection(collection, man) {
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    depth = depth || Number.MAX_VALUE;
+    (depth === undefined) ? depth = Number.MAX_VALUE : Number(depth);
+    if (isNaN(depth) && depth < 0) {
+        throw new Error('Invalid depth type: ' + depth);
+    }
     var currentFriend = -1;
     var people = [[startPoint]];// Массив с уровнями друзей
     var currentDepth = 1;
 
-    if (collection[startPoint]) {
+    if (collection[startPoint] && depth) {
         people.push(sortArray(collection[startPoint].friends));
     } else {
         return {
