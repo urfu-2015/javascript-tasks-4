@@ -3,12 +3,13 @@
 module.exports.get = function (collection, startPoint, depth) {
     var friendsOrder = createFriendsOrder(collection, startPoint, depth);
     var currentIndex = 0;
+    var currentName = undefined;
     var currentCollectionLength = Object.keys(collection).length;
     var iterateAndGetElement = function (positions) {
         var newIndex = currentIndex + positions;
         if (newIndex >= 0 && newIndex < friendsOrder.length) {
             currentIndex = newIndex;
-            var currentName = friendsOrder[currentIndex];
+            currentName = friendsOrder[currentIndex];
             return {
                 name: currentName,
                 phone: collection[currentName].phone,
@@ -24,9 +25,9 @@ module.exports.get = function (collection, startPoint, depth) {
         }
         var newFriendsOrder = createFriendsOrder(collection, startPoint, depth);
         currentCollectionLength = Object.keys(collection).length;
-        currentIndex = __getNewIndex(friendsOrder, newFriendsOrder, currentIndex);
-        if (currentIndex == -7) {
-            newFriendsOrder = [];
+        currentIndex = newFriendsOrder.indexOf(currentName);
+        if (currentIndex == -1) {
+            currentIndex--;
         }
         friendsOrder = newFriendsOrder;
     };
@@ -86,17 +87,6 @@ module.exports.get = function (collection, startPoint, depth) {
         prevMale: getPrevMale
     };
 };
-
-function __getNewIndex(friendsOrder, newFriendsOrder, currentIndex) {
-    for (var posInOldList = currentIndex; posInOldList < friendsOrder.length; posInOldList++) {
-        for (var posInNewList = 0; posInNewList < newFriendsOrder.length; posInNewList++) {
-            if (friendsOrder[posInOldList] == newFriendsOrder[posInNewList]) {
-                return posInNewList;
-            }
-        }
-    }
-    return -7;
-}
 
 function createFriendsOrder(collection, startPoint, depth) {
     if (collection[startPoint] === undefined) {
