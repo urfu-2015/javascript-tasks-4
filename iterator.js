@@ -27,11 +27,14 @@ module.exports.get = function (collection, startPoint, depth) {
             return this.hiddenPrev(false);
         },
         prevMale: function () {
-            this.hiddenPrev(true);
+            return this.hiddenPrev(true);
         },
         hiddenNext: function (parameter, targetPerson) {
             if (!collection[startPoint] || depth === 0) {
                 // console.log('null');
+                return null;
+            }
+            if (targetPerson && !collection[targetPerson]) {
                 return null;
             }
             if (currentPersonIndex < -1) {
