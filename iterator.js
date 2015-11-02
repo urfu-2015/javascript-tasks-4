@@ -56,7 +56,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
             }
         }
-        return null;
+        yield null;
     }
 
     var gen = generator();
