@@ -5,7 +5,7 @@ module.exports.get = function (collection, startPoint, depth) {
         var currentList = collection[startPoint].friends.sort();// это текущий список,
         //по которому идем
     }
-    var currentPersonIndex = -1;//это индекс в текущем списке человека,
+    var currentPersonIndex = -2;//это индекс в текущем списке человека,
     //которого мы вернули последним
     var previousPersons = [startPoint]; //это все люди, друзей которых мы уже
     //просмотрели(для последнего просматриваем еще)
