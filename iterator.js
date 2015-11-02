@@ -30,6 +30,9 @@ module.exports.get = function (collection, startPoint, depth) {
             return index < length - 1;
         },
         prev: function () {
+            /*
+                Возвращает null у prev на самом первом элементе
+            */
             if (!this.hasPrev()) {
                 return null;
             }
@@ -49,7 +52,8 @@ module.exports.get = function (collection, startPoint, depth) {
             ++index;
             for (var i = index; i < friends.length; ++i) {
                 if (collection[friends[i]].gender !== 'Мужской') {
-                    ++index;
+                    index++;
+                    continue;
                 } else {
                     var nextMaleFriend = {};
                     nextMaleFriend['name'] = friends[index];
@@ -109,7 +113,7 @@ module.exports.getFriends = function (collection, startPoint, depth) {
         if (handshakeCircle[friendFromQueue] >= depth) {
             break;
         }
-        var alphFriends = collection[friendFromQueue].friends.sort();
+        var alphFriends = collection[friendFromQueue].friends.slice().sort();
         alphFriends.forEach(function (friend) {
             if (used[friend] !== true) {
                 queue.push(friend);
