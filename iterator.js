@@ -43,7 +43,8 @@ module.exports.get = function (collection, startPoint, depth) {
         this.count = this.count + 1;
         if (arguments[0]) {
             while (this.count < this.collection.length &&
-                this.collection[this.count].name !== arguments[0]) {
+                (this.collection[this.count].name !== arguments[0] ||
+                this.collection[this.count].gender !== arguments[0])) {
                 this.count++;
             }
         }
@@ -62,7 +63,8 @@ module.exports.get = function (collection, startPoint, depth) {
         }
         this.count--;
         if (arguments[0]) {
-            while (this.count > 0 && this.collection[this.count].name !== arguments[0]) {
+            while (this.count > 0 && (this.collection[this.count].name !== arguments[0] ||
+                this.collection[this.count].gender !== arguments[0])) {
                 this.count--;
             }
         }
@@ -76,38 +78,11 @@ module.exports.get = function (collection, startPoint, depth) {
     };
 
     iterator.nextMale = function () {
-        if (!this.hasStart) {
-            return null;
-        }
-        this.count++;
-        while (this.count < this.collection.length &&
-            this.collection[this.count].gender !== 'Мужской') {
-            this.count++;
-        }
-        if (this.count > this.collection.length) {
-            this.count = this.collection.length;
-        }
-        if ((this.count < 0) || (this.count >= this.collection.length)) {
-            return null;
-        }
-        return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
+        return this.next('Мужской');
     };
 
     iterator.prevMale = function () {
-        if (!this.hasStart) {
-            return null;
-        }
-        this.count--;
-        while (this.count > 0 && this.collection[this.count].gender !== 'Мужской') {
-            this.count--;
-        }
-        if (this.count < -1) {
-            this.count = -1;
-        }
-        if ((this.count < 0) || (this.count >= this.collection.length)) {
-            return null;
-        }
-        return {name: this.collection[this.count].name, phone: this.collection[this.count].phone};
+        return this.prev('Мужской');
     };
 
     return iterator;
