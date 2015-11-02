@@ -14,13 +14,13 @@ module.exports.get = function (collection, startPoint, depth) {
 
     return {
         next: function (name) {
-            if (collection[startPoint] === undefined || currentContact >= lastContact - 1) {
+            if (collection[startPoint] === undefined || currentContact >= lastContact) {
                 return null;
             }
             if (name !== undefined) {
                 while (true) {
                     var contact = data[currentContact];
-                    if (currentContact >= lastContact - 1) {
+                    if (currentContact >= lastContact) {
                         return null;
                     }
                     if (contact.name === name) {
@@ -131,8 +131,7 @@ function getFriends(collection, startPoint, depth) {
     var checkFriends = [];
     var depthFriends = [startPoint];
     while (depth > 0) {
-        var currentFriends = [];
-        nextFriends = depthFriends;
+        nextFriends = depthFriends.slice();
         depthFriends = [];
         while (nextFriends.length > 0) {
             var currentFriend = nextFriends.shift();
@@ -141,6 +140,7 @@ function getFriends(collection, startPoint, depth) {
             for (var contact = 0; contact < currentList.length; contact++) {
                 if (!(isCheckList(currentList[contact], checkFriends)) &&
                     currentList[contact] != startPoint) {
+
                     friendsOfFriends.push(currentList[contact]);
                     checkFriends.push(currentList[contact]);
                 }
@@ -149,26 +149,26 @@ function getFriends(collection, startPoint, depth) {
                 return contact1 > contact2 ? 1 : -1;
             });
 
-            friendsOfFriends.forEach(function (friend) {
-                if (friend !== startPoint) {
-                    var newContact = {
-                        name: friend,
-                        gender: collection[friend].gender,
-                        phone: collection[friend].phone,
-                        friends: collection[friend].friends
-                    };
-                    newFriends.push(newContact);
-                    currentFriends.push(newContact);
-                }
-            });
             var numberFriend = 0;
             while (numberFriend < friendsOfFriends.length) {
-                if (startPoint != friendsOfFriends[numberFriend]) {
+                if (startPoint.localeCompare(checkFriends[numberFriend]) !== 0) {
                     depthFriends.push(friendsOfFriends[numberFriend]);
                 }
                 numberFriend++;
             }
         }
+
+        depthFriends.forEach(function (friend) {
+            if (friend !== startPoint) {
+                var newContact = {
+                    name: friend,
+                    gender: collection[friend].gender,
+                    phone: collection[friend].phone,
+                    friends: collection[friend].friends
+                };
+                newFriends.push(newContact);
+            }
+        });
         depth--;
     }
     return newFriends;
