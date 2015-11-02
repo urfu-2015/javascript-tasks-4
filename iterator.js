@@ -3,7 +3,7 @@
 module.exports.get = function (collection, startPoint, depth) {
     return {
         friends: createFriendList(collection, startPoint, depth),
-        indexPointer: 0,
+        indexPointer: -1,
 
         next: function (name) {
             if (name == undefined) {
@@ -37,7 +37,7 @@ module.exports.get = function (collection, startPoint, depth) {
             if (name == undefined) {
                 this.indexPointer += 1;
                 var len = this.friends.length;
-                while (this.indexPointer <= len) {
+                while (this.indexPointer < len) {
                     if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
                         return {name: this.friends[this.indexPointer],
                             phone: collection[this.friends[this.indexPointer]].phone};
@@ -99,9 +99,8 @@ function createFriendList(collection, startPoint, depth) {
         depth = depth || Object.keys(collection).length;
         var friendList = [startPoint];
         getFriends([startPoint], 0);
-        return friendList;
+        return friendList.slice(1);
     } else {
         return [];
     }
 }
-
