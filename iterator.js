@@ -65,7 +65,7 @@ function manInCollection(collection, man) {
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    (depth === undefined) ? depth = Number.MAX_VALUE : Number(depth);
+    (depth === undefined) ? depth = Number.MAX_VALUE : depth = Number(depth);
     if (isNaN(depth) && depth < 0) {
         throw new Error('Invalid depth type: ' + depth);
     }
