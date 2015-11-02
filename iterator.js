@@ -2,7 +2,7 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var friendsOrder = createFriendsOrder(collection, startPoint, depth);
-    var currentIndex = -1;
+    var currentIndex = 0;
     var currentCollectionLength = Object.keys(collection).length;
     var iterateAndGetElement = function (positions) {
         var newIndex = currentIndex + positions;
@@ -25,6 +25,9 @@ module.exports.get = function (collection, startPoint, depth) {
         var newFriendsOrder = createFriendsOrder(collection, startPoint, depth);
         currentCollectionLength = Object.keys(collection).length;
         currentIndex = __getNewIndex(friendsOrder, newFriendsOrder, currentIndex);
+        if (currentIndex == -7) {
+            newFriendsOrder = [];
+        }
         friendsOrder = newFriendsOrder;
     };
     var iterateWithPredicate = function (positions, predicate) {
@@ -92,7 +95,7 @@ function __getNewIndex(friendsOrder, newFriendsOrder, currentIndex) {
             }
         }
     }
-    return currentIndex < newFriendsOrder.length ? currentIndex : newFriendsOrder.length;
+    return -7;
 }
 
 function createFriendsOrder(collection, startPoint, depth) {
@@ -100,7 +103,7 @@ function createFriendsOrder(collection, startPoint, depth) {
         return [];
     }
     var friendsOrder = [];
-    depth = depth || Object.keys(collection).length;
+    depth = depth !== undefined ? depth : Object.keys(collection).length;
     var nowDepth = 0;
     var thisDepthQueue = [];
     var nextDepthQueue = [];
@@ -124,6 +127,5 @@ function createFriendsOrder(collection, startPoint, depth) {
             nextDepthQueue = swapQueue;
         }
     }
-    friendsOrder.splice(0, 1);
     return friendsOrder;
 }
