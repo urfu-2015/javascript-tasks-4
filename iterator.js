@@ -34,7 +34,7 @@ module.exports.get = function (collection, startPoint, depth) {
         if (isCollectionChanged()) {
             iterator.currentPerson = getNewQueue(iterator.currentPersonName,
                 iterator.currentPerson);
-        };
+        }
 
         if (!iterator.rightStart ||
             iterator.depth === 0 ||
@@ -47,6 +47,9 @@ module.exports.get = function (collection, startPoint, depth) {
 
         while (true) {
             iterator.currentPerson++;
+            if (iterator.currentPerson >= iterator.collectionLength) {
+                return null;
+            }
             iterator.currentPersonName = iterator.queue[iterator.currentPerson];
             if (name === undefined || name === iterator.queue[iterator.currentPerson]) {
                 var answer = {
