@@ -1,95 +1,119 @@
 'use strict';
-var d;
-var start;
+
 module.exports.get = function (collection, startPoint, depth) {
-    d = depth;
-    start = startPoint;
     var index = -1;
-    var stack = createStack(collection, startPoint, depth);
+    var friends = createStack(collection, startPoint, depth);
+    var collections_length = Object.keys(collection).length;
+    var selectName;
+
+    function checkCollectionIntegrity() {
+        if (collections_length > Object.keys(collection).length) {
+            collections_length = Object.keys(collection).length;
+            friends = createStack(collection, startPoint, depth);
+            index = friends.indexOf(selectName);
+        }
+    }
+
     return {
         next: function (name) {
-            if (!stack) {
+            checkCollectionIntegrity();
+            if (!friends) {
                 return null;
             }
-            if (name != undefined) {
-                index = stack.indexOf(name);
-            } else {
-                index++;
-                return index < stack.length ? {
-                    name: stack[index],
-                    phone: collection[stack[index]].phone
-                } : null;
-            }
+            index = name != undefined ? friends.indexOf(name) : index + 1;
+            selectName = friends[index];
+            return index < friends.length ? {
+                name: friends[index],
+                phone: collection[friends[index]].phone
+            } : null;
         },
 
         nextMale: function () {
+            checkCollectionIntegrity();
             var isFind = true;
 
-            if (++index >= stack.length) {
+            if (++index >= friends.length) {
                 isFind = false;
             } else {
-                while (collection[stack[index]].gender != 'Мужской' && isFind) {
+                while (collection[friends[index]].gender != 'Мужской' && isFind) {
                     index++;
-                    if (index == stack.length) {
+                    if (index == friends.length) {
                         isFind = false;
                     }
                 }
             }
-
+            selectName = friends[index];
             return isFind ? {
-                name: stack[index],
-                phone: collection[stack[index]].phone
+                name: friends[index],
+                phone: collection[friends[index]].phone
             } : null;
         },
 
         prev: function () {
-            if (!stack) {
+            checkCollectionIntegrity();
+            if (!friends) {
                 return null;
             }
             return index > 0 ? {
-                name: stack[--index],
-                phone: collection[stack[index]].phone
+                name: friends[--index],
+                phone: collection[friends[index]].phone
             } : null;
         },
 
         prevMale: function () {
+            checkCollectionIntegrity();
+
             var isFind = true;
 
             if (--index < 0) {
                 isFind = false;
             } else {
-                while (collection[stack[index]].gender != 'Мужской' && isFind) {
+                while (collection[friends[index]].gender != 'Мужской' && isFind) {
                     index--;
                     if (index < 0) {
                         isFind = false;
                     }
                 }
             }
-
+            selectName = friends[index];
             return isFind ? {
-                name: stack[index],
-                phone: collection[stack[index]].phone
+                name: friends[index],
+                phone: collection[friends[index]].phone
             } : null;
         }
     };
 };
 
-function createStack(collection, startPoint) {
-    return iterateFriends(collection, startPoint, 0, []);
-}
-
-function iterateFriends(collection, name, depth, stack) {
-    if (depth == d) {
-        return;
-    }
-    if (!(name in collection)) {
+function createStack(collection, startPoint, d) {
+    if (!(startPoint in collection)) {
         return null;
     }
-    for (var friend of collection[name].friends) {
-        if (stack.indexOf(friend) < 0 && friend != start) {
-            stack.push(friend);
-            iterateFriends(collection, friend, depth + 1, stack);
+
+    var iterated_friends = [];
+    iterated_friends.push(startPoint);
+    var friends = [];
+
+    function iterateFriends(depth, friends, iterated_friends) {
+        var count = 0;
+        if (depth == d) { return; }
+        var current_friends = [];
+
+        for (var friend of iterated_friends) {
+            for (var k of collection[friend].friends) {
+                if (Object.keys(collection).indexOf(k) > 0 && friends.indexOf(k) < 0 && k != startPoint) {
+                    count++;
+                    friends.push(k);
+                    current_friends.push(k);
+                }
+            }
         }
+
+        if (count == 0) { return; }
+        iterateFriends(depth + 1, friends, current_friends);
     }
-    return stack;
+
+    iterateFriends(0, friends, iterated_friends);
+    return friends;
 }
+
+
