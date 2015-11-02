@@ -3,36 +3,24 @@
 var GENDER = 'Мужской';
 
 module.exports.get = function (collection, startPoint, depth) {
-    if (!startPoint || !collection || !collection[startPoint]) {
-        return {
-            next: function () {
-                return null;
-            },
-            prev: function () {
-                return null;
-            },
-            nextMale: function () {
-                return null;
-            },
-            prevMale: function () {
-                return null;
-            }
-        };
+    if (!startPoint || !collection || !collection[startPoint] || depth === 0) {
+        var view = [];
+    } else {
+        depth = depth || Infinity;
+        var view = [];
+        var present = [startPoint];
+        var future = [];
+        var currentDepth = 1;
+        var nextIndex = 0;
+        createIterator();
     }
-    depth = depth || Infinity;
-    var view = [];
-    var present = [startPoint];
-    var future = [];
-    var currentDepth = 1;
-    var nextIndex = 0;
 
-    createIterator();
     function createIterator() {
         var current = present[nextIndex];
         if (current) {
             if (view.indexOf(current) === -1) {
                 view.push(current);
-                future = future.concat(collection[current].friends);
+                future = future.concat(collection[current].friends.sort());
                 nextIndex++;
                 createIterator();
             } else {
@@ -49,7 +37,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (current) {
                     if (view.indexOf(current) === -1) {
                         view.push(current);
-                        future = future.concat(collection[current].friends);
+                        future = future.concat(collection[current].friends.sort());
                         nextIndex++;
                         createIterator();
                     } else {
@@ -70,8 +58,10 @@ module.exports.get = function (collection, startPoint, depth) {
         next: function (name) {
             if (name) {
                 var number = view.indexOf(name);
-                if (number > -1) {
+                if (number > 0) {
                     index = number;
+                } else {
+                    return null;
                 }
             } else {
                 index++;
@@ -93,8 +83,10 @@ module.exports.get = function (collection, startPoint, depth) {
         nextMale: function (name) {
             if (name) {
                 var number = view.indexOf(name);
-                if (number > -1) {
+                if (number > 0) {
                     index = number;
+                } else {
+                    return null;
                 }
             } else {
                 index++;
@@ -103,7 +95,6 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (collection[view[index]].gender === GENDER) {
                     return {name: view[index], phone: collection[view[index]].phone};
                 } else {
-                    index++;
                     return this.nextMale();
                 }
             } else {
