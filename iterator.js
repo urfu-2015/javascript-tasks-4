@@ -65,6 +65,9 @@ module.exports.get = function (collection, startPoint, depth) {
 
 
 function getFriendsList(collection, startPoint, depth) {
+    if (depth === 0 ){
+        return null;
+    }
     depth = depth || Object.keys(collection).length;
     var friends = [];
     var visited = [];
