@@ -2,85 +2,75 @@
 module.exports.get = function (collection, startPoint, depth) {
     var friendsArray = getFriends(collection, startPoint, depth);
     return {
-        currentFriend: 0,
+        currentFriend: -1,
         next: function (name) {
-            if (this.currentFriend >= friendsArray.length) {
+            if (friendsArray[this.currentFriend + 1] === undefined) {
                 return null;
             }
-            if (friendsArray[this.currentFriend] === undefined) {
-                return null;
-            }
+            this.currentFriend++;
             if (name === undefined) {
                 var friend = friendsArray[this.currentFriend];
-                this.currentFriend++;
-                return { name: friend, phone: collection[friend].phone};
+                return current(friend, collection[friend].phone);
             } else {
-                var friend = friendsArray[this.currentFriend];
-                this.currentFriend++;
-                return { name: friend, phone: collection[friend].phone};
+                var index = 0;
+                friendsArray.forEach(function (item) {
+                    if (item == name) {
+                        index = friendsArray.indexOf(item);
+                    }
+                });
+                this.currentFriend = index;
+                return current(name, collection[name].phone);
             }
         },
         nextMale: function (name) {
             if (startPoint === undefined) {
                 return null;
             }
-            if (this.currentFriend >= friendsArray.length) {
+            if (friendsArray[this.currentFriend + 1] === undefined) {
                 return null;
             }
-            if (friendsArray[this.currentFriend] === undefined) {
-                return null;
-            }
-            if (name === undefined) {
-                while (collection[friendsArray[this.currentFriend]]['gender'] != 'Мужской') {
-                    this.currentFriend++;
+            var currentfriend = this.next(name);
+            while (collection[currentfriend.name]) {
+                if (collection[currentfriend.name]['gender'] === 'Мужской') {
+                    return currentfriend;
                 }
-                var friend = friendsArray[this.currentFriend];
-                this.currentFriend++;
-                return { name: friend, phone: collection[friend].phone};
+                currentfriend = this.next(name);
             }
         },
         prevMale: function (name) {
             if (startPoint === undefined) {
                 return null;
             }
-            if (this.currentFriend <= 0) {
+            if (friendsArray[this.currentFriend + 1] === undefined) {
                 return null;
             }
-            if (friendsArray[this.currentFriend] === undefined) {
-                return null;
-            }
-            if (name === undefined) {
-                this.currentFriend--;
-                while (collection[friendsArray[this.currentFriend]]['gender'] != 'Мужской') {
-                    this.currentFriend--;
+            var currentfriend = this.prev();
+            while (collection[currentfriend.name]) {
+                if (collection[currentfriend.name]['gender'] === 'Мужской') {
+                    return currentfriend;
                 }
-                var friend = friendsArray[this.currentFriend];
-                this.currentFriend--;
-                return { name: friend, phone: collection[friend].phone};
+                currentfriend = this.prev();
             }
         },
-        prev: function (name) {
-            if (this.currentFriend <= 0) {
-                return null;
-            }
+        prev: function () {
             if (startPoint === undefined) {
                 return null;
             }
-            if (friendsArray[this.currentFriend] === undefined) {
+            if (friendsArray[this.currentFriend - 1] === undefined) {
                 return null;
             }
-            if (name === undefined) {
-                this.currentFriend -= 2;
-                var friend = friendsArray[this.currentFriend];
-                return { name: friend, phone: collection[friend].phone};
-            } else {
-                var friend = friendsArray[this.currentFriend];
-                this.currentFriend -= 2;
-                return { name: friend, phone: collection[friend].phone};
-            }
+            this.currentFriend --;
+            var friend = friendsArray[this.currentFriend];
+            return current(friend, collection[friend].phone);
         }
     };
 };
+function current(friend, phone) {
+    return {
+        name: friend,
+        phone: phone
+    };
+}
 function getFriends(collection, startPoint, depth) {
     if (depth === undefined) {
         depth = Object.keys(collection).length - 1;
@@ -89,7 +79,7 @@ function getFriends(collection, startPoint, depth) {
         return [];
     }
     if (depth > Object.keys(collection).length) {
-        return [];
+        depth = Object.keys(collection).length - 1;
     }
     var friends = [];
     var names = [startPoint];
@@ -116,7 +106,7 @@ function getFriends(collection, startPoint, depth) {
         }
     }
     var result = [];
-    var names = ['Сергей'];
+    var names = [startPoint];
     for (var i = 0; i < friends.length; i++) {
         for (var j = 0; j < friends[i].length; j++) {
             if (!singleName(friends[i][j])) {
@@ -126,9 +116,4 @@ function getFriends(collection, startPoint, depth) {
         }
     }
     return result;
-}
-function getFriendForOut(faceBook, friendName) {
-    var input = {name: friendName,
-    phone: faceBook[friendName]['phone']};
-    console.log(input);
 }
