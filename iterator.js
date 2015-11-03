@@ -20,7 +20,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                 }
                 return {
                     name: friends[currentIndexFriend].name,
-                    phone: collection[friends[currentIndexFriend].name].phone
+                    phone: collection[friends[currentIndexFriend].name].phone,
+                    friends : collection[friends[currentIndexFriend].name].friends,
+                    gender : collection[friends[currentIndexFriend].name].gender
                 };
             } else {
                 var newIndex = -1;
@@ -35,7 +37,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     currentIndexFriend = newIndex;
                     return {
                         name: friends[currentIndexFriend].name,
-                        phone: collection[friends[currentIndexFriend].name].phone
+                        phone: collection[friends[currentIndexFriend].name].phone,
+                        friends : collection[friends[currentIndexFriend].name].friends,
+                        gender : collection[friends[currentIndexFriend].name].gender
                     };
                 }
             }
@@ -54,7 +58,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                 }
                 return {
                     name: friends[currentIndexFriend].name,
-                    phone: collection[friends[currentIndexFriend].name].phone
+                    phone: collection[friends[currentIndexFriend].name].phone,
+                    friends : collection[friends[currentIndexFriend].name].friends,
+                    gender : collection[friends[currentIndexFriend].name].gender
                 };
             } else {
                 var newIndex = -1;
@@ -69,7 +75,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     currentIndexFriend = newIndex;
                     return {
                         name: friends[currentIndexFriend].name,
-                        phone: collection[friends[currentIndexFriend].name].phone
+                        phone: collection[friends[currentIndexFriend].name].phone,
+                        friends : collection[friends[currentIndexFriend].name].friends,
+                        gender : collection[friends[currentIndexFriend].name].gender
                     };
                 }
             }
@@ -84,7 +92,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     currentIndexFriend = i;
                     return {
                         name: friends[currentIndexFriend].name,
-                        phone: collection[friends[currentIndexFriend].name].phone
+                        phone: collection[friends[currentIndexFriend].name].phone,
+                        friends : collection[friends[currentIndexFriend].name].friends,
+                        gender : collection[friends[currentIndexFriend].name].gender
                     };
                 }
             }
@@ -100,7 +110,9 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     currentIndexFriend = i;
                     return {
                         name: friends[currentIndexFriend].name,
-                        phone: collection[friends[currentIndexFriend].name].phone
+                        phone: collection[friends[currentIndexFriend].name].phone,
+                        friends : collection[friends[currentIndexFriend].name].friends,
+                        gender : collection[friends[currentIndexFriend].name].gender
                     };
                 }
             }

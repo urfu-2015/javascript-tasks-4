@@ -18,7 +18,7 @@ var dudes = iterator.get(faceBook, 'Сергей');
 // Звоним одному
 // .next() возращает JSON с именем и телефоном следующего ближайшего друга
 friends.next(); // { name: 'Васян', phone: '+70000000000' }
-
+console.log(friends.next());
 // Второму
 friends.next(); // { name: 'Полина', phone: '+70000000000' }
 
