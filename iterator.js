@@ -13,12 +13,12 @@ module.exports.get = function (collection, startPoint, depth) {
             if (visitedContacts.has(_contactName) || !_contact) {
                 return;
             }
+            _contact.friends = _contact.friends.filter(function (_contactName) {
+                return _contactName !== contact.name;
+            });
             var newContact = Object.assign({}, _contact);
             newContact.name = _contactName;
             newContact.source = contact;
-            newContact.friends = newContact.friends.filter(function (_contactName) {
-                return _contactName !== contact.name;
-            });
             newContact.depth = contact.depth + 1;
             return newContact;
         })).filter(function (_contact) {
@@ -104,50 +104,27 @@ module.exports.get = function (collection, startPoint, depth) {
 
         nextMale: function () {
             do {
-                qc++;
-                contact = contactQueue[qc];
-                if (!contact || contact.depth > depth) {
+                var json = this.next();
+                if (json) {
+                    contact = collection[json.name];
+                } else {
                     return null;
                 }
-                if (isCollectionChanged()) {
-                    contactQueue.splice(qc, 1);
-                    qc--;
-                    contact = {};
-                } else {
-                    var friendList = contact.friends.sort();
-                    contactQueue = add2Queue(friendList);
-                }
-                var isContactVisited = visitedContacts.has(contact.name);
-                var isContactDeleted = contact === {};
             }
-            while ((contact.gender != 'Мужской') || isContactVisited || isContactDeleted);
-            var json = {
-                name: contact.name,
-                phone: contact.phone
-            };
-            visitedContacts.add(contact.name);
+            while (contact.gender != 'Мужской');
             return json;
         },
 
         prevMale: function () {
             do {
-                qc--;
-                contact = contactQueue[qc];
-                if (!contact || contact.depth > depth) {
+                var json = this.prev();
+                if (json) {
+                    contact = collection[json.name];
+                } else {
                     return null;
                 }
-                if (isCollectionChanged()) {
-                    contactQueue.splice(qc, 1);
-                    contact = {};
-                }
-                var isContactDeleted = contact === {};
             }
-            while ((contact.gender != 'Мужской') || isContactDeleted);
-            var json = {
-                name: contact.name,
-                phone: contact.phone
-            };
-            visitedContacts.add(contact.name);
+            while (contact.gender != 'Мужской');
             return json;
         }
     };
