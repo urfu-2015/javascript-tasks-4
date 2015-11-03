@@ -57,6 +57,10 @@ module.exports.get = function (collection, startPoint, depth) {
     */
     function getNext(name) {
         if (!badVar) {
+            if ((name !== undefined) && (!(name in distances) || distances[name] == 0 ||
+                (currentFriendIndex != 0 && result[currentFriendIndex]['name'] === name))) {
+                return null;
+            }
             currentFriendIndex++;
             if (currentFriendIndex < result.length) {
                 if (name !== undefined) {
