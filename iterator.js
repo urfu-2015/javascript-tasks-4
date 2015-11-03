@@ -16,8 +16,11 @@ module.exports.get = function (collection, startPoint, depth) {
                 var friendName = friends[currentIndex];
                 if (friendName === name || typeof name === 'undefined') {
                     var info = collection[friendName];
-                    info.name = friendName;
-                    return info;
+                    var nextPerson = {
+                        name: friendName,
+                        phone: info.phone
+                    };
+                    return nextPerson;
                 }
             }
             return null;
@@ -32,8 +35,11 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (currentIndex >= 1) {
                     var friendName = friends[currentIndex];
                     var info = collection[friendName];
-                    info.name = friendName;
-                    return info;
+                    var prevPerson = {
+                        name: friendName,
+                        phone: info.phone
+                    };
+                    return prevPerson;
                 }
             } else {
                 var name = friends[currentIndex];
