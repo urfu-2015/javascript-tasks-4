@@ -10,7 +10,7 @@ module.exports.get = function (collection, startPoint, depth) {
         var view = [];
         var present = [startPoint];
         var future = [];
-        var currentDepth = 1;
+        var currentDepth = 0;
         var nextIndex = 0;
         createIterator();
     }
