@@ -85,7 +85,10 @@ module.exports.get = function (collection, startPoint, depth) {
     */
     function getPrev() {
         currentFriendIndex--;
-        if (currentFriendIndex <= 0) {
+        if (currentFriendIndex == 0) {
+            return getOutput(startPoint);
+        }
+        if (currentFriendIndex < 0) {
             currentFriendIndex = 1;
             return null;
         } else {
@@ -132,6 +135,9 @@ module.exports.get = function (collection, startPoint, depth) {
     */
     function getPrevMale() {
         currentFriendIndex--;
+        if (currentFriendIndex == 0) {
+            return getOutput(startPoint);
+        }
         if (currentFriendIndex <= 0) {
             currentFriendIndex = 1;
             return null;
