@@ -45,6 +45,8 @@ module.exports.get = function (collection, startPoint, depth) {
         contact.source = contact;
         contact.depth = 0;
         visitedContacts.add(contact.name);
+        contactQueue.push(contact);
+        qc++;
         contactQueue = add2Queue(contact.friends.sort());
     }
 
@@ -66,10 +68,9 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 var isContactNameGiven = typeof arguments[0] !== 'undefined';
                 var isContactFound = contact.name === arguments[0];
-                var isContactVisited = visitedContacts.has(contact.name) && !isContactNameGiven;
                 var isContactDeleted = contact === {};
             }
-            while ((isContactNameGiven && !isContactFound) || isContactVisited || isContactDeleted);
+            while ((isContactNameGiven && !isContactFound) || isContactDeleted);
             var json = {
                 name: contact.name,
                 phone: contact.phone
