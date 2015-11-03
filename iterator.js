@@ -40,6 +40,7 @@ function flattened(oldArray) {
 
 module.exports.get = function (collection, startPoint, depth) {
     var allFriends = getFriends(collection, startPoint, depth);
+    //console.log(allFriends);
     var maxNumOfFriend = allFriends.length;
     var currentFriend = 1;
     return {
@@ -55,20 +56,32 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                     if (friend === name) {
                         currentFriend++;
+                        /*console.log('--');
+                        console.log({
+                            name: friend,
+                            phone: collection[friend].phone
+                        });
                         return {
                             name: friend,
                             phone: collection[friend].phone
-                        };
+                        };*/
+                        return collection[friend];
                     }
                     currentFriend++;
                 }
             } else {
                 var friend = allFriends[currentFriend];
                 currentFriend++;
+                /*console.log('--');
+                console.log({
+                            name: friend,
+                            phone: collection[friend].phone
+                        });
                 return {
                             name: friend,
                             phone: collection[friend].phone
-                        };
+                        };*/
+                return collection[friend];
             }
         },
         prev: function () {
@@ -77,10 +90,11 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             var friend = allFriends[currentFriend - 2];
             currentFriend--;
-            return {
+            /*return {
                             name: friend,
                             phone: collection[friend].phone
-                        };
+                        };*/
+            return collection[friend];
         },
         nextMale: function () {
             if (collection[startPoint] === undefined || currentFriend >= maxNumOfFriend - 1) {
