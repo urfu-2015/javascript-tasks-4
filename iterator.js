@@ -2,32 +2,26 @@
 var MAXIMAL_DEPTH = 20;
 module.exports.get = function (collection, nameStart, maxDepth) {
     var currentIndexFriend = 0;
-    if (maxDepth == undefined) {
+    if (maxDepth === undefined) {
         maxDepth = MAXIMAL_DEPTH;
     }
-    var isCorrectCollection = true;
-    if (collection[nameStart] == undefined) {
-        isCorrectCollection = false;
-    } else {
-        var friends = initFriends(collection, nameStart, maxDepth);
-    }
+    var friends = collection[nameStart] && initFriends(collection, nameStart, maxDepth);
     return {
         next: function () {
-            if (!isCorrectCollection) {
+            if (!friends) {
                 return null;
             }
             var resultObject;
             if (!arguments[0]) {
-                currentIndexFriend += 1;
+                ++currentIndexFriend;
                 if (currentIndexFriend >= friends.length) {
-                    currentIndexFriend -= 1;
+                    --currentIndexFriend;
                     return null;
                 }
-                resultObject = {
+                return {
                     name: friends[currentIndexFriend].name,
                     phone: collection[friends[currentIndexFriend].name].phone
                 };
-                return resultObject;
             } else {
                 var newIndex = -1;
                 for (var i = 0; i < friends.length; i++) {
@@ -39,31 +33,29 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     return null;
                 } else {
                     currentIndexFriend = newIndex;
-                    resultObject = {
+                    return {
                         name: friends[currentIndexFriend].name,
                         phone: collection[friends[currentIndexFriend].name].phone
                     };
-                    return resultObject;
                 }
             }
         },
 
         prev: function () {
-            if (!isCorrectCollection) {
+            if (!friends) {
                 return null;
             }
             var resultObject;
             if (!arguments[0]) {
-                currentIndexFriend -= 1;
+                --currentIndexFriend;
                 if (currentIndexFriend <= 0) {
-                    currentIndexFriend += 1;
+                    ++currentIndexFriend;
                     return null;
                 }
-                resultObject = {
+                return {
                     name: friends[currentIndexFriend].name,
                     phone: collection[friends[currentIndexFriend].name].phone
                 };
-                return resultObject;
             } else {
                 var newIndex = -1;
                 for (var i = 0; i < friends.length; i++) {
@@ -75,44 +67,41 @@ module.exports.get = function (collection, nameStart, maxDepth) {
                     return null;
                 } else {
                     currentIndexFriend = newIndex;
-                    resultObject = {
+                    return {
                         name: friends[currentIndexFriend].name,
                         phone: collection[friends[currentIndexFriend].name].phone
                     };
-                    return resultObject;
                 }
             }
         },
 
         nextMale: function () {
-            if (!isCorrectCollection) {
+            if (!friends) {
                 return null;
             }
             for (var i = currentIndexFriend + 1; i < friends.length; i++) {
                 if (collection[friends[i].name].gender === 'Мужской') {
                     currentIndexFriend = i;
-                    var resultObject = {
+                    return {
                         name: friends[currentIndexFriend].name,
                         phone: collection[friends[currentIndexFriend].name].phone
                     };
-                    return resultObject;
                 }
             }
             return null;
         },
 
         prevMale: function () {
-            if (!isCorrectCollection) {
+            if (!friends) {
                 return null;
             }
             for (var i = currentIndexFriend - 1; i > 0; i--) {
                 if (collection[friends[i].name].gender === 'Мужской') {
                     currentIndexFriend = i;
-                    var resultObject = {
+                    return {
                         name: friends[currentIndexFriend].name,
                         phone: collection[friends[currentIndexFriend].name].phone
                     };
-                    return resultObject;
                 }
             }
             return null;
