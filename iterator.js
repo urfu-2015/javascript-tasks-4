@@ -42,13 +42,13 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         },
         prev: function (name) {
-            if (collection[startPoint] === undefined || currentContact < 2) {
+            if (collection[startPoint] === undefined || currentContact < 1) {
                 return null;
             }
             if (name !== undefined) {
                 while (true) {
-                    var contact = data[currentContact - 2];
-                    if (currentContact < 2) {
+                    var contact = data[currentContact - 1];
+                    if (currentContact < 0) {
                         return null;
                     }
                     if (contact.name === name) {
@@ -62,7 +62,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
 
             } else {
-                var contact = data[currentContact - 2];
+                var contact = data[currentContact - 1];
                 currentContact--;
                 return {
                     name: contact.name,
