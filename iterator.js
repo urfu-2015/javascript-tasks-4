@@ -69,9 +69,9 @@ module.exports.get = function (collection, startPoint, depth) {
     if (isNaN(depth) && depth < 0) {
         throw new Error('Invalid depth type: ' + depth);
     }
-    var currentFriend = -1;
+    var currentFriend = 0;
     var people = [[startPoint]];// Массив с уровнями друзей
-    var currentDepth = 1;
+    var currentDepth = 0;
 
     if (collection[startPoint] && depth) {
         people.push(sortArray(collection[startPoint].friends));
@@ -96,7 +96,7 @@ module.exports.get = function (collection, startPoint, depth) {
         currentFriend++;
         if (currentFriend >= people[currentDepth].length) {// Если больше нет друзей текущей глубины
             if (currentDepth + 1 > depth) {// Если больше нельзя идти вглубь
-                currentFriend--;
+                currentFriend = people[currentDepth].length;
                 return null;
             } else {// Идём вглубь
                 currentFriend = 0;
@@ -129,8 +129,8 @@ module.exports.get = function (collection, startPoint, depth) {
     var prevFunction = function prev(name) {
         currentFriend--;
         if (currentFriend < 0) {// Если больше нет друзей текущей глубины
-            if (currentDepth - 1 == 0) {// Если больше нельзя всплывать
-                currentFriend = 0;
+            if (currentDepth - 1 === -1) {// Если больше нельзя всплывать
+                currentFriend = -1;
                 return null;
             } else {// Всплываем
                 currentDepth--;
