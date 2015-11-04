@@ -1,13 +1,11 @@
 'use strict';
 
 function doesUserExists(collection, userName) {
-    if (collection[userName]) {
-        return true;
-    } else {
-        return false;
-    }
-    //Хотел так сократить, но валидатор ругается
-    //return !!collection[userName];
+    return Boolean(collection[userName]);
+}
+
+function cloneObject(object) {
+    return JSON.parse(JSON.stringify(object));
 }
 
 /**
@@ -20,8 +18,7 @@ function doesUserExists(collection, userName) {
  */
 function getFriends(collection, startPoint, usedFriends) {
     var startPointFriends = collection[startPoint]['friends'];
-    startPointFriends = startPointFriends.sort();
-    startPointFriends = startPointFriends.filter(function (friend) {
+    startPointFriends = startPointFriends.sort().filter(function (friend) {
         return collection[friend];
     });
     var startPointNewFriends = [];
@@ -35,8 +32,8 @@ function getFriends(collection, startPoint, usedFriends) {
 }
 
 module.exports.get = function (collection, startPoint, depth) {
-    depth = depth || Object.keys(collection).length;
-    var collectionCopy = (JSON.parse(JSON.stringify(collection)));
+    depth = depth || Infinity;
+    var collectionCopy = cloneObject(collection);
     var didFinish = false;
     var currDepth = 0;
     var currIndex = 0;
@@ -84,8 +81,8 @@ module.exports.get = function (collection, startPoint, depth) {
             //Готовим вывод, проверив, что не дошли до конца
             if (collection[currFriends[currIndex]]) {
                 toShow = {};
-                toShow['name'] = currFriends[currIndex];
-                toShow['phone'] = collection[currFriends[currIndex]]['phone'];
+                toShow.name = currFriends[currIndex];
+                toShow.phone = collection[currFriends[currIndex]]['phone'];
                 return toShow;
             }
             return null;
@@ -104,7 +101,7 @@ module.exports.get = function (collection, startPoint, depth) {
         var friend = _next();
         // Либо связь потерялась совсем и дойти до последнего выданного
         // не сможем, либо дойдем, пересчитав все по ходу
-        while (friend && lastShown['name'] !== friend['name']) {
+        while (friend && lastShown.name !== friend.name) {
             friend = _next();
         }
         // Если дойти не смогли, то обратно от этого человека,
@@ -125,9 +122,9 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     };
     var didCollectionChanged = function () {
-        // Раз сы только удаляем, можем сравнить и так на изменение
+        // Раз мы только удаляем, можем сравнить и так на изменение
         if (Object.keys(collection).length !== Object.keys(collectionCopy).length) {
-            collectionCopy = (JSON.parse(JSON.stringify(collection)));
+            collectionCopy = cloneObject(collection);
             return true;
         } else {
             return false;
@@ -144,11 +141,11 @@ module.exports.get = function (collection, startPoint, depth) {
                 while (friend && name !== friend['name']) {
                     friend = _next();
                 }
-                lastShown = (JSON.parse(JSON.stringify(friend)));
+                lastShown = cloneObject(friend);
                 return friend;
             }
             var tmpNext = _next();
-            lastShown = (JSON.parse(JSON.stringify(tmpNext)));
+            lastShown = cloneObject(tmpNext);
             return tmpNext;
         },
         prev: function () {
@@ -160,7 +157,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 toShow = {};
                 toShow['name'] = currFriends[currIndex];
                 toShow['phone'] = collection[currFriends[currIndex]]['phone'];
-                lastShown = (JSON.parse(JSON.stringify(toShow)));
+                lastShown = cloneObject(toShow);
                 return toShow;
             }
             return null;
