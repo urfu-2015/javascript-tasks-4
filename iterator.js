@@ -95,12 +95,16 @@ function createStack(collection, startPoint, d) {
 
     function iterateFriends(depth, friends, iterated_friends) {
         var count = 0;
-        if (depth == d) { return; }
+        if (depth == d) {
+            return;
+        }
         var current_friends = [];
 
         for (var friend of iterated_friends) {
             for (var k of collection[friend].friends) {
-                if (Object.keys(collection).indexOf(k) > 0 && friends.indexOf(k) < 0 && k != startPoint) {
+                if (Object.keys(collection).indexOf(k) > 0 &&
+                    friends.indexOf(k) < 0 &&
+                    k != startPoint) {
                     count++;
                     friends.push(k);
                     current_friends.push(k);
@@ -108,7 +112,9 @@ function createStack(collection, startPoint, d) {
             }
         }
 
-        if (count == 0) { return; }
+        if (count == 0) {
+            return;
+        }
         iterateFriends(depth + 1, friends, current_friends);
     }
 
