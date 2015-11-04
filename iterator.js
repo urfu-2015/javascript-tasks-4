@@ -139,7 +139,6 @@ function Iterator(collection, startPoint, depth) {
 
     function isChange() {
         var changed = !listNames.every(item => {
-        return !listNames.every(item => {
             return collection.hasOwnProperty(item);
         });
         if (changed) {
