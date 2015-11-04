@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-    var iterator = {count: -1, collection: [], hasStart: true};
+    var iterator = {count: 0, collection: [], hasStart: true};
     var visited = [startPoint];
     var stack = [];
     if (Object.keys(collection).indexOf(startPoint) == -1) {
@@ -13,11 +13,9 @@ module.exports.get = function (collection, startPoint, depth) {
             if (depth && current.depth > depth) {
                 break;
             }
-            if (current.name !== startPoint) {
-                var record = collection[current.name];
-                record.name = current.name;
-                iterator.collection.push(record);
-            }
+            var record = collection[current.name];
+            record.name = current.name;
+            iterator.collection.push(record);
             var currentFriends = collection[current.name].friends.sort();
             for (var friend = 0; friend < currentFriends.length; friend++) {
                 if (collection[currentFriends[friend]] &&
@@ -43,7 +41,7 @@ module.exports.get = function (collection, startPoint, depth) {
         this.count = this.count + 1;
         if (arguments[0]) {
             while (this.count < this.collection.length &&
-                (this.collection[this.count].name !== arguments[0] ||
+                (this.collection[this.count].name !== arguments[0] &&
                 this.collection[this.count].gender !== arguments[0])) {
                 this.count++;
             }
@@ -63,7 +61,7 @@ module.exports.get = function (collection, startPoint, depth) {
         }
         this.count--;
         if (arguments[0]) {
-            while (this.count > 0 && (this.collection[this.count].name !== arguments[0] ||
+            while (this.count > 0 && (this.collection[this.count].name !== arguments[0] &&
                 this.collection[this.count].gender !== arguments[0])) {
                 this.count--;
             }
