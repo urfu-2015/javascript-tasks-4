@@ -6,7 +6,7 @@ module.exports.get = function (collection, startPoint, depth) {
 
 function Iterator(collection, startPoint, depth) {
     var curent = 0;
-
+    var maxMenWithFriend = 1;
     depth = Number.isInteger(depth) ? depth : 0;
 
     if (typeof startPoint === undefined || !collection.hasOwnProperty(startPoint)) {
@@ -26,6 +26,7 @@ function Iterator(collection, startPoint, depth) {
 
         function putNamesInResult() {
             for (var name of curents) {
+                maxMenWithFriend = result.length;
                 result.push(name);
                 following = following.concat(getFriends(name));
             }
@@ -56,14 +57,20 @@ function Iterator(collection, startPoint, depth) {
         }
     }
 
-    this.next = function () {
+    this.next = function (name) {
         if (isNaN(curent)) {
             return null;
         }
+<<<<<<< HEAD
+        if (isChange() && rebuild()) {
+            return null;
+        }
+=======
         isChange() && rebuild();
+>>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
-        if (arguments.length > 0) {
-            var indexElement = listNames.indexOf(arguments[0]);
+        if (name !== undefined) {
+            var indexElement = listNames.indexOf(name);
             if (indexElement === -1) {
                 curent = listNames.length;
                 return null;
@@ -85,7 +92,13 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
+<<<<<<< HEAD
+        if (isChange() && rebuild()) {
+            return null;
+        }
+=======
         isChange() && rebuild();
+>>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         curent--;
         if (curent < 0) {
@@ -100,7 +113,13 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
+<<<<<<< HEAD
+        if (isChange() && rebuild()) {
+            return null;
+        }
+=======
         isChange() && rebuild();
+>>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         for (var i = curent + 1; i < listNames.length; i++) {
             if (collection[listNames[i]].gender === 'Мужской') {
@@ -116,7 +135,13 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
+<<<<<<< HEAD
+        if (isChange() && rebuild()) {
+            return null;
+        }
+=======
         isChange() && rebuild();
+>>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         for (var i = curent - 1; i > -1; i--) {
             if (collection[listNames[i]].gender === 'Мужской') {
@@ -130,16 +155,38 @@ function Iterator(collection, startPoint, depth) {
     };
 
     function isChange() {
+<<<<<<< HEAD
+        var changed = !listNames.every(item => {
+=======
         return !listNames.every(item => {
+>>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
             return collection.hasOwnProperty(item);
         });
+        if (changed) {
+            return true;
+        }
+        for (var i = 0; i < maxMenWithFriend; i++) {
+            var isNotAllFriend = collection[listNames[i]].friends.some(item => {
+                if (!collection.hasOwnProperty(item)) {
+                    return false;
+                }
+                return listNames.indexOf(item) === -1;
+            });
+            if (isNotAllFriend) {
+                return true;
+            }
+        }
+        return false;
     }
     function rebuild() {
         if (!collection.hasOwnProperty(startPoint)) {
             curent = NaN;
-            return;
+            return true;
         }
         listNames = createListNames(startPoint);
+        if (curent > listNames.length) {
+            curent = listNames.length;
+        }
     }
     function collectEntry(name) {
         return {name: name, phone: collection[name].phone};
