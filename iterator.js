@@ -37,6 +37,9 @@ module.exports.get = function (collection, startPoint, depth) {
             if (targetPerson && !collection[targetPerson]) {
                 return null;
             }
+            if (targetPerson && !IsPathExist(collection, startPoint, targetPerson, depth)) {
+                return null;
+            }
             this.checkChanges();
             if (currentPersonIndex < -1) {
                 currentPersonIndex = -1;
@@ -159,7 +162,9 @@ module.exports.get = function (collection, startPoint, depth) {
             collectionLength = newCollectionLength;
             collectionsKeys = Object.keys(collection);
             //console.log('LAST:',lastName);
-            this.next(lastName);
+            if (IsPathExist(collection, startPoint, lastName, depth)) {
+                this.next(lastName);
+            }
         }
     };
 };
@@ -189,6 +194,30 @@ function findNextName(collection, previousPersons, MaxDepth) {
         };
     };
     return null;
+}
+
+function IsPathExist(collection, startPoint, targetPerson, MaxDepth) {
+    var used = [startPoint];
+    var queue = [startPoint];
+    var depth = [0];
+    while (queue.length > 0) {
+        var person = queue.shift();
+        var parentDepth = depth.splice(0, 1)[0];
+        if (person === targetPerson) {
+            return true;
+        }
+        var friends = collection[person].friends.sort();
+        for (var i = 0; i < friends.length; i++) {
+            var currentDepth = parentDepth + 1;
+            if (used.indexOf(friends[i]) === -1 &&
+                currentDepth < MaxDepth) {
+                queue.push(friends[i]);
+                depth.push(currentDepth);
+                used.push(friends[i]);
+            };
+        };
+    };
+    return false;
 }
 
 function deleteFromCollection(collection, OldKeys) {
