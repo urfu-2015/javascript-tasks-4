@@ -60,8 +60,8 @@ module.exports.get = function (collection, startPoint, depth) {
             this.currentFriend --;
             return this.current();
         },
-        current: function() {
-            var friend = friendsArray[this.currentFriend]
+        current: function () {
+            var friend = friendsArray[this.currentFriend];
             return {name: friend['name'], phone: friend['phone'] };
         }
     };
@@ -102,7 +102,6 @@ function getFriends(collection, startPoint, depth) {
     }
     var result = [];
     var names = [startPoint];
-    
     for (var i = 0; i < friends.length; i++) {
         for (var j = 0; j < friends[i].length; j++) {
             if (!singleName(friends[i][j])) {
