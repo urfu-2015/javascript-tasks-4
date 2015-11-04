@@ -1,21 +1,18 @@
 'use strict';
 
 module.exports.get = function (collection, startPoint, depth) {
-	
 	var iter = {};
 	//если стартовой точки нет в книге
 	if (!isNaN(startPoint) || !(collection.hasOwnProperty(startPoint))) {
 		var getNull = function() {
 			return null;
 			}
-		iter.getColl = getNull;
 		iter.next = getNull;
 		iter.nextMale = getNull;
 		iter.prevMale = getNull;
 		iter.prev = getNull;
 		return iter;
 		}
-	
 	//количесвто друзей в книге изначально(надо знать на случай, если вдруг кого-то удалим)
 	var primordialLengthPhB = Object.keys(collection).length;
 	//список тех, кого мы еще не обошли
@@ -29,7 +26,6 @@ module.exports.get = function (collection, startPoint, depth) {
 	//сюда будем записывать друзей контакта
 	var listFriends;
 	var person; 
-	
 	//составляем список друзей, кого мы хотим обзвонить
 	var makeListFriends = function (collection, startPoint, depth) {
 		listOfNext = {};
@@ -37,10 +33,8 @@ module.exports.get = function (collection, startPoint, depth) {
 		for (person in collection) {
 			cloneCollection[person] = collection[person];
 		}
-	
 		listFriends = cloneCollection[startPoint].friends;
 		delete cloneCollection[startPoint];
-		
 		//здесь составляем список тех, кого будем обходить на следующем круге
 		var nextListFriends = [];
 		if (depth === undefined) {
@@ -48,7 +42,6 @@ module.exports.get = function (collection, startPoint, depth) {
 		}
 		//здесь учитываем добавили ли мы всех кого хотели(если прошлись по всем друзьям друзей)
 		var allAdd = 0;
-	
 		for (var circle = 0; circle < depth; circle++) {
 			for (var j = 0; j < listFriends.length; j++) {	
 				if (cloneCollection.hasOwnProperty(listFriends[j]) && !listOfNext.hasOwnProperty(listFriends[j])){
@@ -67,10 +60,7 @@ module.exports.get = function (collection, startPoint, depth) {
 			allAdd = 0;
 		}
 	}
-	
 	makeListFriends(collection, startPoint, depth);
-	
-	
 	var next = function(smbdOrProp) {
 		//если вдруг из фейсбука кого-то удалили
 		if (!(primordialLengthPhB === Object.keys(collection).length)) {
@@ -85,7 +75,6 @@ module.exports.get = function (collection, startPoint, depth) {
 				}
 			}
 		}
-		
 		if (listOfNext.hasOwnProperty(smbdOrProp)) {
 			for (person in listOfNext) {
 				listOfPrevious[String(person)] = listOfNext[person];
@@ -107,7 +96,6 @@ module.exports.get = function (collection, startPoint, depth) {
 		}
 		return null;
 	}
-	
 	var prev = function(gender) {
 		//если вдруг из фейсбука кого-то удалили
 		if (!(primordialLengthPhB === Object.keys(collection).length)) {
@@ -147,30 +135,15 @@ module.exports.get = function (collection, startPoint, depth) {
 		}
 		return null;
 	}
-	
 	var nextMale = function(name) {
 		return next('Мужской');
 	}
-	
 	var prevMale = function() {
 		return prev('Мужской');
 	}
-	var getNext = function() {
-		return listOfNext;
-	}
-	var getPrev = function() {
-		return listOfPrevious;
-	}
-	var getPrevious = function() {
-		return previous;
-	}
-	iter.getNext = getNext;
-	iter.getPrev = getPrev;
-	iter.getPrevious = getPrevious;
 	iter.next = next;
 	iter.prev = prev;
 	iter.nextMale = nextMale;
 	iter.prevMale = prevMale;
 	return iter;
 };
-
