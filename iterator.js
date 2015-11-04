@@ -8,19 +8,17 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
             this.currentFriend++;
-            if (name === undefined) {
-                var friend = friendsArray[this.currentFriend];
-                return current(friend, collection[friend].phone);
-            } else {
-                var index = 0;
-                friendsArray.forEach(function (item) {
-                    if (item == name) {
-                        index = friendsArray.indexOf(item);
-                    }
-                });
-                this.currentFriend = index;
-                return current(name, collection[name].phone);
+            if (!name) {
+                return this.current();
             }
+            var index = 0;
+            friendsArray.forEach(function (item) {
+                if (item == name) {
+                    index = friendsArray.indexOf(item);
+                }
+            });
+            this.currentFriend = index;
+            return this.current();
         },
         nextMale: function (name) {
             if (startPoint === undefined) {
@@ -34,7 +32,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (collection[currentfriend.name]['gender'] === 'Мужской') {
                     return currentfriend;
                 }
-                currentfriend = this.next(name);
+                return this.next(name);
             }
         },
         prevMale: function (name) {
@@ -49,7 +47,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (collection[currentfriend.name]['gender'] === 'Мужской') {
                     return currentfriend;
                 }
-                currentfriend = this.prev();
+                return this.prev();
             }
         },
         prev: function () {
@@ -60,12 +58,14 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
             this.currentFriend --;
-            var friend = friendsArray[this.currentFriend];
-            return current(friend, collection[friend].phone);
+            return this.current();
+        },
+        current: function() {
+            return friendsArray[this.currentFriend];
         }
     };
 };
-function current(friend, phone) {
+function current(collection, friend, phone) {
     return {
         name: friend,
         phone: phone
@@ -107,13 +107,20 @@ function getFriends(collection, startPoint, depth) {
     }
     var result = [];
     var names = [startPoint];
+    
     for (var i = 0; i < friends.length; i++) {
         for (var j = 0; j < friends[i].length; j++) {
             if (!singleName(friends[i][j])) {
+                //var friend = { name: }
                 result.push(friends[i][j]);
                 names.push(friends[i][j]);
             }
         }
     }
-    return result;
+    return result.map(function (elem) {
+        var data = collection[elem];
+        data['name'] = elem;
+        return data;
+    });
 }
+
