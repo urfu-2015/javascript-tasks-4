@@ -61,14 +61,9 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-<<<<<<< HEAD
         if (isChange() && rebuild()) {
             return null;
         }
-=======
-        isChange() && rebuild();
->>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
-
         if (name !== undefined) {
             var indexElement = listNames.indexOf(name);
             if (indexElement === -1) {
@@ -92,13 +87,9 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-<<<<<<< HEAD
         if (isChange() && rebuild()) {
             return null;
         }
-=======
-        isChange() && rebuild();
->>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         curent--;
         if (curent < 0) {
@@ -113,13 +104,9 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-<<<<<<< HEAD
         if (isChange() && rebuild()) {
             return null;
         }
-=======
-        isChange() && rebuild();
->>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         for (var i = curent + 1; i < listNames.length; i++) {
             if (collection[listNames[i]].gender === 'Мужской') {
@@ -135,13 +122,9 @@ function Iterator(collection, startPoint, depth) {
         if (isNaN(curent)) {
             return null;
         }
-<<<<<<< HEAD
         if (isChange() && rebuild()) {
             return null;
         }
-=======
-        isChange() && rebuild();
->>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
 
         for (var i = curent - 1; i > -1; i--) {
             if (collection[listNames[i]].gender === 'Мужской') {
@@ -155,11 +138,8 @@ function Iterator(collection, startPoint, depth) {
     };
 
     function isChange() {
-<<<<<<< HEAD
         var changed = !listNames.every(item => {
-=======
         return !listNames.every(item => {
->>>>>>> aa43fbcc44578aef0bfda59b8a0eeaf5131cdcd5
             return collection.hasOwnProperty(item);
         });
         if (changed) {
