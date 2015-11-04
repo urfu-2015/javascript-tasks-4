@@ -13,9 +13,9 @@ module.exports.get = function (collection, startPoint, depth) {
     if (typeof depth === 'undefined') {
         depth = Number.MAX_VALUE;
     }
-    var collectionLength = Object.keys(collection).length;// длинна коллекции текущая,
-    //проверяем не изменилась ли она,
-    //если уменьшилась, то корректируем все в соответствии с изменениями
+    var collectionLength = Object.keys(collection).length;
+    var collectionsKeys = Object.keys(collection);
+    var lastName = null;
     return {
         next: function (targetPerson) {
             return this.hiddenNext(false, targetPerson);
@@ -37,6 +37,7 @@ module.exports.get = function (collection, startPoint, depth) {
             if (targetPerson && !collection[targetPerson]) {
                 return null;
             }
+            this.checkChanges();
             if (currentPersonIndex < -1) {
                 currentPersonIndex = -1;
             }
@@ -81,14 +82,14 @@ module.exports.get = function (collection, startPoint, depth) {
                     continue;
                 }
                 console.log(friendName);
+                lastName = friendName;
                 return Object(collection[friendName]);
             };
             // console.log('null');
             return null;
         },
         hiddenPrev: function (parameter) {
-            collectionLength = сhangesInCollection(collection,
-             collectionLength, previousPersons); // роверяем не изменилась ли коллекция
+            this.checkChanges(); // проверяем не изменилась ли коллекция
             if (!collection[startPoint]) {
                 // console.log('null');
                 return null;
@@ -138,10 +139,27 @@ module.exports.get = function (collection, startPoint, depth) {
                     continue;
                 }
                 console.log(friendName);
+                lastName = friendName;
                 return Object(collection[friendName]);
             };
             // console.log('null');
             return null;
+        },
+        checkChanges: function () {
+            var newCollectionLength = Object.keys(collection).length;
+            if (newCollectionLength == collectionLength) {
+                return;
+            }
+            deleteFromCollection(collection, collectionsKeys);
+            if (collection[startPoint]) {
+                currentList = collection[startPoint].friends.sort();
+            }
+            currentPersonIndex = -2;
+            previousPersons = [startPoint];
+            collectionLength = newCollectionLength;
+            collectionsKeys = Object.keys(collection);
+            //console.log('LAST:',lastName);
+            this.next(lastName);
         }
     };
 };
@@ -173,20 +191,14 @@ function findNextName(collection, previousPersons, MaxDepth) {
     return null;
 }
 
-function сhangesInCollection(collection, collectionLength, previousPersons) {
-    //если коллекция изменилась, выясняем если в нашем пути обратно человек, которого больше нет
-    var newCollectionLength = Object.keys(collection).length;
-    if (collectionLength === newCollectionLength) {
-        return newCollectionLength;
-    }
+function deleteFromCollection(collection, OldKeys) {
     var remoteName;
-    for (var i = 0; i < previousPersons.length; i++) {
-        var remoteName = previousPersons[i];
-        if (!collection[remoteName]) {
-            var index = previousPersons.indexOf(remoteName);
-            previousPersons.splice(index, 1);
+    OldKeys.forEach(function (name) {
+        if (!collection[name]) {
+            remoteName = name;
         }
-    }
+    });
+    console.log('REMOTE:', remoteName);
     for (var e in collection) {
         for (var i = 0; i < collection[e].friends.length; i++) {
             if (collection[e].friends[i] === remoteName) {
@@ -194,5 +206,4 @@ function сhangesInCollection(collection, collectionLength, previousPersons) {
             }
         };
     }
-    return newCollectionLength;
 }
