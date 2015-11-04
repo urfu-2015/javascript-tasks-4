@@ -40,17 +40,18 @@ function flattened(oldArray) {
 
 module.exports.get = function (collection, startPoint, depth) {
     var allFriends = getFriends(collection, startPoint, depth);
+    console.log(allFriends);
     var maxNumOfFriend = allFriends.length;
     var currentFriend = 1;
     return {
         next: function (name) {
-            if (collection[startPoint] === undefined || currentFriend >= maxNumOfFriend - 1) {
+            if (collection[startPoint] === undefined || currentFriend >= maxNumOfFriend /*- 1*/) {
                 return null;
             }
             if (name !== undefined) {
                 while (true) {
                     var friend = allFriends[currentFriend];
-                    if (currentFriend >= maxNumOfFriend - 1) {
+                    if (currentFriend >= maxNumOfFriend /*- 1*/) {
                         return null;
                     }
                     if (friend === name) {
