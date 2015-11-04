@@ -61,16 +61,11 @@ module.exports.get = function (collection, startPoint, depth) {
             return this.current();
         },
         current: function() {
-            return friendsArray[this.currentFriend];
+            var friend = friendsArray[this.currentFriend]
+            return {name: friend['name'], phone: friend['phone'] };
         }
     };
 };
-function current(collection, friend, phone) {
-    return {
-        name: friend,
-        phone: phone
-    };
-}
 function getFriends(collection, startPoint, depth) {
     if (depth === undefined) {
         depth = Object.keys(collection).length - 1;
