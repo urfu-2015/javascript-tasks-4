@@ -42,6 +42,8 @@ module.exports.get = function (collection, startPoint, depth) {
     var usedFriends = {};
     var toShow = {};
     var lastShown = {};
+    // Сюда попадают друзья, на чьих друзей первого уровня уже смотрели
+    var searchedFriends = [];
     usedFriends[startPoint] = collection[startPoint];
     var _next = function () {
         // Если стартовой точки нет, то сразу закончили
@@ -55,7 +57,12 @@ module.exports.get = function (collection, startPoint, depth) {
         }
         // Выдаем друзей до нужной глубины
         if (currDepth < depth) {
-            var tmpFriends = getFriends(collection, currFriends[currIndex], usedFriends);
+            var tmpFriends = [];
+            // Если на друзей первого уровня текущего человека еще не смотрели, то смотрим
+            if (searchedFriends.indexOf(currFriends[currIndex]) < 0) {
+                tmpFriends = getFriends(collection, currFriends[currIndex], usedFriends);
+                searchedFriends.push(currFriends[currIndex]);
+            }
             //Если после 1-ого уровня друзей пусто, то дальше только null
             if (!currDepth && !tmpFriends.length) {
                 return null;
@@ -67,8 +74,9 @@ module.exports.get = function (collection, startPoint, depth) {
                 usedFriends[item] = collection[item];
             });
             currIndex++;
-            //Если на новом уровне никого нет, то мы дошли до конца
-            if (newLevel.length === 0) {
+            //Если на новом уровне у еще не просмотренного человека
+            // новых друзей нет, то мы дошли до конца
+            if (newLevel.length === 0 && searchedFriends.indexOf(currFriends[currIndex - 1]) < 0) {
                 didFinish = true;
                 return null;
             }
@@ -97,6 +105,7 @@ module.exports.get = function (collection, startPoint, depth) {
         currFriends = [startPoint];
         newLevel = [];
         usedFriends = {};
+        searchedFriends = [];
         usedFriends[startPoint] = collection[startPoint];
         var friend = _next();
         // Либо связь потерялась совсем и дойти до последнего выданного
@@ -155,8 +164,8 @@ module.exports.get = function (collection, startPoint, depth) {
             if (currIndex > 0) {
                 currIndex--;
                 toShow = {};
-                toShow['name'] = currFriends[currIndex];
-                toShow['phone'] = collection[currFriends[currIndex]]['phone'];
+                toShow.name = currFriends[currIndex];
+                toShow.phone = collection[currFriends[currIndex]]['phone'];
                 lastShown = cloneObject(toShow);
                 return toShow;
             }
