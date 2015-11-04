@@ -7,7 +7,7 @@
     "object-assign": "^4.0.1"
   },
   "scripts": {
-    "test": "npm run lint && mocha test/*",
+    "test": "npm run lint && mocha test/* --harmony",
     "lint": "jscs ."
   }
 }
