@@ -12,7 +12,8 @@ function addToFriendsList(collection, friendsList) {
     for (var i in friendsList) {
         var candidates = Object.assign([], collection[friendsList[i]]['friends']).sort();
         for (var j in candidates) {
-            if (friendsList.indexOf(candidates[j]) === -1 && friendsToAdd.indexOf(candidates[j]) === -1) {
+            if (friendsList.indexOf(candidates[j]) === -1 &&
+                friendsToAdd.indexOf(candidates[j]) === -1) {
                 friendsToAdd.push(candidates[j]);
             }
         }
