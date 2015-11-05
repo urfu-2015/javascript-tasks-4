@@ -56,3 +56,19 @@ dudes.next('Пётр');
 
 // И продолжаем набор на мальчишник и свадьбу
 while (dudes.nextMale() || friends.next()) {}
+
+while (friend = friends.next()) {
+    console.log(friend);
+}
+
+console.log('\n');
+
+while (friend = friends.prev()) {
+    console.log(friend);
+}
+
+console.log('\n');
+
+while (friend = friends.next()) {
+    console.log(friend);
+}
