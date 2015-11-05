@@ -44,7 +44,7 @@ module.exports.get = function (collection, startPoint, depth) {
         throw new Error('Invalid depth: ' + depth);
     }
 
-    if (!collection[startPoint] && !depth) {
+    if (!collection[startPoint] || !depth) {
         return {
             next: function (name) {
                 return null;
