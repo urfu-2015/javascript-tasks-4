@@ -12,6 +12,7 @@ function addToFriendsList(collection, friendsList) {
     for (var i in friendsList) {
         var candidates = Object.assign([], collection[friendsList[i]]['friends']).sort();
         for (var j in candidates) {
+
             if (friendsList.indexOf(candidates[j]) === -1 &&
                 friendsToAdd.indexOf(candidates[j]) === -1) {
                 friendsToAdd.push(candidates[j]);
@@ -28,7 +29,7 @@ function initializeList(collection, startPoint) {
     if (typeof startPoint === 'undefined' || Object.keys(collection).indexOf(startPoint) === -1) {
         return null;
     }
-    var result = collection[startPoint]['friends'].sort();
+    var result = Object.assign([], collection[startPoint]['friends']).sort();
     result.unshift(startPoint);
     return result;
 }
