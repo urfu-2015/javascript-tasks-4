@@ -27,32 +27,6 @@ function valueIn(arrays, value) {
     return false;
 }
 
-function createRelations(collection, startPoint, depth) {
-    var people = [[startPoint]];// Массив с уровнями друзей
-    var currentDepth = 0;
-    var friends = [];
-
-    while (currentDepth < depth) {
-        currentDepth++;
-        people[currentDepth] = [];
-
-        /*Создаём следующий уровень друзей
-        Для каждого человека находим всех друзей и добавляем их в массив связей, только
-        если они есть в книге контактов и их еще нет в массиве связей*/
-        people[currentDepth - 1].forEach(function (man) {// Для каждого человека
-            friends = [];
-            collection[man].friends.forEach(function (friendOfMan) {// Для каждого друга человека
-                if (!valueIn(people, friendOfMan) && collection[friendOfMan]) {
-                    friends.push(friendOfMan);
-                }
-            });
-            friends = sortArray(friends);
-            people[currentDepth] = people[currentDepth].concat(friends);
-        });
-    }
-    return people;
-}
-
 function manInCollection(collection, man) {
     if (collection[man]) {
         return {
@@ -67,15 +41,10 @@ function manInCollection(collection, man) {
 module.exports.get = function (collection, startPoint, depth) {
     (depth === undefined) ? depth = Number.MAX_VALUE : depth = Number(depth);
     if (isNaN(depth) && depth < 0) {
-        throw new Error('Invalid depth type: ' + depth);
+        throw new Error('Invalid depth: ' + depth);
     }
-    var currentFriend = 0;
-    var people = [[startPoint]];// Массив с уровнями друзей
-    var currentDepth = 0;
 
-    if (collection[startPoint] && depth) {
-        people.push(sortArray(collection[startPoint].friends));
-    } else {
+    if (!collection[startPoint] && !depth) {
         return {
             next: function (name) {
                 return null;
@@ -92,45 +61,98 @@ module.exports.get = function (collection, startPoint, depth) {
         };
     }
 
+    var currentFriendName = startPoint;
+    var currentFriend = 0;
+    var currentDepth = 0;
+    var people = [[startPoint]];// Массив с уровнями друзей
+
+    var createRelations = function () {// Создает все возможные связи между друзьями
+        var people = [[startPoint]];// Массив с уровнями друзей
+        var currDepth = 0;
+        var friends = [];
+        var isCurrFriendInPeople = (currentFriendName === null ||
+                                    currentFriendName === startPoint) ? true : false;
+
+        while (currDepth < depth) {
+            currDepth++;
+            people[currDepth] = [];
+
+            /*Создаём следующий уровень друзей
+            Для каждого человека находим всех друзей и добавляем их в массив связей, только
+            если они есть в книге контактов и их еще нет в массиве связей*/
+            people[currDepth - 1].forEach(function (man) {// Для каждого человека
+                friends = [];
+                collection[man].friends.forEach(function (friendOfMan) {//Для каждого друга человека
+                    if (!valueIn(people, friendOfMan) && collection[friendOfMan]) {
+                        friends.push(friendOfMan);
+                        if (!isCurrFriendInPeople && friendOfMan === currentFriendName) {
+                            currentDepth = currDepth;
+                            isCurrFriendInPeople = true;
+                        }
+                    }
+                });
+                friends = sortArray(friends);
+                people[currDepth] = people[currDepth].concat(friends);
+            });
+            if (people[currDepth].indexOf(currentFriendName) !== -1) {
+                currentFriend = people[currDepth].indexOf(currentFriendName);
+            }
+            if (!people[currDepth].length) {
+                depth = currDepth - 1;
+                people.pop();
+                break;
+            }
+        }
+        if (isCurrFriendInPeople) {
+            return people;
+        } else {
+            currentFriend = 0;
+            currentDepth = 0;
+            return [];
+        }
+    };
+
     var nextFunction = function next(name) {
+        people = createRelations();
+        if (!people.length) {
+            return null;
+        }
         currentFriend++;
         if (currentFriend >= people[currentDepth].length) {// Если больше нет друзей текущей глубины
             if (currentDepth + 1 > depth) {// Если больше нельзя идти вглубь
                 currentFriend = people[currentDepth].length;
+                currentFriendName = null;
                 return null;
             } else {// Идём вглубь
                 currentFriend = 0;
                 currentDepth++;
-
-                people = createRelations(collection, startPoint, currentDepth);
-
-                if (!people[currentDepth].length) {
-                    return null;
-                }
             }
         }
         var friend = manInCollection(collection, people[currentDepth][currentFriend]);
         if (friend) {// Если друг есть в книге
+            currentFriendName = friend.name;
             if (name === undefined || name === friend.name) {
                 return friend;
             } else {
                 return next(name);
             }
-        } else {// Если друга нет в книге, заного построим связи между людьми
-            people = createRelations(collection, startPoint, currentDepth);
-            if (people[currentDepth].length <= currentFriend) {
-                currentFriend = people[currentDepth].length - 1;
-            }
-
-            return next(name);
+        } else {// Если друга нет в книге
+            currentFriendName = null;
+            return null;
         }
     };
 
     var prevFunction = function prev(name) {
+        people = createRelations();
+        if (!people.length) {
+            currentFriendName = null;
+            return null;
+        }
         currentFriend--;
         if (currentFriend < 0) {// Если больше нет друзей текущей глубины
             if (currentDepth - 1 === -1) {// Если больше нельзя всплывать
                 currentFriend = -1;
+                currentFriendName = null;
                 return null;
             } else {// Всплываем
                 currentDepth--;
@@ -139,18 +161,15 @@ module.exports.get = function (collection, startPoint, depth) {
         }
         var friend = manInCollection(collection, people[currentDepth][currentFriend]);
         if (friend) {// Если друг есть в книге
+            currentFriendName = friend.name;
             if (name === undefined || name === friend.name) {
                 return friend;
             } else {
                 return prev(name);
             }
-        } else {// Если друга нет в книге, заного построим связи между людьми
-            people = createRelations(collection, startPoint, currentDepth);
-            if (people[currentDepth].length <= currentFriend) {
-                currentFriend = people[currentDepth].length - 1;
-            }
-
-            return prev(name);
+        } else {// Если друга нет в книге
+            currentFriendName = null;
+            return null;
         }
     };
 
@@ -160,9 +179,11 @@ module.exports.get = function (collection, startPoint, depth) {
         var person;
         while (person = func(name)) {
             if (collection[person.name].gender === 'Мужской') {
+                currentFriendName = person.name;
                 return person;
             }
         }
+        currentFriendName = null;
         return null;
     };
 
