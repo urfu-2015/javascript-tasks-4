@@ -11,7 +11,7 @@ module.exports.get = function (collection, startPoint, depth) {
             do {
                 var contact = collection[log.pop()];
             }
-            while (!contact && log);
+            while (!contact && log.length !== 0);
             queueCounter = contactQueue.indexOf(contact);
         }
     };
@@ -36,11 +36,12 @@ module.exports.get = function (collection, startPoint, depth) {
             return [];
         }
         contact.name = contactName;
-        var contactQueue = [contact];
-        var depthLevel = getFriends(contact);
+        var contactQueue = [];
+        var handShake = 0;
+        var depthLevel = [contact];
         contactQueue = contactQueue.concat(depthLevel);
-        var handShake = 1;
-        do {
+        depth = !depth || depth < 0 ? undefined : depth;
+        while (handShake !== depth) {
             depthLevel = depthLevel.reduce(function (previousContact, currentContact) {
                 return previousContact.concat(function () {
                     return getFriends(currentContact);
@@ -59,7 +60,6 @@ module.exports.get = function (collection, startPoint, depth) {
             };
             handShake++;
         }
-        while (handShake !== depth);
         return contactQueue;
     };
 
