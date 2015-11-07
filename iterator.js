@@ -26,7 +26,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 contact.name = contactName;
                 return contact;
-            }).filter(function (entry){
+            }).filter(function (entry) {
                 return typeof entry !== 'undefined';
             });
         };
@@ -78,7 +78,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 var isNameFound = contact.name === arguments[0];
             }
-            while(isNameGiven && !isNameFound);
+            while (isNameGiven && !isNameFound);
             var json = {};
             json.name = contact.name;
             json.phone = contact.phone;
@@ -96,7 +96,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 var isNameFound = contact.name === arguments[0];
             }
-            while(isNameGiven && !isNameFound);
+            while (isNameGiven && !isNameFound);
             var json = {};
             json.name = contact.name;
             json.phone = contact.phone;
