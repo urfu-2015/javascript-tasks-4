@@ -44,10 +44,11 @@ module.exports.get = function (collection, startPoint, depth) {
         var allAdd = 0;
         for (var circle = 0; circle < depth; circle++) {
             for (var j = 0; j < listFriends.length; j++) {
-                if (cloneCollection.hasOwnProperty(listFriends[j]) && 
+                if (cloneCollection.hasOwnProperty(listFriends[j]) &&
                         !listOfNext.hasOwnProperty(listFriends[j])) {
                     listOfNext[String(listFriends[j])] = cloneCollection[listFriends[j]];
-                    nextListFriends = nextListFriends.concat(listOfNext[String(listFriends[j])]['friends'].sort());
+                    nextListFriends =
+                        nextListFriends.concat(listOfNext[String(listFriends[j])]['friends'].sort());
                     delete cloneCollection[listFriends[j]];
                 } else {
                     allAdd++;
