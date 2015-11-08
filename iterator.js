@@ -48,7 +48,7 @@ module.exports.get = function (collection, startPoint, depth) {
                         !listOfNext.hasOwnProperty(listFriends[j])) {
                     listOfNext[String(listFriends[j])] = cloneCollection[listFriends[j]];
                     nextListFriends =
-                        nextListFriends.concat(listOfNext[String(listFriends[j])]['friends'].sort());
+                    nextListFriends.concat(listOfNext[String(listFriends[j])]['friends'].sort());
                     delete cloneCollection[listFriends[j]];
                 } else {
                     allAdd++;
