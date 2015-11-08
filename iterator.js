@@ -17,6 +17,9 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         next: function (name) {
             checkCollectionIntegrity();
+			if (friends.indexOf(name) < 0 || collection.indexOf(name) < 0) {
+				return null;
+			}
             if (!friends) {
                 return null;
             }
