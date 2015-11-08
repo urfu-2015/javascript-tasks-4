@@ -4,7 +4,7 @@ module.exports.get = function (collection, startPoint, depth) {
     if (depth === undefined) {
         var depth = Number.MAX_SAFE_INTEGER;
     }
-    if (collection[startPoint] === undefined) {
+    if (collection[startPoint] === undefined || depth < 0) {
         return {
             next: returnNull,
             prev: returnNull,
@@ -12,11 +12,10 @@ module.exports.get = function (collection, startPoint, depth) {
             prevMale: returnNull
         };
     }
-    var index = -1;
+    var index = 0;
     var pointNames = getTreePoints(collection, startPoint, depth);
     return {
         next: function (name) {
-            var oldIndex = index;
             index++;
             if (name !== undefined) {
                 while (index < pointNames.length && pointNames[index] !== name) {
@@ -29,11 +28,10 @@ module.exports.get = function (collection, startPoint, depth) {
                     phone: collection[pointNames[index]].phone
                 };
             }
-            index = oldIndex;
+            index = pointNames.length;
             return null;
         },
         prev: function (name) {
-            var oldIndex = index;
             index--;
             if (name !== undefined) {
                 while (index >= 0 && pointNames[index] !== name) {
@@ -46,11 +44,10 @@ module.exports.get = function (collection, startPoint, depth) {
                     phone: collection[pointNames[index]].phone
                 };
             }
-            index = oldIndex;
+            index = -1;
             return null;
         },
         nextMale: function (name) {
-            var oldIndex = index;
             index++;
             if (name !== undefined) {
                 while (
@@ -73,11 +70,10 @@ module.exports.get = function (collection, startPoint, depth) {
                     phone: collection[pointNames[index]].phone
                 };
             }
-            index = oldIndex;
+            index = pointNames.length;
             return null;
         },
         prevMale: function (name) {
-            var oldIndex = index;
             index--;
             if (name !== undefined) {
                 while (
@@ -100,17 +96,22 @@ module.exports.get = function (collection, startPoint, depth) {
                     phone: collection[pointNames[index]].phone
                 };
             }
-            index = oldIndex;
+            index = -1;
             return null;
         }
     };
 };
 
 function getTreePoints(collection, startPoint, depth) {
+    var points = [];
+    points.push(startPoint);
+    if (depth === 0) {
+        return points;
+    }
+
     var queue = [];
     var depthOfPoint = {};
     var visitedPoint = {};
-    var points = [];
     queue.push(startPoint);
     visitedPoint[startPoint] = true;
     depthOfPoint[startPoint] = 0;
