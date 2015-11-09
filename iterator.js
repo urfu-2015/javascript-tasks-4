@@ -9,7 +9,11 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     }
     var data = getFriends(collection, startPoint, depth);
-    var currentContact = 0;
+    data.unshift(
+        { name: startPoint,
+          phone: collection[startPoint].phone }
+    );
+    var currentContact = 1;
     var lastContact = data.length;
 
     return {
@@ -47,7 +51,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             if (name !== undefined) {
                 while (true) {
-                    var contact = data[currentContact - 1];
+                    var contact = data[currentContact - 2];
                     if (currentContact < 0) {
                         return null;
                     }
@@ -62,7 +66,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
 
             } else {
-                var contact = data[currentContact - 1];
+                var contact = data[currentContact - 2];
                 currentContact--;
                 return {
                     name: contact.name,
@@ -88,7 +92,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         },
         prevMale: function (name) {
-            if (collection[startPoint] === undefined || currentContact < 2) {
+            if (collection[startPoint] === undefined || currentContact < 1) {
                 return null;
             }
 
