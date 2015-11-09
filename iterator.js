@@ -171,12 +171,12 @@ function getFriends(collection, startPoint, depth) {
         });
         depth--;
     }
-    newFriends.unshift(
-        {   name: startPoint,
-            gender: collection[startPoint].gender,
-            phone: collection[startPoint].phone,
-            friends: collection[startPoint].friends
-        }
+    var startFriend = {
+        name: startPoint,
+        gender: collection[startPoint].gender,
+        phone: collection[startPoint].phone,
+        friends: collection[startPoint].friends
     );
+    newFriends.unshift(startFriend);
     return newFriends;
 }
