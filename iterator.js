@@ -6,18 +6,18 @@ module.exports.get = function (collection, startPoint, depth) {
     if (depth === 0) {
         return {
             next: function () {
-                return null
+                return null;
             },
             prev: function () {
-                return null
+                return null;
             },
             nextMale: function () {
-                return null
+                return null;
             },
             prevMale: function () {
-                return null
+                return null;
             }
-        }
+        };
     }
     if (startPoint && collection.hasOwnProperty(startPoint)) {
         friends = [startPoint];
@@ -26,7 +26,7 @@ module.exports.get = function (collection, startPoint, depth) {
         friendsOfFriends = getFriends(collection, friends, friends);
         friends = merge(friends, friendsOfFriends);
         depth -= 1;
-        while ((!depth && friendsOfFriends.length !== 0) ||(depth && depth > 0)){
+        while ((!depth && friendsOfFriends.length !== 0) || (depth && depth > 0)) {
             friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
             friends = merge(friends, friendsOfFriends);
             depth -= 1;
@@ -143,3 +143,4 @@ function uniq(collection, filter) {
     }
     return result;
 }
+
