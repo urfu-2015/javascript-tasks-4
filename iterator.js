@@ -22,11 +22,10 @@ module.exports.get = function (collection, startPoint, depth) {
     if (startPoint && collection.hasOwnProperty(startPoint)) {
         friends = [startPoint];
         var friendsOfFriends;
-
         friendsOfFriends = getFriends(collection, friends, friends);
         friends = merge(friends, friendsOfFriends);
         depth -= 1;
-        while ((!depth && friendsOfFriends.length !== 0) || (depth && depth > 0)) {
+        while ((isNaN(depth) && friendsOfFriends.length !== 0) || (!isNaN(depth) && depth > 0)) {
             friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
             friends = merge(friends, friendsOfFriends);
             depth -= 1;
