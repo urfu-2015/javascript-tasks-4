@@ -2,38 +2,35 @@
 
 
 module.exports.get = function (collection, startPoint, depth) {
-    var friends;
-    if (startPoint) {
-        if (collection.hasOwnProperty(startPoint)) {
-            friends = (collection[startPoint].friends).sort();
-            if (friends) {
-                var friendsOfFriends;
-                if (depth) {
-                    if (depth >= 2) {
-                        friendsOfFriends = getFriends(collection, friends, []);
-                        friends = merge(friends, friendsOfFriends);
-                        for (var i = 0; i < depth - 2; i++) {
-                            friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
-                            friends = merge(friends, friendsOfFriends);
-                        }
-                    }
-                } else {
-                    friendsOfFriends = getFriends(collection, friends, friends);
-                    friends = merge(friends, friendsOfFriends);
-                    do {
-                        friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
-                        friends = merge(friends, friendsOfFriends);
-                    } while (friendsOfFriends.length !== 0);
-                }
+    var friends = [];
+    if (depth === 0) {
+        return {
+            next: function () {
+                return null
+            },
+            prev: function () {
+                return null
+            },
+            nextMale: function () {
+                return null
+            },
+            prevMale: function () {
+                return null
             }
-        } else {
-            friends = [];
         }
-    } else {
-        friends = [];
     }
-    if (friends.indexOf(startPoint) !== -1) {
-        friends.splice(friends.indexOf(startPoint), 1);
+    if (startPoint && collection.hasOwnProperty(startPoint)) {
+        friends = [startPoint];
+        var friendsOfFriends;
+
+        friendsOfFriends = getFriends(collection, friends, friends);
+        friends = merge(friends, friendsOfFriends);
+        depth -= 1;
+        while ((!depth && friendsOfFriends.length !== 0) ||(depth && depth > 0)){
+            friendsOfFriends = getFriends(collection, friendsOfFriends, friends);
+            friends = merge(friends, friendsOfFriends);
+            depth -= 1;
+        }
     }
     return {
         faceBook: collection,
@@ -146,4 +143,3 @@ function uniq(collection, filter) {
     }
     return result;
 }
-
