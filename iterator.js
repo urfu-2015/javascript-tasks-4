@@ -2,7 +2,9 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var currentIndex = 0;
-    depth = depth || collection.length;
+    if (depth !== 0) {
+        depth = depth || collection.length;
+    }
     var friends = getFriends(collection, startPoint, depth);
     var countFriends = friends.length;
     return {
@@ -32,7 +34,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             if (check(friends, collection, startPoint, depth)) {
                 currentIndex -= 1;
-                if (currentIndex >= 1) {
+                if (currentIndex >= 0) {
                     var friendName = friends[currentIndex];
                     var info = collection[friendName];
                     var prevPerson = {
