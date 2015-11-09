@@ -176,7 +176,7 @@ function getFriends(collection, startPoint, depth) {
         gender: collection[startPoint].gender,
         phone: collection[startPoint].phone,
         friends: collection[startPoint].friends
-    );
+    };
     newFriends.unshift(startFriend);
     return newFriends;
 }
