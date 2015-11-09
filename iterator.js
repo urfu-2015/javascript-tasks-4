@@ -9,10 +9,6 @@ module.exports.get = function (collection, startPoint, depth) {
         }
     }
     var data = getFriends(collection, startPoint, depth);
-    data.unshift(
-        { name: startPoint,
-          phone: collection[startPoint].phone }
-    );
     var currentContact = 1;
     var lastContact = data.length;
 
@@ -175,5 +171,12 @@ function getFriends(collection, startPoint, depth) {
         });
         depth--;
     }
+    newFriends.unshift(
+        {   name: startPoint,
+            gender: collection[startPoint].gender,
+            phone: collection[startPoint].phone,
+            friends: collection[startPoint].friends
+        }
+    );
     return newFriends;
 }
