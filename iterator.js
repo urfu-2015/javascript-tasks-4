@@ -134,7 +134,7 @@ module.exports.get = function (collection, startPoint, depth) {
         delete listOfPrevious[person];
         for (var i = previous.length - 1; i >= 0; i--) {
             person = previous[i];
-           if (gender === undefined || listOfPrevious[person].gender === gender) {
+            if (gender === undefined || listOfPrevious[person].gender === gender) {
                 return listOfPrevious[person];
             }
             listOfNext[String(person)] = listOfPrevious[person];
