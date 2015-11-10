@@ -65,8 +65,8 @@ module.exports.get = function (collection, startPoint, depth) {
     };
     makeListFriends(collection, startPoint, depth);
     var changeName = function (name) {
-        return name.replace(/ё/gi, "е");
-    }
+        return name.replace(/ё/gi, 'е');
+    };
     var next = function (smbdOrProp) {
         //если вдруг из фейсбука кого-то удалили
         if (!(primordialLengthPhB === Object.keys(collection).length)) {
@@ -82,27 +82,13 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
             }
         }
-        /*
-        if (listOfNext[smbdOrProp]) {
-            return changeName(smbdOrProp);
-            for (person in listOfNext) {
-                listOfPrevious[String(person)] = listOfNext[person];
-                previous.push(person);
-                delete listOfNext[person];
-                if (person === smbdOrProp) {
-                    return listOfPrevious[person];
-                }
-            }
-            return null;
-        }
-        */
         while (nextPer.length > 0) {
             person = nextPer.pop();
             listOfPrevious[String(person)] = listOfNext[person];
             previous.push(person);
             delete listOfNext[person];
-            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp || person === smbdOrProp
-                    || changeName(person) === smbdOrProp) {
+            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
+                    person === smbdOrProp || changeName(person) === smbdOrProp) {
                 return listOfPrevious[person];
             }
         }
@@ -110,8 +96,8 @@ module.exports.get = function (collection, startPoint, depth) {
             listOfPrevious[String(person)] = listOfNext[person];
             previous.push(person);
             delete listOfNext[person];
-            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp || person === smbdOrProp
-                    || changeName(person) === smbdOrProp) {
+            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
+                    person === smbdOrProp || changeName(person) === smbdOrProp) {
                 return listOfPrevious[person];
             }
         }
@@ -148,9 +134,7 @@ module.exports.get = function (collection, startPoint, depth) {
         delete listOfPrevious[person];
         for (var i = previous.length - 1; i >= 0; i--) {
             person = previous[i];
-            //return previous;
-            //return listOfNext;
-            if (gender === undefined || listOfPrevious[person].gender === gender) {
+           if (gender === undefined || listOfPrevious[person].gender === gender) {
                 return listOfPrevious[person];
             }
             listOfNext[String(person)] = listOfPrevious[person];
@@ -165,22 +149,9 @@ module.exports.get = function (collection, startPoint, depth) {
     var prevMale = function () {
         return prev('Мужской');
     };
-    var getPrev = function () {
-        return listOfPrevious;
-    }
-    var getNext = function () {
-        return listOfNext;
-    }
-    var getNextPer = function () {
-        return nextPer;
-    }
     iter.next = next;
     iter.prev = prev;
     iter.nextMale = nextMale;
     iter.prevMale = prevMale;
-    iter.getPrev = getPrev;
-    iter.getNext = getNext;
-    iter.getNextPer = getNextPer;
-    iter.changeName = changeName;
     return iter;
 };
