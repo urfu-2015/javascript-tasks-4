@@ -21,7 +21,7 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         friends: friends,
         next: function () {
-            if (index >= friends.length) {
+            if (index >= friends.length || isUncorrectArg(arguments[0], friends, startPoint)) {
                 return null;
             }
             var current = friends[index];
@@ -36,14 +36,14 @@ module.exports.get = function (collection, startPoint, depth) {
         },
 
         prev: function () {
-            if (index <= 0) {
+            if (index <= 0 || isUncorrectArg(arguments[0], friends, startPoint)) {
                 return null;
             }
             var current = friends[index];
             friends = getFriends(collection, [start], depth);
             index = getIndexByName(friends, current[0], index) - 1;
             index = getIndexByName(friends, arguments[0], index);
-            return index > -1 ?
+            return index > -1 && index < friends.length ?
                 {
                     name: friends[index][0],
                     phone: friends[index][1].phone
@@ -92,9 +92,9 @@ function getFriends(collection, queue, depth) {
     return queue;
 };
 
-function isInList(queue, user) {
-    for (var i = 0; i < queue.length; i++) {
-        if (queue[i][0] == user) {
+function isInList(list, user) {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i][0] == user) {
             return true;
         }
     };
@@ -106,15 +106,25 @@ function getNull() {
 };
 
 function getIndexByName(queue, name, index) {
+    if (!name) {
+        return index;
+    }
     for (var j = 0; j < queue.length; j++) {
         if (queue[j][0] == name) {
             return j;
         }
     };
-    return index;
+    return null;
 };
 
 function getMale(friends, index, friend) {
     return friends[index][1]['gender'] == 'Мужской' ?
         friend : null;
 };
+
+function isUncorrectArg(arg, friends, startPoint) {
+    if (arg) {
+        return !isInList(friends, arg) || startPoint == arg;
+    }
+    return false;
+}
