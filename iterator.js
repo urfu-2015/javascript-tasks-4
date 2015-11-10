@@ -88,7 +88,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         },
         prevMale: function (name) {
-            if (collection[startPoint] === undefined || currentContact < 1) {
+            if (collection[startPoint] === undefined || currentContact < 2) {
                 return null;
             }
 
