@@ -89,8 +89,8 @@ module.exports.get = function (collection, startPoint, depth) {
             delete listOfNext[person];
             if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
                     person === smbdOrProp || changeName(person) === smbdOrProp) {
-                        listOfPrevious[person].name = person;
-                        return listOfPrevious[person];
+                listOfPrevious[person].name = person;
+                return listOfPrevious[person];
             }
         }
         for (var person in listOfNext) {
@@ -99,8 +99,8 @@ module.exports.get = function (collection, startPoint, depth) {
             delete listOfNext[person];
             if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
                     person === smbdOrProp || changeName(person) === smbdOrProp) {
-                        listOfPrevious[person].name = person;
-                        return listOfPrevious[person];
+                listOfPrevious[person].name = person;
+                return listOfPrevious[person];
             }
         }
         return null;
