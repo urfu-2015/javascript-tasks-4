@@ -65,8 +65,8 @@ module.exports.get = function (collection, startPoint, depth) {
     };
     makeListFriends(collection, startPoint, depth);
     var changeName = function (name) {
-        return name.replace(/ё/gi, "е");
-    }
+        return name.replace(/ё/gi, 'е');
+    };
     var next = function (smbdOrProp) {
         //если вдруг из фейсбука кого-то удалили
         if (!(primordialLengthPhB === Object.keys(collection).length)) {
@@ -87,8 +87,8 @@ module.exports.get = function (collection, startPoint, depth) {
             listOfPrevious[String(person)] = listOfNext[person];
             previous.push(person);
             delete listOfNext[person];
-            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp || person === smbdOrProp
-                    || changeName(person) === smbdOrProp) {
+            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
+                person === smbdOrProp || changeName(person) === smbdOrProp) {
                 return listOfPrevious[person];
                 //return person;
             }
@@ -97,8 +97,8 @@ module.exports.get = function (collection, startPoint, depth) {
             listOfPrevious[String(person)] = listOfNext[person];
             previous.push(person);
             delete listOfNext[person];
-            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp || person === smbdOrProp
-                    || changeName(person) === smbdOrProp) {
+            if (smbdOrProp === undefined || listOfPrevious[person].gender === smbdOrProp ||
+                person === smbdOrProp || changeName(person) === smbdOrProp) {
                 //return person;
                 return listOfPrevious[person];
             }
@@ -159,13 +159,13 @@ module.exports.get = function (collection, startPoint, depth) {
     };
     var getPrev = function () {
         return listOfPrevious;
-    }
+    };
     var getNext = function () {
         return listOfNext;
-    }
+    };
     var getNextPer = function () {
         return nextPer;
-    }
+    };
     iter.next = next;
     iter.prev = prev;
     iter.nextMale = nextMale;
