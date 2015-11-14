@@ -109,6 +109,13 @@ module.exports.get = function (collection, startPoint, depth) {
                 return null;
             }
             if (this.index === 0) {
+                this.index -= 1;
+                return {
+                    name: startPoint,
+                    phone: collection[startPoint].phone
+                }
+            }
+            if (this.index < 0) {
                 //Контакты закончились
                 return null;
             }
@@ -123,9 +130,18 @@ module.exports.get = function (collection, startPoint, depth) {
             if (!haveStartPoint) {
                 return null;
             }
-            if (this.index === 0) {
+            if (this.index < 0) {
                 //Контакты закончились
                 return null;
+            }
+            if (this.index === 0) {
+                if (collection[startPoint].gender === 'Мужской') {
+                    this.index -= 1;
+                    return {
+                        name: startPoint,
+                        phone: collection[startPoint].phone
+                    }
+                }
             }
             while (this.index > 0) {
                 this.index -= 1;
