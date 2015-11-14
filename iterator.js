@@ -113,7 +113,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return {
                     name: startPoint,
                     phone: collection[startPoint].phone
-                }
+                };
             }
             if (this.index < 0) {
                 //Контакты закончились
@@ -140,7 +140,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     return {
                         name: startPoint,
                         phone: collection[startPoint].phone
-                    }
+                    };
                 }
             }
             while (this.index > 0) {
