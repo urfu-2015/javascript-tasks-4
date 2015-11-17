@@ -95,9 +95,9 @@ var getAllFriends = function (collection, startPoint, depth) {
                 countDepth = depthCount[person];//задаем новую глубину
                 if (countDepth < depth + 1) {
                     listOfFriends.push({
-                        name: person, 
-                        phone: collection[person].phone, 
-                        gender: collection[person].gender, 
+                        name: person,
+                        phone: collection[person].phone,
+                        gender: collection[person].gender,
                         count: depthCount[person]});
                 }
             }
