@@ -8,11 +8,19 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         friends,
         index,
-        next: function (name) {
+        next: function (param) {	
             var friend = null;
-            if (name != undefined) {
+            if (param != undefined) {
                 for (var i = 0; i < friends.length; i++) {
-                    if (friends[i].name === name) {
+                    if (friends[i].name === param) {
+                        friend = {name: friends[i].name, phone: friends[i].phone};
+                        index = i + 1;
+                        break;
+                    } else if (friends[i].gender === param) {
+                        friend = {name: friends[i].name, phone: friends[i].phone};
+                        index = i + 1;
+                        break;
+                    } else if (friends[i].count === param) {
                         friend = {name: friends[i].name, phone: friends[i].phone};
                         index = i + 1;
                         break;
@@ -84,7 +92,7 @@ var getAllFriends = function (collection, startPoint, depth) {
     check[startPoint] = 1; //говорим, что он чекeром 1, т.е. мы его посетили
     // говорим, что глубина -1 у начального, т.к. сам себе он руку не пожимает
     depthCount[startPoint] = -1;
-    while (visitedFriends.length > 0 && countDepth < depth + 1) {
+    while (visitedFriends.length > 0 && countDepth < depth) {
         var used = visitedFriends.shift(); //достаем из посещаемых человека
         var friends = collection[used].friends.sort(); // находим его друзей
         friends.forEach(function (person) {
@@ -93,7 +101,7 @@ var getAllFriends = function (collection, startPoint, depth) {
                 check[person] = 1;//говорим что прошли
                 depthCount[person] = depthCount[used] + 1; //даем ему глубину
                 countDepth = depthCount[person];//задаем новую глубину
-                if (countDepth < depth + 1) {
+                if (countDepth < depth) {
                     listOfFriends.push({
                         name: person,
                         phone: collection[person].phone,
