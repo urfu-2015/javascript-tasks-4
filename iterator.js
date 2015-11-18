@@ -8,7 +8,7 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         friends,
         index,
-        next: function (param) {	
+        next: function (param) {
             var friend = null;
             if (param != undefined) {
                 for (var i = 0; i < friends.length; i++) {
