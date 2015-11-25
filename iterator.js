@@ -149,4 +149,5 @@ var getAllFriends = function (collection, startPoint, depth) {
             }
         });
     }
+    return listOfFriends;
 };
