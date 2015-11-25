@@ -4,7 +4,22 @@ module.exports.get = function (collection, startPoint, depth) {
     var friends = getAllFriends(collection, startPoint, depth);
     var index = 0;
     var length = collection.length;
-
+    if (!collection.hasOwnProperty(startPoint)) {
+        return {
+            next: function() {
+                return null;
+            },
+            prev: function() {
+                return null;
+            },
+            nextMale: function() {
+                return null;
+            },
+            prevMale: function() {
+                return null;
+            }
+        };
+    }
     return {
         friends,
         index,
