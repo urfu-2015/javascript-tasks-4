@@ -6,16 +6,16 @@ module.exports.get = function (collection, startPoint, depth) {
     var length = collection.length;
     if (!collection.hasOwnProperty(startPoint)) {
         return {
-            next: function() {
+            next: function () {
                 return null;
             },
-            prev: function() {
+            prev: function () {
                 return null;
             },
-            nextMale: function() {
+            nextMale: function () {
                 return null;
             },
-            prevMale: function() {
+            prevMale: function () {
                 return null;
             }
         };
