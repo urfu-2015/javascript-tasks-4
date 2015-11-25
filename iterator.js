@@ -31,6 +31,8 @@ module.exports.get = function (collection, startPoint, depth) {
             if (friends.length > index) {
                 friend = {name: friends[index].name, phone: friends[index].phone};
                 index += 1;
+            } else {
+                index += 1;
             }
             return friend;
         },
@@ -39,6 +41,8 @@ module.exports.get = function (collection, startPoint, depth) {
             index -= 2;
             if (index >= 0 && index < friends.length) {
                 friend = {name: friends[index].name, phone: friends[index].phone};
+            } else {
+                index -= 2;
             }
             index += 1;
             return friend;
@@ -82,12 +86,12 @@ var getAllFriends = function (collection, startPoint, depth) {
     var depthCount = [];//глубина для каждого друга, т.е. сколько до него рукопожатий от базового
     var countDepth = 0;//текущая глубина
     var gender;//пол, на случай, если не дали глубину
+    if (!collection.hasOwnProperty(startPoint) || depth < 0) {
+        return listOfFriends;
+    }
     if (depth === undefined) {
         depth = Object.keys(collection).length;
         gender = collection[startPoint].gender;
-    }
-    if (!collection.hasOwnProperty(startPoint) || depth < 0) {
-        return listOfFriends;
     }
     check[startPoint] = 1; //говорим, что он чекeром 1, т.е. мы его посетили
     // говорим, что глубина -1 у начального, т.к. сам себе он руку не пожимает
