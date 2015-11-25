@@ -31,10 +31,10 @@ module.exports.get = function (collection, startPoint, depth) {
             if (friends.length > index && index >= 0) {
                 friend = {name: friends[index].name, phone: friends[index].phone};
                 index += 1;
-				return friend;
+                return friend;
             } else if (index <= -1) {
-				index = 0;
-			}
+                index = 0;
+            }
             return friend;
         },
         prev: function () {
@@ -42,32 +42,32 @@ module.exports.get = function (collection, startPoint, depth) {
             index -= 2;
             if (index >= 0 && index < friends.length) {
                 friend = {name: friends[index].name, phone: friends[index].phone};
-				index += 1;
-				return friend;
+                index += 1;
+                return friend;
             } else if (index === -1) {
-				friend = {name: startPoint, phone: collection[startPoint].phone};
-				index += 1;
-				return friend;
-			} else {
+                friend = {name: startPoint, phone: collection[startPoint].phone};
+                index += 1;
+                return friend;
+            } else {
                 index = -1;
             }
             index += 1;
             return friend;
         },
-       nextMale: function () {
+        nextMale: function () {
             var friend = null;
             var gender = 'Мужской';
             if (index <= -1) {
-			    index = 0;
+                index = 0;
             }
-			while (index < friends.length && index >= 0) {
+            while (index < friends.length && index >= 0) {
                 if (friends[index].gender === gender) {
                     friend = {name: friends[index].name, phone: friends[index].phone};
                     index += 1;
                     break;
                 } else {
-					index += 1;
-				}
+                    index += 1;
+                }
             }
             return friend;
         },
@@ -75,21 +75,21 @@ module.exports.get = function (collection, startPoint, depth) {
             var friend = null;
             var gender = 'Мужской';
             index -= 2;
-			if (index === -1 && collection[startPoint].gender === gender) {
-				friend = {name: startPoint, phone: collection[startPoint].phone};
-				index += 1;
-				return friend;
-			}
+            if (index === -1 && collection[startPoint].gender === gender) {
+                friend = {name: startPoint, phone: collection[startPoint].phone};
+                index += 1;
+                return friend;
+            }
             while (index >= 0) {
                 if (friends[index].gender === gender) {
                     friend = {name: friends[index].name, phone: friends[index].phone};
                     index += 1;
                     break;
                 } else if (index === -1) {
-				    friend = {name: startPoint, phone: collection[startPoint].phone};
-					index += 1;
-					return friend;
-				} else {
+                    friend = {name: startPoint, phone: collection[startPoint].phone};
+                    index += 1;
+                    return friend;
+                } else {
                     index -= 1;
                 }
             }
