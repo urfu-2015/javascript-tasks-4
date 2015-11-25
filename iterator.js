@@ -3,11 +3,11 @@
 module.exports.get = function (collection, startPoint, depth) {
     return {
         friends: createFriendList(collection, startPoint, depth),
-        indexPointer: -1,
+        indexPointer: 0,
 
         next: function (name) {
             if (name == undefined) {
-                if (this.indexPointer < this.friends.length - 1) {
+                if (this.indexPointer < this.friends.length - 1 && name != this.friends[0].name) {
                     this.indexPointer += 1;
                     return {name: this.friends[this.indexPointer],
                         phone: collection[this.friends[this.indexPointer]].phone};
@@ -21,7 +21,7 @@ module.exports.get = function (collection, startPoint, depth) {
 
         prev: function (name) {
             if (name == undefined) {
-                if (this.indexPointer > 0) {
+                if (this.indexPointer > 0 && name != this.friends[0].name) {
                     this.indexPointer -= 1;
                     return {name: this.friends[this.indexPointer],
                         phone: collection[this.friends[this.indexPointer]].phone};
@@ -37,7 +37,7 @@ module.exports.get = function (collection, startPoint, depth) {
             if (name == undefined) {
                 this.indexPointer += 1;
                 var len = this.friends.length;
-                while (this.indexPointer < len) {
+                while (this.indexPointer < len && name != this.friends[0].name) {
                     if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
                         return {name: this.friends[this.indexPointer],
                             phone: collection[this.friends[this.indexPointer]].phone};
@@ -54,7 +54,7 @@ module.exports.get = function (collection, startPoint, depth) {
         prevMale: function (name) {
             if (name == undefined) {
                 this.indexPointer -= 1;
-                while (this.indexPointer >= 0) {
+                while (this.indexPointer >= 0 && name != this.friends[0].name) {
                     if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
                         return {
                             name: this.friends[this.indexPointer],
@@ -99,8 +99,9 @@ function createFriendList(collection, startPoint, depth) {
         depth = depth || Object.keys(collection).length;
         var friendList = [startPoint];
         getFriends([startPoint], 0);
-        return friendList.slice(1);
+        return friendList;
     } else {
         return [];
     }
 }
+
