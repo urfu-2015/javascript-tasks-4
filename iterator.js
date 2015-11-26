@@ -54,7 +54,7 @@ module.exports.get = function (collection, startPoint, depth) {
         next: function (friendName) {
             nextFriend = null;
             if (friendName) {
-                for (var index = 0; index < friendsLength; index++) {
+                for (var index = 1; index < friendsLength; index++) {
                     if (friends[index].name === friendName) {
                         nextFriend = {
                             name: friendName,
@@ -66,7 +66,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 }
                 return nextFriend;
             }
-            if (0 <= currentIndex && currentIndex < friends.length) {
+            if (0 < currentIndex && currentIndex < friends.length) {
                 nextFriend = {
                     name: friends[currentIndex].name,
                     phone: friends[currentIndex].phone
@@ -78,7 +78,7 @@ module.exports.get = function (collection, startPoint, depth) {
 
         nextMale: function () {
             nextFriend = null;
-            if (0 <= currentIndex && currentIndex < friends.length) {
+            if (0 < currentIndex && currentIndex < friends.length) {
                 for (var index = currentIndex; index < friendsLength; index++) {
                     if (friends[index].gender === 'Мужской') {
                         nextFriend = {
@@ -96,7 +96,7 @@ module.exports.get = function (collection, startPoint, depth) {
         prev: function () {
             prevFriend = null;
             (nextFriend) ? currentIndex -= 2 : currentIndex--;
-            if (0 <= currentIndex && currentIndex < friends.length) {
+            if (0 < currentIndex && currentIndex < friends.length) {
                 prevFriend = {
                     name: friends[currentIndex].name,
                     phone: friends[currentIndex].phone
