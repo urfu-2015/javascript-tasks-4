@@ -7,37 +7,39 @@ module.exports.get = function (collection, startPoint, depth) {
 
         next: function (name) {
             if (name == undefined) {
-                if (this.indexPointer < this.friends.length - 1 && name != this.friends[0].name) {
+                if (this.indexPointer < this.friends.length - 1) {
                     this.indexPointer += 1;
                     return {name: this.friends[this.indexPointer],
                         phone: collection[this.friends[this.indexPointer]].phone};
                 } else {
                     return null;
                 }
-            } else {
+            } else if (name != this.friends[0]) {
                 return getFriend(collection, this.friends, name);
             }
+            return null;
         },
 
         prev: function (name) {
             if (name == undefined) {
-                if (this.indexPointer > 0 && name != this.friends[0].name) {
+                if (this.indexPointer > 0) {
                     this.indexPointer -= 1;
                     return {name: this.friends[this.indexPointer],
                         phone: collection[this.friends[this.indexPointer]].phone};
                 } else {
                     return null;
                 }
-            } else {
+            } else if (name != this.friends[0]) {
                 return getFriend(collection, this.friends, name);
             }
+            return null;
         },
 
         nextMale: function (name) {
             if (name == undefined) {
                 this.indexPointer += 1;
                 var len = this.friends.length;
-                while (this.indexPointer < len && name != this.friends[0].name) {
+                while (this.indexPointer < len) {
                     if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
                         return {name: this.friends[this.indexPointer],
                             phone: collection[this.friends[this.indexPointer]].phone};
@@ -46,15 +48,16 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                 }
                 return null;
-            } else {
+            } else if (name != this.friends[0]) {
                 return getFriend(collection, this.friends, name);
             }
+            return null;
         },
 
         prevMale: function (name) {
             if (name == undefined) {
                 this.indexPointer -= 1;
-                while (this.indexPointer >= 0 && name != this.friends[0].name) {
+                while (this.indexPointer >= 0) {
                     if (collection[this.friends[this.indexPointer]].gender == 'Мужской') {
                         return {
                             name: this.friends[this.indexPointer],
@@ -65,9 +68,10 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                 }
                 return null;
-            } else {
+            } else if (name != this.friends[0]) {
                 return getFriend(collection, this.friends, name);
             }
+            return null;
         }
     };
 };
