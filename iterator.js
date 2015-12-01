@@ -34,78 +34,87 @@ module.exports.get = function (collection, startPoint, depth) {
     return {
         faceBook: collection,
         friendList: friends,
-        index: 0,
-        indexMale: 0,
+        index: 1,
+        current: friends[0],
+        indexMale: 1,
+        currentMale: friends[0],
         next: function (name) {
-            if (!this.friendList) {
+            if (this.friendList.length <= 0) {
                 return null;
             }
-            if (name && typeof name === 'string') {
-                return {
-                    name: name,
-                    phone: this.faceBook[name].phone
-                };
-            }
-            if (this.index < this.friendList.length && this.index >= 0) {
-                this.index ++;
+            if (name && typeof name === 'string' && this.friendList.indexOf(name) !== -1) {
                 var person = {};
-                person['name'] = this.friendList[this.index - 1];
-                person['phone'] = this.faceBook[this.friendList[this.index - 1]].phone;
+                person['name'] = name;
+                person['phone'] = this.faceBook[name].phone;
+                return person;
+            }
+            var currentIndex = this.friendList.indexOf(this.current);
+            if (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0) {
+                person = {};
+                this.current = this.friendList[currentIndex + 1];
+                person['name'] = this.current;
+                person['phone'] = this.faceBook[this.current].phone;
                 return person;
             } else {
                 return null;
             }
         },
         prev: function () {
-            if (this.index <= this.friendList.length && this.index > 0) {
-                this.index --;
+            var currentIndex = this.friendList.indexOf(this.current);
+            if (currentIndex - 1 <= this.friendList.length && currentIndex - 1 >= 0) {
                 var person = {};
-                person['name'] = this.friendList[this.index];
-                person['phone'] = this.faceBook[this.friendList[this.index]].phone;
+                this.current = this.friendList[currentIndex - 1];
+                person['name'] = this.current;
+                person['phone'] = this.faceBook[this.current].phone;
                 return person;
             } else {
                 return null;
             }
         },
         prevMale: function () {
-            if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
-                this.indexMale --;
-                while (this.indexMale < this.friendList.length && this.indexMale >= 0 &&
-                this.faceBook[this.friendList[this.indexMale]].gender !== 'Мужской') {
-                    this.indexMale --;
+            this.index --;
+            var currentIndex = this.friendList.indexOf(this.currentMale);
+            if (currentIndex - 1 < this.friendList.length && currentIndex - 1 >= 0){
+                currentIndex --;
+                while (currentIndex - 1 < this.friendList.length && currentIndex - 1 >= 0 &&
+                this.faceBook[this.friendList[currentIndex]].gender !== 'Мужской') {
+                    currentIndex --;
                 }
-                if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
+                if (this.faceBook[this.friendList[currentIndex]].gender === 'Мужской') {
                     var person = {};
-                    person['name'] = this.friendList[this.indexMale];
-                    person['phone'] = this.faceBook[this.friendList[this.indexMale]].phone;
+                    this.currentMale = this.friendList[currentIndex];
+                    person['name'] = this.currentMale;
+                    person['phone'] = this.faceBook[this.currentMale].phone;
                     return person;
                 } else {
-                    return null;
+                    return null
                 }
             } else {
                 return null;
             }
         },
         nextMale: function (name) {
-            if (name && typeof name === 'string' && this.faceBook[name]) {
-                return {
-                    name: name,
-                    phone: this.faceBook[name].phone
-                };
+            if (name && typeof name === 'string' && this.friendList.indexOf(name) !== -1) {
+                var person = {};
+                person['name'] = name;
+                person['phone'] = this.faceBook[name].phone;
+                return person;
             }
-            if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
-                while (this.indexMale < this.friendList.length && this.indexMale >= 0 &&
-                this.faceBook[this.friendList[this.indexMale]].gender !== 'Мужской') {
-                    this.indexMale ++;
+            var currentIndex = this.friendList.indexOf(this.currentMale);
+            if (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0){
+                currentIndex ++;
+                while (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0 &&
+                this.faceBook[this.friendList[currentIndex]].gender !== 'Мужской') {
+                    currentIndex ++;
                 }
-                this.indexMale ++;
-                if (this.indexMale < this.friendList.length && this.indexMale >= 0) {
-                    var person = {};
-                    person['name'] = this.friendList[this.indexMale - 1];
-                    person['phone'] = this.faceBook[this.friendList[this.indexMale - 1]].phone;
+                if (this.faceBook[this.friendList[currentIndex]].gender === 'Мужской') {
+                    person = {};
+                    this.currentMale = this.friendList[currentIndex];
+                    person['name'] = this.currentMale;
+                    person['phone'] = this.faceBook[this.currentMale].phone;
                     return person;
                 } else {
-                    return null;
+                    return null
                 }
             } else {
                 return null;
