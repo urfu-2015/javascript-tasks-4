@@ -74,7 +74,7 @@ module.exports.get = function (collection, startPoint, depth) {
         prevMale: function () {
             this.index --;
             var currentIndex = this.friendList.indexOf(this.currentMale);
-            if (currentIndex - 1 < this.friendList.length && currentIndex - 1 >= 0){
+            if (currentIndex - 1 < this.friendList.length && currentIndex - 1 >= 0) {
                 currentIndex --;
                 while (currentIndex - 1 < this.friendList.length && currentIndex - 1 >= 0 &&
                 this.faceBook[this.friendList[currentIndex]].gender !== 'Мужской') {
@@ -87,7 +87,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     person['phone'] = this.faceBook[this.currentMale].phone;
                     return person;
                 } else {
-                    return null
+                    return null;
                 }
             } else {
                 return null;
@@ -114,7 +114,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     person['phone'] = this.faceBook[this.currentMale].phone;
                     return person;
                 } else {
-                    return null
+                    return null;
                 }
             } else {
                 return null;
