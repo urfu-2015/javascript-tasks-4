@@ -101,7 +101,7 @@ module.exports.get = function (collection, startPoint, depth) {
                 return person;
             }
             var currentIndex = this.friendList.indexOf(this.currentMale);
-            if (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0){
+            if (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0) {
                 currentIndex ++;
                 while (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0 &&
                 this.faceBook[this.friendList[currentIndex]].gender !== 'Мужской') {
@@ -151,4 +151,3 @@ function uniq(collection, filter) {
     }
     return result;
 }
-
