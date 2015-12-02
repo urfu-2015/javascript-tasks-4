@@ -42,11 +42,15 @@ module.exports.get = function (collection, startPoint, depth) {
             if (this.friendList.length <= 0) {
                 return null;
             }
-            if (name && typeof name === 'string' && this.friendList.indexOf(name) !== -1) {
-                var person = {};
-                person['name'] = name;
-                person['phone'] = this.faceBook[name].phone;
-                return person;
+            if (name && typeof name === 'string') {
+                if (this.friendList.indexOf(name) !== -1) {
+                    var person = {};
+                    person['name'] = name;
+                    person['phone'] = this.faceBook[name].phone;
+                    return person;
+                } else {
+                    return null;
+                }
             }
             var currentIndex = this.friendList.indexOf(this.current);
             if (currentIndex + 1 < this.friendList.length && currentIndex + 1 >= 0) {
