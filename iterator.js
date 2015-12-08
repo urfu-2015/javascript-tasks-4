@@ -3,14 +3,16 @@
 module.exports.get = function (collection, startPoint, depth) {
     var friends = {};
     var depth = depth || Infinity;
-    if (depth > Object.keys(collection).length){
+    if (depth > Object.keys(collection).length) {
         depth = Object.keys(collection).length;
     }
     if (startPoint in collection) {
         var nextLevelQueue = [];
         var currentLevelQueue = [];
-        nextLevelQueue.push(startPoint);
-        var levelCounter = 0;
+        var levelCounter = 1;
+        var friendsToAdd = checkAndSortPersons(friends, startPoint,
+        collection[startPoint]['friends']);
+        nextLevelQueue = nextLevelQueue.concat(friendsToAdd);
         while (levelCounter <= depth && nextLevelQueue.length > 0) {
             levelCounter++;
             currentLevelQueue = nextLevelQueue;
@@ -20,49 +22,45 @@ module.exports.get = function (collection, startPoint, depth) {
                 if (!(currentPoint in friends) && currentPoint !== startPoint) {
                     friends[currentPoint] = collection[currentPoint];
                 }
-                var friendsToAdd = collection[currentPoint]['friends'];  
-                friendsToAdd = friendsToAdd.sort();
-                for (var i = 0; i < friendsToAdd.length; i++) {
-                    if (!(friendsToAdd[i] in friends) && friendsToAdd[i] !== startPoint) {
-                        nextLevelQueue.push(friendsToAdd[i]);
-                    }
-                }         
+                friendsToAdd = checkAndSortPersons(friends, startPoint,
+                collection[currentPoint]['friends']);
+                nextLevelQueue = nextLevelQueue.concat(friendsToAdd);
             }
-        }   
+        }
     }
+    var stringifyResult = function (position) {
+        var result = {};
+        var personName = orderedFriendsNames[position];
+        result.name = personName;
+        result.phone = friends[personName]['phone'];
+        return (JSON.stringify(result));
+    };
 
-    var stringifyResult = function (position){
-         var result = {};
-         var personName = orderedFriendsNames[position];
-         result.name = personName;
-         result.phone = friends[personName]['phone'];
-         return (JSON.stringify(result));
-    }
-    
     var maleIterator = function (direction) {
         var stringifiedPerson = direction();
-        while (stringifiedPerson !== null){
+        while (stringifiedPerson !== null) {
             var currentPerson = JSON.parse(stringifiedPerson);
-            if(friends[currentPerson.name]['gender'] === 'Мужской'){
+            if (friends[currentPerson.name]['gender'] === 'Мужской') {
                 return stringifiedPerson;
             }
-            stringifiedPerson = direction();   
+            stringifiedPerson = direction();
         }
-        return null;     
-    }
-    
+        return null;
+    };
+
     var orderedFriendsNames = [];
     for (var friendName in friends) {
         orderedFriendsNames.push(friendName);
     }
     var positionToShow = -1;
-    
+
     return {
-        next: function(name) {
-            if (positionToShow + 1 >= orderedFriendsNames.length || Object.keys(friends).length == 0){ 
+        next: function (name) {
+            if (positionToShow + 1 >= orderedFriendsNames.length ||
+            Object.keys(friends).length == 0) {
                 return null;
             }
-            if(name in friends) {
+            if (name in friends) {
                 positionToShow = orderedFriendsNames.indexOf(name);
             } else if (name !== undefined) {
                 return null;
@@ -71,7 +69,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
             return (stringifyResult(positionToShow));
         },
-        prev: function(){
+        prev: function () {
             if (positionToShow - 1 < 0 || Object.keys(friends).length == 0) {
                 return null;
             }
@@ -83,7 +81,18 @@ module.exports.get = function (collection, startPoint, depth) {
         },
         prevMale: function () {
             return maleIterator(this.prev);
-        }   
-    };  
+        }
+    };
+};
+
+function checkAndSortPersons(friends, startPoint, candidatesToAdd) {
+    var resultPersons = [];
+    candidatesToAdd = candidatesToAdd.sort();
+    for (var i = 0; i < candidatesToAdd.length; i++) {
+        if (!(candidatesToAdd[i] in friends) && candidatesToAdd[i] !== startPoint) {
+            resultPersons.push(candidatesToAdd[i]);
+        }
+    }
+    return resultPersons;
 };
 
