@@ -2,24 +2,22 @@
 
 module.exports.get = function (collection, startPoint, depth) {
     var friends = {};
-    var depth = depth || Infinity;
-    if (depth > Object.keys(collection).length) {
+    if (depth > Object.keys(collection).length || depth == undefined) {
         depth = Object.keys(collection).length;
     }
-    if (startPoint in collection) {
+    if (startPoint in collection && depth != 0) {
         var nextLevelQueue = [];
         var currentLevelQueue = [];
-        var levelCounter = 1;
-        var friendsToAdd = checkAndSortPersons(friends, startPoint,
-        collection[startPoint]['friends']);
-        nextLevelQueue = nextLevelQueue.concat(friendsToAdd);
+        var levelCounter = 0;
+        var friendsToAdd = [];
+        nextLevelQueue.push(startPoint);
         while (levelCounter <= depth && nextLevelQueue.length > 0) {
             levelCounter++;
             currentLevelQueue = nextLevelQueue;
             nextLevelQueue = [];
             while (currentLevelQueue.length > 0) {
                 var currentPoint = currentLevelQueue.shift();
-                if (!(currentPoint in friends) && currentPoint !== startPoint) {
+                if (!(currentPoint in friends)) {
                     friends[currentPoint] = collection[currentPoint];
                 }
                 friendsToAdd = checkAndSortPersons(friends, startPoint,
@@ -28,6 +26,7 @@ module.exports.get = function (collection, startPoint, depth) {
             }
         }
     }
+
     var stringifyResult = function (position) {
         var result = {};
         var personName = orderedFriendsNames[position];
@@ -52,7 +51,7 @@ module.exports.get = function (collection, startPoint, depth) {
     for (var friendName in friends) {
         orderedFriendsNames.push(friendName);
     }
-    var positionToShow = -1;
+    var positionToShow = 0;
 
     return {
         next: function (name) {
@@ -89,7 +88,7 @@ function checkAndSortPersons(friends, startPoint, candidatesToAdd) {
     var resultPersons = [];
     candidatesToAdd = candidatesToAdd.sort();
     for (var i = 0; i < candidatesToAdd.length; i++) {
-        if (!(candidatesToAdd[i] in friends) && candidatesToAdd[i] !== startPoint) {
+        if (!(candidatesToAdd[i] in friends)) {
             resultPersons.push(candidatesToAdd[i]);
         }
     }
