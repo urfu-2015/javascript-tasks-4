@@ -69,6 +69,7 @@ describe('Базовое тестирование итератора', function 
 
         friends.next(); // Васян
         friends.next(); // Полина
+
         // Больше друзей в первом круге нет
         expect(friends.next()).to.equal(null);
     });
