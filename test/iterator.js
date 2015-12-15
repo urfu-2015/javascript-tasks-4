@@ -17,7 +17,7 @@ describe('Базовое тестирование итератора', function 
     it('Метод next() должен возвращать следующего друга', function () {
         var friends = iterator.get(faceBook, 'Сергей', 3);
 
-        friends.next().should.equal(faceBook['Васян']);
+        friends.next().should.have.keys({ name: 'Васян', phone: '+70000000000' });
     });
 
     it('Метод prev() должен возвращать предыдущего друга', function () {
@@ -26,7 +26,7 @@ describe('Базовое тестирование итератора', function 
         friends.next();
         friends.next();
 
-        friends.prev().should.equal(faceBook['Васян']);
+        friends.prev().should.have.keys({ name: 'Васян', phone: '+70000000000' });
     });
 
     it('Метод prev() должен возвращать null, если нет предыдущего друга', function () {
@@ -52,13 +52,13 @@ describe('Базовое тестирование итератора', function 
         expect(friends.next()).to.equal(null);
     });
 
-    it('Метод next() должен возвращать null, если нет стартовой точки нет в книге', function () {
+    it('Метод next() должен возвращать null, если стартовой точки нет в книге', function () {
         var friends = iterator.get(faceBook, 'Игнатий', 3);
 
         expect(friends.next()).to.equal(null);
     });
 
-    it('Метод prev() должен возвращать null, если нет стартовой точки нет в книге', function () {
+    it('Метод prev() должен возвращать null, если стартовой точки нет в книге', function () {
         var friends = iterator.get(faceBook, 'Игнатий', 3);
 
         expect(friends.prev()).to.equal(null);
@@ -69,8 +69,7 @@ describe('Базовое тестирование итератора', function 
 
         friends.next(); // Васян
         friends.next(); // Полина
-
-        // Больше друзей в круге первом нет
+        // Больше друзей в первом круге нет
         expect(friends.next()).to.equal(null);
     });
 });
