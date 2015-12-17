@@ -44,6 +44,7 @@ module.exports.get = function (collection, startPoint, depth) {
         while (queue.length) {
             var v = queue.shift();
             try {
+                collection[v].friends.sort();
                 collection[v].friends.forEach(function (friend) {
                     if (used.indexOf(friend) == -1) {
                         distances[friend] = distances[v] + 1;
@@ -59,7 +60,7 @@ module.exports.get = function (collection, startPoint, depth) {
                     }
                 }, this);
             } catch (e) {
-                if (e === ReferenceError) {
+                if (e instanceof ReferenceError) {
                     break;
                 }
             }
