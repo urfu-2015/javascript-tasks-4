@@ -7,7 +7,7 @@ module.exports.get = function (collection, bridegroomName, depth) {
         var friendsCount = Object.keys(collection).length;
 
         // Глубину не передали или передали больше, чем допустимо, берём максимальную.
-        if (!depth || depth > friendsCount) {
+        if (depth === undefined || depth > friendsCount) {
             depth = friendsCount;
         }
 
@@ -51,7 +51,7 @@ module.exports.get = function (collection, bridegroomName, depth) {
 
             if (currentFriend) {
                 var friends = currentFriend.friends.filter(function (friend) {
-                    return currentFriend &&
+                    return collection[friend] &&
                         allFriends.indexOf(friend) < 0 && newFriends.indexOf(friend) < 0;
                 }).sort();
                 newFriends = newFriends.concat(friends);
@@ -97,8 +97,9 @@ module.exports.get = function (collection, bridegroomName, depth) {
             if (name) {
                 currentFriend = name;
                 indexFriend = allFriends.indexOf(name);
+                var isFriend = collection[name] && indexFriend !== -1 && indexFriend !== 0;
 
-                return collection[name] ? {
+                return isFriend ? {
                     name: name,
                     phone: collection[name].phone
                 } : null;
@@ -117,6 +118,7 @@ module.exports.get = function (collection, bridegroomName, depth) {
 
             if (indexFriend > 0) {
                 indexFriend--;
+                currentFriend = allFriends[indexFriend];
                 return getFriend(indexFriend);
             }
 
